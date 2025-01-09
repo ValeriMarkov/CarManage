@@ -14,10 +14,10 @@ namespace CarManage.Server
             // Initialize Firebase Admin SDK
             FirebaseApp.Create(new AppOptions()
             {
-                Credential = GoogleCredential.GetApplicationDefault(),
+                Credential = GoogleCredential.FromFile("C:\\Users\\valer\\carmanage-59888-55751e2e69ac.json")
             });
 
-            // Add services to the container.
+            // Add services to the container
             builder.Services.AddControllers();
 
             // Add Entity Framework Core and configure SQL Server connection
@@ -30,42 +30,42 @@ namespace CarManage.Server
 
             var app = builder.Build();
 
-            // Static files and default files
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
-
-            // Middleware to skip Firebase Authentication for Swagger
-            app.Use(async (context, next) =>
-            {
-                // Skip authentication for Swagger endpoints
-                if (context.Request.Path.StartsWithSegments("/swagger"))
-                {
-                    await next();
-                }
-                else
-                {
-                    // Pass control to Firebase Authentication Middleware
-                    await next();
-                }
-            });
-
-            // Use Firebase Authentication Middleware (to check Firebase token on every request)
-            app.UseMiddleware<FirebaseAuthMiddleware>();
-
-            // Configure the HTTP request pipeline.
+            // Configure the HTTP request pipeline
             if (app.Environment.IsDevelopment())
             {
+                // Serve Swagger UI before applying Firebase authentication
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
+            // Middleware to skip Firebase Authentication for Swagger requests
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path.StartsWithSegments("/swagger"))
+                {
+                    await next(); // Skip Firebase Authentication
+                }
+                else
+                {
+                    // Apply Firebase Authentication Middleware for other routes
+                    await next();
+                }
+            });
+
+            // Use Firebase Authentication Middleware
+            app.UseMiddleware<FirebaseAuthMiddleware>();
+
+            // Serve static files
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
             app.UseHttpsRedirection();
             app.UseAuthorization();
 
-            // Map controllers (your API endpoints)
+            // Map API controllers
             app.MapControllers();
 
-            // Fallback to index.html for SPA routing
+            // Fallback to index.html for SPA
             app.MapFallbackToFile("/index.html");
 
             // Run the application

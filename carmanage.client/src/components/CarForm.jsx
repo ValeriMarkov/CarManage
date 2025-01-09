@@ -1,6 +1,21 @@
 import React, { useState } from 'react';
-import firebase from 'firebase/app';
-import { initializeApp } from "firebase/app";
+import { getAuth } from 'firebase/auth';
+import { initializeApp, getApps } from 'firebase/app';
+
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase if it hasn't been initialized yet
+if (!getApps().length) {
+    initializeApp(firebaseConfig);
+}
 
 const CarForm = () => {
     const [carData, setCarData] = useState({
@@ -24,7 +39,8 @@ const CarForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const user = firebase.auth().currentUser;
+        const auth = getAuth();
+        const user = auth.currentUser;
 
         if (user) {
             user.getIdToken(true).then((idToken) => {
