@@ -1,11 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { useAuth } from "./context/AuthContext"; // Import the useAuth hook
-import Home from "./pages/Home"; // Home page (now acting as Dashboard)
+import Home from "./pages/Home/Home"; // Home page (now acting as Dashboard)
 import Login from "./pages/Login"; // Login page
 import Register from "./pages/Register"; // Register page
-import ProtectedRoute from "./components/ProtectedRoute"; // Optional ProtectedRoute component (if needed)
-import CarForm from "./components/CarForm";
+import ProtectedRoute from "./components/ProtectedRoute"; // ProtectedRoute component
+import CarForm from "./components/CarForm"; // Add Car form component
 
 const App = () => {
     const { user, logout } = useAuth(); // Access the user and logout function from context
@@ -25,9 +25,15 @@ const App = () => {
                             </li>
                         </>
                     ) : (
-                        <li>
-                            <button onClick={logout}>Logout</button>
-                        </li>
+                        <>
+                            <li>
+                                <button onClick={logout}>Logout</button>
+                            </li>
+                            <li>
+                                {/* Link to "Add Car" page */}
+                                <Link to="/add-car">Add Car</Link>
+                            </li>
+                        </>
                     )}
                 </ul>
             </nav>
@@ -47,11 +53,9 @@ const App = () => {
                     <Route
                         path="/add-car"
                         element={
-                            user ? (
+                            <ProtectedRoute>
                                 <CarForm />
-                            ) : (
-                                <div>Please log in to add a car.</div>
-                            )
+                            </ProtectedRoute>
                         }
                     />
                 </Routes>

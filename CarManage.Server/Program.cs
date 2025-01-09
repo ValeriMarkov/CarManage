@@ -28,6 +28,20 @@ namespace CarManage.Server
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // Enable CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins", policy =>
+                {
+                    policy.AllowAnyOrigin()  // Allow all origins
+                          .AllowAnyMethod()  // Allow any HTTP methods (GET, POST, etc.)
+                          .AllowAnyHeader(); // Allow any headers
+                });
+            });
+
+            // Add authentication (JWT, Firebase, etc.)
+            // If using Firebase or other authentication, configure here.
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline
@@ -52,6 +66,9 @@ namespace CarManage.Server
                 }
             });
 
+            // Enable CORS globally
+            app.UseCors("AllowAllOrigins");
+
             // Use Firebase Authentication Middleware
             app.UseMiddleware<FirebaseAuthMiddleware>();
 
@@ -59,6 +76,7 @@ namespace CarManage.Server
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
+            // Middleware for handling HTTPS redirection and Authorization
             app.UseHttpsRedirection();
             app.UseAuthorization();
 

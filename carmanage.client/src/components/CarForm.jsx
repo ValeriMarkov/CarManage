@@ -1,18 +1,8 @@
 import React, { useState } from 'react';
 import { getAuth } from 'firebase/auth';
 import { initializeApp, getApps } from 'firebase/app';
+import { firebaseConfig } from '../firebase';
 
-// Firebase configuration
-const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
-};
-
-// Initialize Firebase if it hasn't been initialized yet
 if (!getApps().length) {
     initializeApp(firebaseConfig);
 }
@@ -28,6 +18,9 @@ const CarForm = () => {
         horsepower: ''
     });
 
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setCarData((prevState) => ({
@@ -38,6 +31,8 @@ const CarForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setLoading(true);
+        setError(null); // Clear any previous errors
 
         const auth = getAuth();
         const user = auth.currentUser;
@@ -53,25 +48,100 @@ const CarForm = () => {
                     },
                     body: JSON.stringify(carData)
                 })
-                    .then(response => response.json())
-                    .then(data => console.log('Car added:', data))
-                    .catch(error => console.error('Error:', error));
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error('Failed to add car');
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        console.log('Car added:', data);
+                        // Optionally reset form
+                        setCarData({
+                            brand: '',
+                            model: '',
+                            year: '',
+                            color: '',
+                            vin: '',
+                            engine: '',
+                            horsepower: ''
+                        });
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        setError(error.message);
+                    })
+                    .finally(() => setLoading(false)); // End loading state
             });
         } else {
             console.log('User is not authenticated');
+            setLoading(false);
+            setError('User is not authenticated. Please log in.');
         }
     };
 
     return (
         <form onSubmit={handleSubmit}>
-            <input type="text" name="brand" value={carData.brand} onChange={handleInputChange} placeholder="Brand" required />
-            <input type="text" name="model" value={carData.model} onChange={handleInputChange} placeholder="Model" required />
-            <input type="number" name="year" value={carData.year} onChange={handleInputChange} placeholder="Year" required />
-            <input type="text" name="color" value={carData.color} onChange={handleInputChange} placeholder="Color" required />
-            <input type="text" name="vin" value={carData.vin} onChange={handleInputChange} placeholder="VIN" required />
-            <input type="number" name="engine" value={carData.engine} onChange={handleInputChange} placeholder="Engine" required />
-            <input type="number" name="horsepower" value={carData.horsepower} onChange={handleInputChange} placeholder="Horsepower" required />
-            <button type="submit">Add Car</button>
+            <input
+                type="text"
+                name="brand"
+                value={carData.brand}
+                onChange={handleInputChange}
+                placeholder="Brand"
+                required
+            />
+            <input
+                type="text"
+                name="model"
+                value={carData.model}
+                onChange={handleInputChange}
+                placeholder="Model"
+                required
+            />
+            <input
+                type="number"
+                name="year"
+                value={carData.year}
+                onChange={handleInputChange}
+                placeholder="Year"
+                required
+            />
+            <input
+                type="text"
+                name="color"
+                value={carData.color}
+                onChange={handleInputChange}
+                placeholder="Color"
+                required
+            />
+            <input
+                type="text"
+                name="vin"
+                value={carData.vin}
+                onChange={handleInputChange}
+                placeholder="VIN"
+                required
+            />
+            <input
+                type="number"
+                name="engine"
+                value={carData.engine}
+                onChange={handleInputChange}
+                placeholder="Engine"
+                required
+            />
+            <input
+                type="number"
+                name="horsepower"
+                value={carData.horsepower}
+                onChange={handleInputChange}
+                placeholder="Horsepower"
+                required
+            />
+            <button type="submit" disabled={loading}>
+                {loading ? 'Adding Car...' : 'Add Car'}
+            </button>
+            {error && <p className="error">{error}</p>}
         </form>
     );
 };

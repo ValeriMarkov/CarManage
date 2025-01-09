@@ -4,7 +4,7 @@ import { getAuth } from "firebase/auth"; // Import Firebase Auth module
 import { getAnalytics } from "firebase/analytics";
 
 // Your web app's Firebase configuration (this should be the code you received from Firebase console)
-const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyBFAkXLY2ktW7a88TWNPs8fC51y34eSSac",
     authDomain: "carmanage-59888.firebaseapp.com",
     projectId: "carmanage-59888",
