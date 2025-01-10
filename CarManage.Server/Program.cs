@@ -2,6 +2,7 @@ using CarManage.Server.Models;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.EntityFrameworkCore;
+using CarManage.Server.Filters; // Import the Filters namespace
 
 namespace CarManage.Server
 {
@@ -11,14 +12,18 @@ namespace CarManage.Server
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Initialize Firebase Admin SDK
+            // Initialize Firebase Admin SDK (make sure the path is correct)
             FirebaseApp.Create(new AppOptions()
             {
                 Credential = GoogleCredential.FromFile("C:\\Users\\valer\\carmanage-59888-55751e2e69ac.json")
             });
 
             // Add services to the container
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(options =>
+            {
+                // Register the AddCorsHeadersFilter globally
+                options.Filters.Add<AddCorsHeadersFilter>();
+            });
 
             // Add Entity Framework Core and configure SQL Server connection
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -28,21 +33,24 @@ namespace CarManage.Server
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Enable CORS
+            // Add CORS configuration
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAllOrigins", policy =>
+                options.AddPolicy("AllowFrontendOrigin", policy =>
                 {
-                    policy.AllowAnyOrigin()  // Allow all origins
-                          .AllowAnyMethod()  // Allow any HTTP methods (GET, POST, etc.)
-                          .AllowAnyHeader(); // Allow any headers
+                    policy.WithOrigins("https://localhost:5173", "http://localhost:5173") // Allow frontend origin
+                          .AllowAnyMethod()                     // Allow all HTTP methods (GET, POST, etc.)
+                          .AllowAnyHeader();                    // Allow all headers
                 });
             });
 
-            // Add authentication (JWT, Firebase, etc.)
-            // If using Firebase or other authentication, configure here.
-
             var app = builder.Build();
+
+            // Enable HTTPS redirection
+            app.UseHttpsRedirection();
+
+            // Apply the CORS policy globally
+            app.UseCors("AllowFrontendOrigin");
 
             // Configure the HTTP request pipeline
             if (app.Environment.IsDevelopment())
@@ -57,7 +65,7 @@ namespace CarManage.Server
             {
                 if (context.Request.Path.StartsWithSegments("/swagger"))
                 {
-                    await next(); // Skip Firebase Authentication
+                    await next(); // Skip Firebase Authentication for Swagger
                 }
                 else
                 {
@@ -66,9 +74,6 @@ namespace CarManage.Server
                 }
             });
 
-            // Enable CORS globally
-            app.UseCors("AllowAllOrigins");
-
             // Use Firebase Authentication Middleware
             app.UseMiddleware<FirebaseAuthMiddleware>();
 
@@ -76,8 +81,7 @@ namespace CarManage.Server
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
-            // Middleware for handling HTTPS redirection and Authorization
-            app.UseHttpsRedirection();
+            // Middleware for handling Authorization
             app.UseAuthorization();
 
             // Map API controllers

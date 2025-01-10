@@ -10,5 +10,6 @@
         public string Vin { get; set; }
         public double Engine { get; set; }
         public int HorsePower { get; set; }
+        public string UserId { get; set; }
     }
 }

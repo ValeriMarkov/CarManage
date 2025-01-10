@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { getAuth } from 'firebase/auth';
 import { initializeApp, getApps } from 'firebase/app';
 import { firebaseConfig } from '../firebase';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate from React Router
 
+// Initialize Firebase app if not already initialized
 if (!getApps().length) {
     initializeApp(firebaseConfig);
 }
@@ -20,6 +22,7 @@ const CarForm = () => {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const navigate = useNavigate(); // Initialize useNavigate
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -36,17 +39,21 @@ const CarForm = () => {
 
         const auth = getAuth();
         const user = auth.currentUser;
+        console.log("Authenticated user:", user);
 
         if (user) {
             user.getIdToken(true).then((idToken) => {
+                // Add UserId to the car data
+                const carDataWithUser = { ...carData, userId: user.uid };
+
                 // Send POST request with the ID token
-                fetch('http://localhost:5077/api/cars', {
+                fetch('https://localhost:7025/api/cars', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${idToken}`
                     },
-                    body: JSON.stringify(carData)
+                    body: JSON.stringify(carDataWithUser) // Send data with the userId
                 })
                     .then((response) => {
                         if (!response.ok) {
@@ -66,6 +73,8 @@ const CarForm = () => {
                             engine: '',
                             horsepower: ''
                         });
+                        // Redirect to the home page after car is added
+                        navigate('/'); // This will redirect to home page
                     })
                     .catch((error) => {
                         console.error('Error:', error);
