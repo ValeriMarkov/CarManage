@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }) => {
         try {
             await signInWithEmailAndPassword(auth, email, password); // Login method
         } catch (error) {
+            console.error("Login error: ", error.message); // Log error for debugging
             throw new Error(error.message); // If there's an error, throw it
         }
     };

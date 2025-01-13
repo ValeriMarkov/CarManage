@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // useNavigate for redirect
 import { getAuth } from 'firebase/auth';
 
 const EditCarForm = () => {
@@ -15,6 +15,7 @@ const EditCarForm = () => {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate(); // Initialize navigate for redirect
 
     // Fetch car details when the component mounts
     useEffect(() => {
@@ -83,13 +84,17 @@ const EditCarForm = () => {
 
                 const data = await response.json();
                 alert('Car details updated successfully');
-                // Redirect to the home page or car details page after successful update
+                navigate("/"); // Redirect to the homepage after successful update
             } catch (err) {
                 setError(err.message); // Set error message if update fails
             }
         } else {
             setError('User is not authenticated');
         }
+    };
+
+    const handleBack = () => {
+        navigate(-1); // Navigate back to the previous page
     };
 
     if (loading) {
@@ -159,6 +164,7 @@ const EditCarForm = () => {
                 />
                 <button type="submit">Update Car</button>
             </form>
+            <button onClick={handleBack}>Back</button> {/* Back button */}
         </div>
     );
 };
