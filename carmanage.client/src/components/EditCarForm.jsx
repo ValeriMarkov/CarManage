@@ -68,14 +68,15 @@ const EditCarForm = () => {
         if (user) {
             const idToken = await user.getIdToken(true); // Get the authentication token
 
+            // Send all car data including ServiceHistories if needed
             try {
                 const response = await fetch(`https://localhost:7025/api/cars/${carId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${idToken}` // Send the token as a Bearer token in the Authorization header
+                        'Authorization': `Bearer ${idToken}`
                     },
-                    body: JSON.stringify(carData) // Send the updated car data
+                    body: JSON.stringify(carData) // Send car data along with ServiceHistories
                 });
 
                 if (!response.ok) {
@@ -92,6 +93,7 @@ const EditCarForm = () => {
             setError('User is not authenticated');
         }
     };
+
 
     const handleBack = () => {
         navigate(-1); // Navigate back to the previous page

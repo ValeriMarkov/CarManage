@@ -96,13 +96,15 @@ namespace CarManage.Server.Controllers
             }
 
             // Check if the car exists and belongs to the logged-in user
-            var existingCar = await _context.Cars.FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Uid);
+            var existingCar = await _context.Cars
+                                            .Include(c => c.ServiceHistories) // Ensure ServiceHistories are included only if needed
+                                            .FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Uid);
             if (existingCar == null)
             {
                 return NotFound("Car not found or you do not have permission to edit it.");
             }
 
-            // Update car details
+            // Update car details (excluding ServiceHistories)
             existingCar.Brand = car.Brand;
             existingCar.Model = car.Model;
             existingCar.Year = car.Year;
@@ -110,6 +112,8 @@ namespace CarManage.Server.Controllers
             existingCar.Vin = car.Vin;
             existingCar.Engine = car.Engine;
             existingCar.HorsePower = car.HorsePower;
+
+            // No need to touch ServiceHistories, so leave it as is
 
             _context.Entry(existingCar).State = EntityState.Modified;
 

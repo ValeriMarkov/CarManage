@@ -62,6 +62,9 @@ const CarDetails = () => {
             <p><strong>Engine:</strong> {car.engine}L</p>
             <p><strong>Horsepower:</strong> {car.horsepower} HP</p>
         </div>
+
+
+
     );
 };
 

@@ -1,4 +1,6 @@
-﻿namespace CarManage.Server.Models
+﻿using Newtonsoft.Json;
+
+namespace CarManage.Server.Models
 {
     public class Car
     {
@@ -11,5 +13,9 @@
         public double Engine { get; set; }
         public int HorsePower { get; set; }
         public string UserId { get; set; }
+
+        // Ignore ServiceHistories when updating the car
+        [JsonIgnore]
+        public List<ServiceHistory> ServiceHistories { get; set; } = new List<ServiceHistory>();
     }
 }
