@@ -1,85 +1,71 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../context/AuthContext"; // Import the useAuth hook
-import { useNavigate } from "react-router-dom"; // Import the useNavigate hook for navigation
-import "./Home.css"; // Import the CSS file for Home page styles
+import { useAuth } from "../../context/AuthContext"; // Import useAuth hook
+import { useNavigate } from "react-router-dom";
+import "./Home.css";
 
 const Home = () => {
-    const { user } = useAuth(); // Get the user from context
-    const navigate = useNavigate(); // Initialize the navigate function for routing
-    const [cars, setCars] = useState([]); // State to hold the list of cars
-    const [loading, setLoading] = useState(true); // Loading state for cars data
-    const [error, setError] = useState(null); // State to hold error messages
+    const { user, handleRemoveCar } = useAuth(); // Get handleRemoveCar from context
+    const navigate = useNavigate();
+    const [cars, setCars] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(''); // Success state for feedback
 
-    // Function to navigate to the 'Add Car' page
     const goToAddCarPage = () => {
         navigate("/add-car");
     };
 
-    // Function to navigate to the 'Car Details' page
     const goToCarDetailsPage = (carId) => {
         navigate(`/cars/${carId}`);
     };
 
-    // Function to navigate to the 'Edit Car' page
     const handleEditCar = (carId) => {
         navigate(`/edit-car/${carId}`);
     };
 
-    // Function to remove the car
-    const handleRemoveCar = async (carId) => {
-        if (window.confirm("Are you sure you want to delete this car?")) {
+    // Use the context's handleRemoveCar
+    const onRemoveCar = async (carId) => {
+        try {
+            if (window.confirm("Are you sure you want to delete this car?")) {
+                await handleRemoveCar(carId); // Call handleRemoveCar from context
+                setCars(cars.filter((car) => car.id !== carId)); // Remove car from local list
+                setSuccessMessage("Car removed successfully!"); // Show success message
+            }
+        } catch (err) {
+            setError(err.message); // Show error if removal fails
+        }
+    };
+
+    useEffect(() => {
+        const fetchCars = async () => {
             try {
                 const idToken = await user.getIdToken(true);
-                const response = await fetch(`https://localhost:7025/api/cars/${carId}`, {
-                    method: "DELETE",
+                const response = await fetch("https://localhost:7025/api/cars", {
+                    method: "GET",
                     headers: {
                         "Authorization": `Bearer ${idToken}`,
                     },
                 });
 
-                if (response.ok) {
-                    setCars(cars.filter((car) => car.id !== carId)); // Remove car from the list
-                    alert('Car removed successfully');
-                } else {
-                    throw new Error("Failed to remove car");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch cars");
                 }
+
+                const data = await response.json();
+                setCars(data);
             } catch (err) {
-                setError(err.message); // Set error if removal fails
+                setError(err.message);
+            } finally {
+                setLoading(false);
             }
-        }
-    };
+        };
 
-    // Fetch the cars once the user is authenticated
-    useEffect(() => {
         if (user) {
-            const fetchCars = async () => {
-                try {
-                    const idToken = await user.getIdToken(true);
-                    const response = await fetch("https://localhost:7025/api/cars", {
-                        method: "GET",
-                        headers: {
-                            "Authorization": `Bearer ${idToken}`,
-                        },
-                    });
-
-                    if (!response.ok) {
-                        throw new Error("Failed to fetch cars");
-                    }
-
-                    const data = await response.json();
-                    setCars(data); // Set the fetched cars data
-                } catch (err) {
-                    setError(err.message); // Set error if fetching fails
-                } finally {
-                    setLoading(false); // End loading state
-                }
-            };
-
             fetchCars();
         } else {
-            setLoading(false); // If no user, stop loading
+            setLoading(false); // No user, stop loading
         }
-    }, [user]); // Run this effect when user changes
+    }, [user]); // Only run when user changes
 
     return (
         <div className="home-container">
@@ -88,8 +74,7 @@ const Home = () => {
                 <div>
                     <p>Welcome, {user.email}!</p>
                     <button onClick={goToAddCarPage}>Add Car</button>
-
-                    {/* Displaying the added cars */}
+                    {successMessage && <p className="success">{successMessage}</p>} {/* Success message */}
                     <h3>Your Cars</h3>
                     {loading ? (
                         <p>Loading cars...</p>
@@ -102,14 +87,11 @@ const Home = () => {
                             ) : (
                                 cars.map((car) => (
                                     <li key={car.id}>
-                                        <a
-                                            href="#"
-                                            onClick={() => goToCarDetailsPage(car.id)}
-                                        >
+                                        <a href="#" onClick={() => goToCarDetailsPage(car.id)}>
                                             {car.brand} {car.model} - {car.year} ({car.color})
                                         </a>
                                         <button onClick={() => handleEditCar(car.id)}>Edit</button>
-                                        <button onClick={() => handleRemoveCar(car.id)}>Remove</button>
+                                        <button onClick={() => onRemoveCar(car.id)}>Remove</button> {/* Remove car */}
                                     </li>
                                 ))
                             )}

@@ -1,18 +1,16 @@
-﻿using CarManage.Server.Models;
-
-namespace CarManage.Server.Models
-
+﻿namespace CarManage.Server.Models
 {
     public class ServiceHistory
     {
         public int Id { get; set; }
-        public int CarId { get; set; }
-        public int Services { get; set; } //Bitmask field for multiple services
+        public int CarId { get; set; }  // This is the only required field for linking to the car
+        public int Services { get; set; } // Bitmask field for multiple services
         public DateTime ServiceDate { get; set; }
         public int OdometerAtService { get; set; }
         public string Notes { get; set; }
 
-        public Car Car { get; set; }
+        // Remove this Car navigation property if not needed
+        // public Car Car { get; set; }
 
         public List<ServiceType> SelectedServices
         {

@@ -41,8 +41,31 @@ export const AuthProvider = ({ children }) => {
         await signOut(auth);
     };
 
+    // Handle car removal function
+    const handleRemoveCar = async (carId) => {
+        if (user) {
+            try {
+                const idToken = await user.getIdToken(true);
+                const response = await fetch(`https://localhost:7025/api/cars/${carId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${idToken}`,
+                    },
+                });
+
+                if (response.ok) {
+                    alert('Car removed successfully');
+                } else {
+                    throw new Error('Failed to remove car');
+                }
+            } catch (err) {
+                alert(`Error: ${err.message}`);
+            }
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, signup, login, logout }}>
+        <AuthContext.Provider value={{ user, signup, login, logout, handleRemoveCar }}>
             {!loading && children}
         </AuthContext.Provider>
     );

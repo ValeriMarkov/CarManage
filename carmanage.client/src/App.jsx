@@ -6,8 +6,9 @@ import Login from "./pages/Login"; // Login page
 import Register from "./pages/Register"; // Register page
 import ProtectedRoute from "./components/ProtectedRoute"; // ProtectedRoute component
 import CarForm from "./components/CarForm"; // Add Car form component
-import CarDetails from "./components/CarDetails"; // Updated import for CarDetails component from pages
+import CarDetails from "./components/CarDetails/CarDetails"; // Updated import for CarDetails component
 import EditCarForm from "./components/EditCarForm"; // EditCarForm component for editing cars
+import AddService from "./components/AddService/AddService"; // AddService component
 
 const App = () => {
     const { user, logout } = useAuth(); // Access the user and logout function from context
@@ -16,7 +17,6 @@ const App = () => {
         <Router>
             <nav>
                 <ul>
-                    {/* Conditionally show Register/Login if no user, or Logout if user is logged in */}
                     {!user ? (
                         <>
                             <li>
@@ -63,6 +63,9 @@ const App = () => {
                             <EditCarForm />
                         </ProtectedRoute>
                     } />
+
+                    {/* Route for AddService */}
+                    <Route path="/cars/:carId/add-service" element={<AddService />} />
                 </Routes>
             </div>
         </Router>

@@ -68,28 +68,40 @@ namespace CarManage.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<ServiceHistory>> AddServiceHistory(int carId, [FromBody] ServiceHistory serviceHistory)
         {
-            var car = await _context.Cars.FindAsync(carId);
-            if (car == null)
+            // Ensure CarId is correctly set
+            if (carId != serviceHistory.CarId)
+            {
+                return BadRequest("CarId in URL does not match CarId in request body");
+            }
+
+            // Ensure CarId exists in the database
+            var carExists = await _context.Cars.AnyAsync(c => c.Id == carId);
+            if (!carExists)
             {
                 return NotFound("Car not found");
             }
 
-            serviceHistory.CarId = carId;
+            // Convert selected services to a bitmask
+            if (serviceHistory.SelectedServices == null || !serviceHistory.SelectedServices.Any())
+            {
+                return BadRequest("SelectedServices cannot be empty.");
+            }
 
-            // Convert the list of selected services to a bitmask
             int servicesBitmask = 0;
             foreach (var service in serviceHistory.SelectedServices)
             {
                 servicesBitmask |= (int)service;
             }
+            serviceHistory.Services = servicesBitmask; // Store the bitmask in the database
 
-            serviceHistory.Services = servicesBitmask; // Store the bitmask in the Services field
-
+            // Save to the database
             _context.ServiceHistories.Add(serviceHistory);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetServiceHistory), new { carId, id = serviceHistory.Id }, serviceHistory);
         }
+
+
 
         // PUT: api/cars/{carId}/services/{id}
         [HttpPut("{id}")]
