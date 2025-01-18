@@ -6,11 +6,31 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CarManage.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class AddServiceHistoryRelationship : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Cars",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Brand = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Year = table.Column<int>(type: "int", nullable: false),
+                    Color = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Vin = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Engine = table.Column<double>(type: "float", nullable: false),
+                    HorsePower = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cars", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "ServiceHistories",
                 columns: table => new
@@ -45,6 +65,9 @@ namespace CarManage.Server.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ServiceHistories");
+
+            migrationBuilder.DropTable(
+                name: "Cars");
         }
     }
 }

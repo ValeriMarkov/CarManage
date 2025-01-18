@@ -68,40 +68,36 @@ namespace CarManage.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<ServiceHistory>> AddServiceHistory(int carId, [FromBody] ServiceHistory serviceHistory)
         {
-            // Ensure CarId is correctly set
-            if (carId != serviceHistory.CarId)
-            {
-                return BadRequest("CarId in URL does not match CarId in request body");
-            }
-
-            // Ensure CarId exists in the database
-            var carExists = await _context.Cars.AnyAsync(c => c.Id == carId);
-            if (!carExists)
+            // Verify if the car exists
+            var car = await _context.Cars.FindAsync(carId);
+            if (car == null)
             {
                 return NotFound("Car not found");
             }
 
-            // Convert selected services to a bitmask
-            if (serviceHistory.SelectedServices == null || !serviceHistory.SelectedServices.Any())
+            // Ensure SelectedServicesInput is populated
+            if (serviceHistory.SelectedServicesInput == null || !serviceHistory.SelectedServicesInput.Any())
             {
                 return BadRequest("SelectedServices cannot be empty.");
             }
 
+            // Convert selected services to a bitmask
             int servicesBitmask = 0;
-            foreach (var service in serviceHistory.SelectedServices)
+            foreach (var service in serviceHistory.SelectedServicesInput)
             {
                 servicesBitmask |= (int)service;
             }
-            serviceHistory.Services = servicesBitmask; // Store the bitmask in the database
 
-            // Save to the database
+            serviceHistory.Services = servicesBitmask;
+
+            // No need to include the Car object; just use CarId
+            serviceHistory.CarId = carId;
+
             _context.ServiceHistories.Add(serviceHistory);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetServiceHistory), new { carId, id = serviceHistory.Id }, serviceHistory);
         }
-
-
 
         // PUT: api/cars/{carId}/services/{id}
         [HttpPut("{id}")]
@@ -122,7 +118,7 @@ namespace CarManage.Server.Controllers
 
             // Convert the list of selected services to a bitmask
             int servicesBitmask = 0;
-            foreach (var service in serviceHistory.SelectedServices)
+            foreach (var service in serviceHistory.SelectedServicesInput)
             {
                 servicesBitmask |= (int)service;
             }

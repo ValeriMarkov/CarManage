@@ -4,12 +4,14 @@ import { useAuth } from '../../context/AuthContext';
 import './AddService.css';
 
 const AddService = () => {
-    const { carId } = useParams();  // Get carId from the URL parameters
-    const { user } = useAuth();  // Access the current user from AuthContext
-    const [serviceDate, setServiceDate] = useState('');
-    const [odometerAtService, setOdometerAtService] = useState('');
-    const [notes, setNotes] = useState('');
-    const [selectedServices, setSelectedServices] = useState([]);
+    const { carId } = useParams();
+    const { user } = useAuth();
+    const [serviceData, setServiceData] = useState({
+        serviceDate: '',
+        odometerAtService: '',
+        notes: '',
+        selectedServices: [],
+    });
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
@@ -34,47 +36,60 @@ const AddService = () => {
     ];
 
     const handleCheckboxChange = (event) => {
-        const serviceId = parseInt(event.target.value);
-        if (event.target.checked) {
-            setSelectedServices(prevState => [...prevState, serviceId]);
-        } else {
-            setSelectedServices(prevState => prevState.filter(id => id !== serviceId));
-        }
+        const serviceId = parseInt(event.target.value, 10);
+        setServiceData((prevState) => ({
+            ...prevState,
+            selectedServices: event.target.checked
+                ? [...prevState.selectedServices, serviceId]
+                : prevState.selectedServices.filter((id) => id !== serviceId),
+        }));
+    };
+
+    const handleInputChange = (e) => {
+        const { id, value } = e.target;
+        setServiceData((prevState) => ({
+            ...prevState,
+            [id]: value,
+        }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null);
+
+        const token = await user.getIdToken(true);
 
         const newService = {
-            ServiceDate: serviceDate,
-            OdometerAtService: odometerAtService,
-            Notes: notes,
-            SelectedServices: selectedServices, // Selected services as bitmask
-            CarId: carId // Only send the CarId, not the full Car object
+            CarId: parseInt(carId, 10), // Directly use CarId (not nested in a Car object)
+            ServiceDate: serviceData.serviceDate,
+            OdometerAtService: parseInt(serviceData.odometerAtService, 10),
+            Notes: serviceData.notes,
+            SelectedServicesInput: serviceData.selectedServices,
         };
+
+        console.log('New Service Payload:', newService);
 
         try {
             const response = await fetch(`https://localhost:7025/api/cars/${carId}/services`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user ? await user.getIdToken(true) : ''}`,
+                    'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify(newService), // Make sure the request body is correctly structured
+                body: JSON.stringify(newService),
             });
 
             if (!response.ok) {
                 throw new Error('Failed to add service');
             }
 
-            // Optionally handle success (e.g., navigate back or show success message)
-            navigate(`/cars/${carId}/services`);
-
+            navigate(`/cars/${carId}`);
         } catch (err) {
-            console.error("Error:", err.message);
-            setError('Failed to add service, please try again.');
+            console.error('Error:', err.message);
+            setError('Failed to add service. Please try again.');
         }
     };
+
 
 
     return (
@@ -86,8 +101,8 @@ const AddService = () => {
                     <input
                         type="date"
                         id="serviceDate"
-                        value={serviceDate}
-                        onChange={(e) => setServiceDate(e.target.value)}
+                        value={serviceData.serviceDate}
+                        onChange={handleInputChange}
                         required
                     />
                 </div>
@@ -97,8 +112,8 @@ const AddService = () => {
                     <input
                         type="number"
                         id="odometerAtService"
-                        value={odometerAtService}
-                        onChange={(e) => setOdometerAtService(e.target.value)}
+                        value={serviceData.odometerAtService}
+                        onChange={handleInputChange}
                         required
                     />
                 </div>
@@ -107,14 +122,14 @@ const AddService = () => {
                     <label htmlFor="notes">Notes:</label>
                     <textarea
                         id="notes"
-                        value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
+                        value={serviceData.notes}
+                        onChange={handleInputChange}
                     />
                 </div>
 
                 <div>
                     <h3>Select Services:</h3>
-                    {serviceOptions.map(service => (
+                    {serviceOptions.map((service) => (
                         <div key={service.id}>
                             <input
                                 type="checkbox"

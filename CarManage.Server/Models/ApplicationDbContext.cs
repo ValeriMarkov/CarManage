@@ -15,16 +15,12 @@ namespace CarManage.Server.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configure relationships
-
-            // The ServiceHistory model will reference CarId, not the Car navigation property
+            // Configuring the first relationship: CarId (mandatory foreign key)
             modelBuilder.Entity<ServiceHistory>()
-                .HasOne<Car>()  // Specifies that ServiceHistory has one Car
-                .WithMany()  // Car can have many ServiceHistories
-                .HasForeignKey(sh => sh.CarId) // Foreign key is CarId
-                .OnDelete(DeleteBehavior.Cascade); // Cascade delete when Car is deleted
-
-            // Additional configurations if needed
+                .HasOne(s => s.Car)
+                .WithMany(c => c.ServiceHistories)
+                .HasForeignKey(s => s.CarId)
+                .OnDelete(DeleteBehavior.Cascade);  // Cascade delete
         }
     }
 }

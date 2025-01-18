@@ -1,66 +1,72 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { auth } from "../firebase"; // Import Firebase authentication
-import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth"; // Use createUserWithEmailAndPassword for registration
+import { auth } from "../firebase"; // Firebase authentication instance
+import {
+    onAuthStateChanged,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+} from "firebase/auth";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null); // State for storing the current user
-    const [loading, setLoading] = useState(true); // Loading state to show loading indicator
+    const [user, setUser] = useState(null); // Current user state
+    const [loading, setLoading] = useState(true); // Loading state to handle async operations
 
-    // Listen to auth state changes and update the user state accordingly
+    // Monitor authentication state changes
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setUser(user);
-            setLoading(false); // Set loading to false when the auth state is resolved
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+            setLoading(false);
         });
-        return unsubscribe; // Clean up the listener when the component unmounts
+
+        return () => unsubscribe(); // Cleanup subscription on unmount
     }, []);
 
-    // Sign up function (use createUserWithEmailAndPassword for registration)
+    // Sign up a new user
     const signup = async (email, password) => {
         try {
-            await createUserWithEmailAndPassword(auth, email, password); // Registration method
+            await createUserWithEmailAndPassword(auth, email, password);
         } catch (error) {
-            throw new Error(error.message); // If there's an error, throw it
+            throw new Error(error.message); // Propagate error to the caller
         }
     };
 
-    // Sign in function (login method)
+    // Log in an existing user
     const login = async (email, password) => {
         try {
-            await signInWithEmailAndPassword(auth, email, password); // Login method
+            await signInWithEmailAndPassword(auth, email, password);
         } catch (error) {
-            console.error("Login error: ", error.message); // Log error for debugging
-            throw new Error(error.message); // If there's an error, throw it
+            console.error("Login error: ", error.message);
+            throw new Error(error.message); // Propagate error to the caller
         }
     };
 
-    // Sign out function
+    // Log out the current user
     const logout = async () => {
         await signOut(auth);
     };
 
-    // Handle car removal function
+    // Remove a car by ID, requiring authentication
     const handleRemoveCar = async (carId) => {
-        if (user) {
-            try {
-                const idToken = await user.getIdToken(true);
-                const response = await fetch(`https://localhost:7025/api/cars/${carId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${idToken}`,
-                    },
-                });
+        if (!user) return;
 
-                if (response.ok) {
-                    alert('Car removed successfully');
-                } else {
-                    throw new Error('Failed to remove car');
-                }
-            } catch (err) {
-                alert(`Error: ${err.message}`);
+        try {
+            const idToken = await user.getIdToken(true);
+            const response = await fetch(`https://localhost:7025/api/cars/${carId}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${idToken}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to remove car");
             }
+
+            alert("Car removed successfully");
+        } catch (err) {
+            alert(`Error: ${err.message}`);
         }
     };
 
@@ -71,7 +77,5 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
-// Custom hook to access the AuthContext
-export const useAuth = () => {
-    return useContext(AuthContext);
-};
+// Hook to consume the AuthContext
+export const useAuth = () => useContext(AuthContext);

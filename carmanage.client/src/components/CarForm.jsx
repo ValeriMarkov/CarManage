@@ -46,6 +46,9 @@ const CarForm = () => {
                 // Add UserId to the car data
                 const carDataWithUser = { ...carData, userId: user.uid };
 
+
+                console.log("Car data being sent:", carDataWithUser);
+
                 // Send POST request with the ID token
                 fetch('https://localhost:7025/api/cars', {
                     method: 'POST',

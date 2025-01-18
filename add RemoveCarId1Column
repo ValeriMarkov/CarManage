@@ -1,0 +1,65 @@
+[33mcommit b58b71c3cce9f78711677f3b20e110d0364e169f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: Valeri <v.markow.97@gmail.com>
+Date:   Wed Jan 15 17:30:44 2025 +0200
+
+    Added new features, improved code, made new errors for fixing.
+
+[33mcommit c8f179ec40bded5fb098ac51725b99afbdcdb965[m
+Author: Valeri <v.markow.97@gmail.com>
+Date:   Tue Jan 14 17:06:35 2025 +0200
+
+    Added service controller, fixed various bugs, code improvements.
+
+[33mcommit 0ae3e0ee0bceb545b1cd9e9267d87b6d845e2e37[m
+Author: Valeri <v.markow.97@gmail.com>
+Date:   Mon Jan 13 16:19:42 2025 +0200
+
+    Adding services for cars.
+
+[33mcommit f3694780217264955efb09355280804cba5c0ca0[m
+Author: Valeri <v.markow.97@gmail.com>
+Date:   Mon Jan 13 15:37:18 2025 +0200
+
+    Fixed site functionality, skeleton ready for second part of project.
+
+[33mcommit a26d18697111a04562a8ef6fc0835c5032d22196[m
+Author: Valeri <v.markow.97@gmail.com>
+Date:   Fri Jan 10 17:13:09 2025 +0200
+
+    fixed add car form, added edit,remove buttons for cars
+
+[33mcommit 190acc652888ef4d88b79e7aa86a125bba0ae50c[m
+Author: Valeri <v.markow.97@gmail.com>
+Date:   Thu Jan 9 13:23:08 2025 +0200
+
+    added add car
+
+[33mcommit ad6fdcd16fbeda00b109782d235b29742670676b[m
+Author: Valeri <v.markow.97@gmail.com>
+Date:   Thu Jan 9 12:35:31 2025 +0200
+
+    removed default app
+
+[33mcommit 896cec77a0962da802751291baed725ba46dea9f[m
+Author: Valeri <v.markow.97@gmail.com>
+Date:   Thu Jan 9 12:18:57 2025 +0200
+
+    fixed swagger
+
+[33mcommit 84bd879c819a49e11497306d5a97bfb1b1913dca[m
+Author: Valeri <v.markow.97@gmail.com>
+Date:   Thu Jan 9 11:55:59 2025 +0200
+
+    updated firebase
+
+[33mcommit 58425d8ad7a8b8ba6214daa86db205db082da1ed[m
+Author: Valeri <v.markow.97@gmail.com>
+Date:   Tue Jan 7 12:52:58 2025 +0200
+
+    Add project files.
+
+[33mcommit 708b39e4e3d61e160e9b1ac6e0194eddd5602153[m
+Author: Valeri <v.markow.97@gmail.com>
+Date:   Tue Jan 7 12:52:56 2025 +0200
+
+    Add .gitattributes and .gitignore.

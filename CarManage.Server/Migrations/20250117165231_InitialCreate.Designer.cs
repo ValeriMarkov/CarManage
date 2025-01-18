@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarManage.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250115151358_UpdateServiceHistoryModel")]
-    partial class UpdateServiceHistoryModel
+    [Migration("20250117165231_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,7 +67,7 @@ namespace CarManage.Server.Migrations
                     b.ToTable("Cars");
                 });
 
-            modelBuilder.Entity("CarManage.Server.Models.ServiceHistory", b =>
+            modelBuilder.Entity("ServiceHistory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -76,9 +76,6 @@ namespace CarManage.Server.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CarId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CarId1")
                         .HasColumnType("int");
 
                     b.Property<string>("Notes")
@@ -98,22 +95,18 @@ namespace CarManage.Server.Migrations
 
                     b.HasIndex("CarId");
 
-                    b.HasIndex("CarId1");
-
                     b.ToTable("ServiceHistories");
                 });
 
-            modelBuilder.Entity("CarManage.Server.Models.ServiceHistory", b =>
+            modelBuilder.Entity("ServiceHistory", b =>
                 {
-                    b.HasOne("CarManage.Server.Models.Car", null)
-                        .WithMany()
+                    b.HasOne("CarManage.Server.Models.Car", "Car")
+                        .WithMany("ServiceHistories")
                         .HasForeignKey("CarId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CarManage.Server.Models.Car", null)
-                        .WithMany("ServiceHistories")
-                        .HasForeignKey("CarId1");
+                    b.Navigation("Car");
                 });
 
             modelBuilder.Entity("CarManage.Server.Models.Car", b =>
