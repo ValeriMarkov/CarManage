@@ -11,6 +11,8 @@ namespace CarManage.Server.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // Commented out the Cars table creation, since it already exists
+            /*
             migrationBuilder.CreateTable(
                 name: "Cars",
                 columns: table => new
@@ -30,7 +32,9 @@ namespace CarManage.Server.Migrations
                 {
                     table.PrimaryKey("PK_Cars", x => x.Id);
                 });
+            */
 
+            // Create the ServiceHistories table
             migrationBuilder.CreateTable(
                 name: "ServiceHistories",
                 columns: table => new
@@ -63,11 +67,12 @@ namespace CarManage.Server.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            // Drop the ServiceHistories table first
             migrationBuilder.DropTable(
                 name: "ServiceHistories");
 
-            migrationBuilder.DropTable(
-                name: "Cars");
+            // If you were to drop the Cars table (which we aren't doing), you could uncomment the next line
+            // migrationBuilder.DropTable(name: "Cars");
         }
     }
 }

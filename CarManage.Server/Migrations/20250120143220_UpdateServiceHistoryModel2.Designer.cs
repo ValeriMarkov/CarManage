@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarManage.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250117165231_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250120143220_UpdateServiceHistoryModel2")]
+    partial class UpdateServiceHistoryModel2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -84,6 +84,10 @@ namespace CarManage.Server.Migrations
 
                     b.Property<int>("OdometerAtService")
                         .HasColumnType("int");
+
+                    b.Property<string>("SelectedServicesInput")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ServiceDate")
                         .HasColumnType("datetime2");

@@ -57,17 +57,24 @@ const AddService = () => {
         e.preventDefault();
         setError(null);
 
+        // Validate if at least one service is selected
+        if (serviceData.selectedServices.length === 0) {
+            setError('Please select at least one service.');
+            return;
+        }
+
         const token = await user.getIdToken(true);
 
+        // Create the payload with CarId directly at the top level
         const newService = {
-            CarId: parseInt(carId, 10), // Directly use CarId (not nested in a Car object)
+            CarId: carId,
             ServiceDate: serviceData.serviceDate,
             OdometerAtService: parseInt(serviceData.odometerAtService, 10),
             Notes: serviceData.notes,
             SelectedServicesInput: serviceData.selectedServices,
         };
 
-        console.log('New Service Payload:', newService);
+        console.log('New Service Payload:', newService); // Log the payload to check if everything is correct
 
         try {
             const response = await fetch(`https://localhost:7025/api/cars/${carId}/services`, {
@@ -80,17 +87,17 @@ const AddService = () => {
             });
 
             if (!response.ok) {
+                const errorDetails = await response.json();
+                console.error('Backend Error:', errorDetails); // Log backend error details
                 throw new Error('Failed to add service');
             }
 
-            navigate(`/cars/${carId}`);
+            navigate(`/cars/${carId}`); // Redirect after successful service addition
         } catch (err) {
             console.error('Error:', err.message);
             setError('Failed to add service. Please try again.');
         }
     };
-
-
 
     return (
         <div className="add-service-container">

@@ -2,7 +2,9 @@ using CarManage.Server.Models;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.EntityFrameworkCore;
-using CarManage.Server.Filters; // Import the Filters namespace
+using CarManage.Server.Filters;
+using FluentValidation.AspNetCore;
+using CarManage.Server.Validators;
 
 namespace CarManage.Server
 {
@@ -21,8 +23,11 @@ namespace CarManage.Server
             // Add services to the container
             builder.Services.AddControllers(options =>
             {
-                // Register the AddCorsHeadersFilter globally
                 options.Filters.Add<AddCorsHeadersFilter>();
+            })
+            .AddFluentValidation(fv =>
+            {
+                fv.RegisterValidatorsFromAssemblyContaining<ServiceHistoryValidator>();
             });
 
             // Add Entity Framework Core and configure SQL Server connection
