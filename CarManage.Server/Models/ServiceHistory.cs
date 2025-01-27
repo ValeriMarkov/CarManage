@@ -1,13 +1,15 @@
-﻿using CarManage.Server.Models;
+﻿// Models/ServiceHistory.cs
+using CarManage.Server.Models;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
 
 public class ServiceHistory
 {
     public int Id { get; set; }
 
-    [Required]
     public int CarId { get; set; }
+    public Car Car { get; set; }
 
     public int Services { get; set; }
 
@@ -19,13 +21,9 @@ public class ServiceHistory
 
     public string Notes { get; set; }
 
-    [JsonIgnore]
-    public Car Car { get; set; }
-
     [Required]
-    public List<ServiceType> SelectedServicesInput { get; set; }  // Ensure this is required and validated
+    public List<ServiceType> SelectedServicesInput { get; set; }
 
-    // This property will convert the SelectedServicesInput into the Services bitmask value
     public List<ServiceType> SelectedServices
     {
         get
@@ -42,7 +40,6 @@ public class ServiceHistory
         }
     }
 
-    // This method will handle the conversion from SelectedServicesInput to the Services bitmask.
     public void ConvertSelectedServicesToBitmask()
     {
         // Ensure SelectedServicesInput only contains valid enum values

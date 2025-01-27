@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using CarManage.Server.Models;
 
 namespace CarManage.Server.Models
 {

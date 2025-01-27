@@ -4,6 +4,18 @@ namespace CarManage.Server.Models
 {
     public class Car
     {
+        public Car(string brand, string model, int year, string color, string vin, double engine, int horsePower, string userId)
+        {
+            Brand = brand;
+            Model = model;
+            Year = year;
+            Color = color;
+            Vin = vin;
+            Engine = engine;
+            HorsePower = horsePower;
+            UserId = userId;
+        }
+
         public int Id { get; set; }
         public string Brand { get; set; }
         public string Model { get; set; }

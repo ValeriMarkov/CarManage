@@ -82,72 +82,100 @@ namespace CarManage.Server.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Error occurred while fetching service history: {ex.Message}");
-                return StatusCode(500, "Internal server error");
+                return StatusCode(500, new { error = "Internal server error" });
             }
         }
 
         // POST: api/cars/{carId}/services
         [HttpPost]
-        public async Task<ActionResult<ServiceHistory>> AddServiceHistory(int carId, [FromBody] ServiceHistory serviceHistory)
+        public async Task<ActionResult<ServiceHistory>> AddServiceHistory([FromRoute] int carId, [FromBody] ServiceHistoryInput serviceHistoryInput)
         {
-            _logger.LogInformation($"Received request to add service history for CarId: {carId}");
-
-            // Ensure CarId in URL matches the CarId in the body
-            if (carId != serviceHistory.CarId)
+            try
             {
-                _logger.LogWarning($"CarId in URL does not match CarId in request body. CarId: {carId}, ServiceHistory CarId: {serviceHistory.CarId}");
-                return BadRequest("CarId in URL does not match CarId in request body");
+                _logger.LogInformation($"Received request to add service history for CarId: {carId}");
+
+                // Ensure CarId in URL matches the CarId in the body
+                if (carId != serviceHistoryInput.CarId)
+                {
+                    _logger.LogWarning($"CarId in URL does not match CarId in request body. CarId: {carId}, ServiceHistory CarId: {serviceHistoryInput.CarId}");
+                    return BadRequest("CarId in URL does not match CarId in request body");
+                }
+
+                // Log the SelectedServicesInput to check its contents
+                _logger.LogInformation($"SelectedServicesInput: {string.Join(", ", serviceHistoryInput.SelectedServicesInput)}");
+
+                // Check if the model is valid
+                if (!ModelState.IsValid)
+                {
+                    var errorMessages = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)).ToList();
+                    _logger.LogWarning($"ModelState errors: {string.Join(", ", errorMessages)}");
+                    return BadRequest(errorMessages);
+                }
+
+                // Verify if the car exists
+                var car = await _context.Cars.FindAsync(carId);
+                if (car == null)
+                {
+                    _logger.LogWarning($"Car with CarId: {carId} not found");
+                    return NotFound("Car not found");
+                }
+
+                // Ensure SelectedServicesInput is populated
+                if (serviceHistoryInput.SelectedServicesInput == null || !serviceHistoryInput.SelectedServicesInput.Any())
+                {
+                    _logger.LogWarning("SelectedServices cannot be empty");
+                    return BadRequest("SelectedServices cannot be empty.");
+                }
+
+                // Convert selected services to a bitmask
+                int servicesBitmask = 0;
+                foreach (var service in serviceHistoryInput.SelectedServicesInput)
+                {
+                    servicesBitmask |= (int)service;
+                }
+
+                // Create a new ServiceHistory object
+                var serviceHistory = new ServiceHistory
+                {
+                    CarId = carId,
+                    ServiceDate = serviceHistoryInput.ServiceDate,
+                    OdometerAtService = serviceHistoryInput.OdometerAtService,
+                    Notes = serviceHistoryInput.Notes,
+                    Services = servicesBitmask,
+                    SelectedServicesInput = serviceHistoryInput.SelectedServicesInput ?? new List<ServiceType>() // Fix: Set a non-null value for SelectedServicesInput
+                };
+
+                try
+                {
+                    _context.ServiceHistories.Add(serviceHistory);
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation($"Service history added successfully for CarId: {carId}, ServiceHistory Id: {serviceHistory.Id}");
+                    return CreatedAtAction(nameof(GetServiceHistory), new { carId, id = serviceHistory.Id }, serviceHistory);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error occurred while adding service history: {ex.Message}");
+                    var problemDetails = new ProblemDetails
+                    {
+                        Status = StatusCodes.Status500InternalServerError,
+                        Title = "Internal Server Error",
+                        Detail = ex.Message,
+                    };
+                    return StatusCode(500, problemDetails);
+                }
             }
-
-            // Log the SelectedServicesInput to check its contents
-            _logger.LogInformation($"SelectedServicesInput: {string.Join(", ", serviceHistory.SelectedServicesInput)}");
-
-            // Check if the model is valid
-            if (!ModelState.IsValid)
+            catch (Exception ex)
             {
-                var errorMessages = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)).ToList();
-                _logger.LogWarning($"ModelState errors: {string.Join(", ", errorMessages)}");
-                return BadRequest(errorMessages);
+                _logger.LogError($"Error occurred while handling request: {ex.Message}");
+                var problemDetails = new ProblemDetails
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Title = "Internal Server Error",
+                    Detail = ex.Message,
+                };
+                return StatusCode(500, problemDetails);
             }
-
-            // Verify if the car exists
-            var car = await _context.Cars.FindAsync(carId);
-            if (car == null)
-            {
-                _logger.LogWarning($"Car with CarId: {carId} not found");
-                return NotFound("Car not found");
-            }
-
-            // Explicitly set the Car navigation property
-            serviceHistory.Car = car; // This ensures the navigation property is populated
-
-            // Ensure SelectedServicesInput is populated
-            if (serviceHistory.SelectedServicesInput == null || !serviceHistory.SelectedServicesInput.Any())
-            {
-                _logger.LogWarning("SelectedServices cannot be empty");
-                return BadRequest("SelectedServices cannot be empty.");
-            }
-
-            // Convert selected services to a bitmask
-            int servicesBitmask = 0;
-            foreach (var service in serviceHistory.SelectedServicesInput)
-            {
-                servicesBitmask |= (int)service;
-            }
-
-            serviceHistory.Services = servicesBitmask;
-
-            // No need to include the Car object; set the CarId directly
-            serviceHistory.CarId = carId;
-
-            _context.ServiceHistories.Add(serviceHistory);
-            await _context.SaveChangesAsync();
-
-            _logger.LogInformation($"Service history added successfully for CarId: {carId}, ServiceHistory Id: {serviceHistory.Id}");
-
-            return CreatedAtAction(nameof(GetServiceHistory), new { carId, id = serviceHistory.Id }, serviceHistory);
         }
-
 
         // PUT: api/cars/{carId}/services/{id}
         [HttpPut("{id}")]
@@ -164,7 +192,7 @@ namespace CarManage.Server.Controllers
             }
 
             var existingService = await _context.ServiceHistories
-                                                .FirstOrDefaultAsync(s => s.CarId == carId && s.Id == id);
+                                                    .FirstOrDefaultAsync(s => s.CarId == carId && s.Id == id);
 
             if (existingService == null)
             {
@@ -201,7 +229,7 @@ namespace CarManage.Server.Controllers
             _logger.LogInformation($"Received request to delete service history for CarId: {carId} and ServiceId: {id}");
 
             var serviceHistory = await _context.ServiceHistories
-                                               .FirstOrDefaultAsync(s => s.CarId == carId && s.Id == id);
+                                                       .FirstOrDefaultAsync(s => s.CarId == carId && s.Id == id);
 
             if (serviceHistory == null)
             {

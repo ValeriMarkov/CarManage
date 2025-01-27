@@ -15,7 +15,7 @@ const AddService = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    const serviceOptions = [
+    const services = [
         { id: 1, label: 'Oil Change' },
         { id: 2, label: 'Brake Pads' },
         { id: 4, label: 'Filter Change' },
@@ -35,14 +35,19 @@ const AddService = () => {
         { id: 65536, label: 'Clutch Replacement' },
     ];
 
-    const handleCheckboxChange = (event) => {
-        const serviceId = parseInt(event.target.value, 10);
-        setServiceData((prevState) => ({
-            ...prevState,
-            selectedServices: event.target.checked
-                ? [...prevState.selectedServices, serviceId]
-                : prevState.selectedServices.filter((id) => id !== serviceId),
-        }));
+    const handleServiceSelection = (serviceId) => {
+        const isSelected = serviceData.selectedServices.includes(serviceId);
+        if (isSelected) {
+            setServiceData((prevState) => ({
+                ...prevState,
+                selectedServices: prevState.selectedServices.filter((id) => id !== serviceId),
+            }));
+        } else {
+            setServiceData((prevState) => ({
+                ...prevState,
+                selectedServices: [...prevState.selectedServices, serviceId],
+            }));
+        }
     };
 
     const handleInputChange = (e) => {
@@ -65,11 +70,11 @@ const AddService = () => {
 
         const token = await user.getIdToken(true);
 
-        // Create the payload with CarId directly at the top level
+        // Create the payload with CarId field
         const newService = {
             CarId: carId,
             ServiceDate: serviceData.serviceDate,
-            OdometerAtService: parseInt(serviceData.odometerAtService, 10),
+            OdometerAtService: parseInt(serviceData.odometerAtService),
             Notes: serviceData.notes,
             SelectedServicesInput: serviceData.selectedServices,
         };
@@ -136,13 +141,13 @@ const AddService = () => {
 
                 <div>
                     <h3>Select Services:</h3>
-                    {serviceOptions.map((service) => (
+                    {services.map((service) => (
                         <div key={service.id}>
                             <input
                                 type="checkbox"
-                                id={service.label}
+                                checked={serviceData.selectedServices.includes(service.id)}
+                                onChange={() => handleServiceSelection(service.id)}
                                 value={service.id}
-                                onChange={handleCheckboxChange}
                             />
                             <label htmlFor={service.label}>{service.label}</label>
                         </div>
