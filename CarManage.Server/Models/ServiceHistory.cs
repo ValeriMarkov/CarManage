@@ -1,15 +1,14 @@
-﻿// Models/ServiceHistory.cs
-using CarManage.Server.Models;
+﻿using CarManage.Server.Models;
 using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Serialization;
 
 public class ServiceHistory
 {
     public int Id { get; set; }
 
     public int CarId { get; set; }
-    [JsonIgnore]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Car Car { get; set; }
 
     public int Services { get; set; }
@@ -22,7 +21,7 @@ public class ServiceHistory
 
     public string Notes { get; set; }
 
-    [Required]
+    [JsonPropertyName("selectedServicesInput")]
     public List<ServiceType> SelectedServicesInput { get; set; }
 
     public List<ServiceType> SelectedServices
@@ -43,22 +42,36 @@ public class ServiceHistory
 
     public void ConvertSelectedServicesToBitmask()
     {
-        // Ensure SelectedServicesInput only contains valid enum values
-        foreach (var service in SelectedServicesInput)
+        try
         {
-            if (!Enum.IsDefined(typeof(ServiceType), service))
+            if (SelectedServicesInput == null || SelectedServicesInput.Count == 0)
             {
-                throw new ArgumentException($"Invalid service type {service} in SelectedServicesInput.");
+                Services = 0; // or some other default value
+                return;
             }
-        }
 
-        // Convert selected services to a bitmask
-        int servicesBitmask = 0;
-        foreach (var service in SelectedServicesInput)
+            // Ensure SelectedServicesInput only contains valid enum values
+            foreach (var service in SelectedServicesInput)
+            {
+                if (!Enum.IsDefined(typeof(ServiceType), service))
+                {
+                    throw new ArgumentException($"Invalid service type {service} in SelectedServicesInput.");
+                }
+            }
+
+            // Convert selected services to a bitmask
+            int servicesBitmask = 0;
+            foreach (var service in SelectedServicesInput)
+            {
+                servicesBitmask |= (int)service;
+            }
+
+            Services = servicesBitmask;
+        }
+        catch (Exception ex)
         {
-            servicesBitmask |= (int)service;
+            // Log the exception or handle it in some other way
+            Console.WriteLine($"An error occurred: {ex.Message}");
         }
-
-        Services = servicesBitmask;
     }
 }

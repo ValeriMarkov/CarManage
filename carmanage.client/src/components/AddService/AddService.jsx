@@ -58,6 +58,16 @@ const AddService = () => {
         }));
     };
 
+    const getServiceTypeName = (serviceId) => {
+        const service = services.find((service) => service.id === serviceId);
+        return service ? service.label : 'Unknown Service';
+    };
+
+    const getServiceTypeDescription = (serviceId) => {
+        const service = services.find((service) => service.id === serviceId);
+        return service ? service.description || 'No description available' : 'Unknown Service';
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
@@ -78,6 +88,7 @@ const AddService = () => {
                 OdometerAtService: parseInt(serviceData.odometerAtService),
                 Notes: serviceData.notes,
                 SelectedServicesInput: serviceData.selectedServices,
+                serviceHistoryInput: [{ id: 0, date: new Date(), note: '' }],
             };
 
             console.log('New Service Payload:', newService); // Log the payload to check if everything is correct
@@ -101,8 +112,8 @@ const AddService = () => {
             console.log('Service added successfully:', data); // Log success response
 
             navigate(`/cars/${carId}`); // Redirect after successful service addition
-        } catch (err) {
-            console.error('Error:', err.message);
+        } catch (error) {
+            console.error('An error occurred:', error);
             setError('Failed to add service. Please try again.');
         }
     };

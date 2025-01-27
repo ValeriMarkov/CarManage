@@ -129,9 +129,17 @@ namespace CarManage.Server.Controllers
 
                 // Convert selected services to a bitmask
                 int servicesBitmask = 0;
-                foreach (var service in serviceHistoryInput.SelectedServicesInput)
+                foreach (var serviceId in serviceHistoryInput.SelectedServicesInput)
                 {
-                    servicesBitmask |= (int)service;
+                    if (Enum.IsDefined(typeof(ServiceType), serviceId))
+                    {
+                        servicesBitmask |= (int)(ServiceType)serviceId;
+                    }
+                    else
+                    {
+                        _logger.LogWarning($"Invalid service ID: {serviceId}");
+                        return BadRequest("Invalid service ID");
+                    }
                 }
 
                 // Create a new ServiceHistory object
@@ -142,8 +150,10 @@ namespace CarManage.Server.Controllers
                     OdometerAtService = serviceHistoryInput.OdometerAtService,
                     Notes = serviceHistoryInput.Notes,
                     Services = servicesBitmask,
-                    SelectedServicesInput = serviceHistoryInput.SelectedServicesInput ?? new List<ServiceType>() // Fix: Set a non-null value for SelectedServicesInput
+                    SelectedServicesInput = serviceHistoryInput.SelectedServicesInput.Select(x => (ServiceType)x).ToList()
                 };
+
+                serviceHistory.ConvertSelectedServicesToBitmask();
 
                 try
                 {
@@ -154,26 +164,14 @@ namespace CarManage.Server.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Error occurred while adding service history: {ex.Message}");
-                    var problemDetails = new ProblemDetails
-                    {
-                        Status = StatusCodes.Status500InternalServerError,
-                        Title = "Internal Server Error",
-                        Detail = ex.Message,
-                    };
-                    return StatusCode(500, problemDetails);
+                    _logger.LogError("Error occurred while adding service history");
+                    return new JsonResult(new { error = "An error occurred" }) { StatusCode = 500 };
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error occurred while handling request: {ex.Message}");
-                var problemDetails = new ProblemDetails
-                {
-                    Status = StatusCodes.Status500InternalServerError,
-                    Title = "Internal Server Error",
-                    Detail = ex.Message,
-                };
-                return StatusCode(500, problemDetails);
+                _logger.LogError("Error occurred while handling request");
+                return new JsonResult(new { error = "An error occurred" }) { StatusCode = 500 };
             }
         }
 
