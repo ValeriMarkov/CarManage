@@ -9,6 +9,7 @@ public class ServiceHistory
     public int Id { get; set; }
 
     public int CarId { get; set; }
+    [JsonIgnore]
     public Car Car { get; set; }
 
     public int Services { get; set; }

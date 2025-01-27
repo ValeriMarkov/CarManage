@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using CarManage.Server.Filters;
 using FluentValidation.AspNetCore;
 using CarManage.Server.Validators;
+using System.Text.Json.Serialization;
+
 
 namespace CarManage.Server
 {
@@ -24,6 +26,10 @@ namespace CarManage.Server
             builder.Services.AddControllers(options =>
             {
                 options.Filters.Add<AddCorsHeadersFilter>();
+            })
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
             })
             .AddFluentValidation(fv =>
             {

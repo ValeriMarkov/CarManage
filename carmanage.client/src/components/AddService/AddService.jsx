@@ -68,20 +68,20 @@ const AddService = () => {
             return;
         }
 
-        const token = await user.getIdToken(true);
-
-        // Create the payload with CarId field
-        const newService = {
-            CarId: carId,
-            ServiceDate: serviceData.serviceDate,
-            OdometerAtService: parseInt(serviceData.odometerAtService),
-            Notes: serviceData.notes,
-            SelectedServicesInput: serviceData.selectedServices,
-        };
-
-        console.log('New Service Payload:', newService); // Log the payload to check if everything is correct
-
         try {
+            const token = await user.getIdToken(true);
+
+            // Create the payload with CarId field
+            const newService = {
+                CarId: carId,
+                ServiceDate: serviceData.serviceDate,
+                OdometerAtService: parseInt(serviceData.odometerAtService),
+                Notes: serviceData.notes,
+                SelectedServicesInput: serviceData.selectedServices,
+            };
+
+            console.log('New Service Payload:', newService); // Log the payload to check if everything is correct
+
             const response = await fetch(`https://localhost:7025/api/cars/${carId}/services`, {
                 method: 'POST',
                 headers: {
@@ -96,6 +96,9 @@ const AddService = () => {
                 console.error('Backend Error:', errorDetails); // Log backend error details
                 throw new Error('Failed to add service');
             }
+
+            const data = await response.json();
+            console.log('Service added successfully:', data); // Log success response
 
             navigate(`/cars/${carId}`); // Redirect after successful service addition
         } catch (err) {
