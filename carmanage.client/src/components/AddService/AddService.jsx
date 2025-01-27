@@ -91,8 +91,6 @@ const AddService = () => {
                 serviceHistoryInput: [{ id: 0, date: new Date(), note: '' }],
             };
 
-            console.log('New Service Payload:', newService); // Log the payload to check if everything is correct
-
             const response = await fetch(`https://localhost:7025/api/cars/${carId}/services`, {
                 method: 'POST',
                 headers: {
@@ -109,7 +107,6 @@ const AddService = () => {
             }
 
             const data = await response.json();
-            console.log('Service added successfully:', data); // Log success response
 
             navigate(`/cars/${carId}`); // Redirect after successful service addition
         } catch (error) {
