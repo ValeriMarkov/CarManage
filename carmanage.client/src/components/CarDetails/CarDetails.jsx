@@ -11,6 +11,7 @@ const CarDetails = () => {
     const [error, setError] = useState(null);
     const [services, setServices] = useState([]); // State for service history
     const [loadingServices, setLoadingServices] = useState(true); // State for loading services
+    const [successMessage, setSuccessMessage] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -83,6 +84,37 @@ const CarDetails = () => {
         navigate(`/cars/${carId}/add-service`); // Navigate to add service page
     };
 
+    const onRemoveServiceHistory = async (carId, serviceHistoryId) => {
+        try {
+            if (window.confirm("Are you sure you want to delete this service history?")) {
+                // Call the API to remove the service history
+                const response = await fetch(`https://localhost:7025/api/cars/${carId}/services/${serviceHistoryId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${user ? await user.getIdToken(true) : ''}`, // Send user token
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to remove service history');
+                }
+
+                // Update the service history state
+                setServices(services.filter((service) => service.id !== serviceHistoryId));
+                alert("Service history removed successfully!"); // Display a popup message
+                setSuccessMessage("Service history removed successfully!"); // Show success message on the page
+                setError(null); // Clear any error message
+            }
+        } catch (err) {
+            setError(err.message); // Show error if removal fails
+            setSuccessMessage(null); // Clear any success message
+        }
+    };
+
+    const onEditService = (id) => {
+        console.log(`Edit service with ID ${id}`);
+    };
+
     if (loading) {
         return <p>Loading car details...</p>;
     }
@@ -120,6 +152,8 @@ const CarDetails = () => {
                                     <strong>Odometer at Service:</strong> {service.odometerAtService} km<br />
                                     <strong>Notes:</strong> {service.notes}<br />
                                     <strong>Selected Services:</strong> {service.selectedServices.join(", ")}<br />
+                                    <button onClick={() => onRemoveServiceHistory(car.id, service.id)}>Delete</button>
+                                    <button onClick={() => onEditService(service.id)}>Edit</button>
                                 </li>
                             ))}
                         </ul>
