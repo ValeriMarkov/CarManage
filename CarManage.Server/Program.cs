@@ -6,6 +6,7 @@ using CarManage.Server.Filters;
 using FluentValidation.AspNetCore;
 using CarManage.Server.Validators;
 using System.Text.Json.Serialization;
+using System.Text.Json;
 
 
 namespace CarManage.Server
@@ -30,6 +31,7 @@ namespace CarManage.Server
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
             })
             .AddFluentValidation(fv =>
             {

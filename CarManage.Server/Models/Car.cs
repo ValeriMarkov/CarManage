@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace CarManage.Server.Models
 {
@@ -28,7 +28,7 @@ namespace CarManage.Server.Models
 
         // If you want to include ServiceHistories in responses, remove this
         // Otherwise, keep it as it is for not including them
-        [JsonIgnore]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public List<ServiceHistory> ServiceHistories { get; set; } = new List<ServiceHistory>();
     }
 }
