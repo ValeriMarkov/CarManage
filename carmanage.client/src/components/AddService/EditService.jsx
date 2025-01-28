@@ -15,40 +15,29 @@ const EditService = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log('serviceData.selectedServicesInput:', serviceData.selectedServicesInput);
-
         const fetchServiceDetails = async () => {
             try {
                 const auth = getAuth();
                 const user = auth.currentUser;
-
-                if (user) {
-                    const idToken = await user.getIdToken(true);
-                    const response = await fetch(`https://localhost:7025/api/cars/${carId}/services/${serviceId}`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${idToken}`
-                        }
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch service details');
+                const idToken = await user.getIdToken(true);
+                const response = await fetch(`https://localhost:7025/api/cars/${carId}/services/${serviceId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${idToken}`
                     }
-
-                    const data = await response.json();
-                    setServiceData(data);
-                } else {
-                    setError('User is not authenticated');
-                }
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
+                });
+                const data = await response.json();
+                setServiceData({
+                    ...data,
+                    selectedServicesInput: data.selectedServices
+                });
+            } catch (error) {
+                console.error('Error fetching service details:', error);
             }
         };
-
         fetchServiceDetails();
-    }, [serviceId]);
+    }, [carId, serviceId]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
