@@ -74,7 +74,6 @@ const Home = () => {
                 <div>
                     <p>Welcome, {user.email}!</p>
                     <button onClick={goToAddCarPage}>Add Car</button>
-                    {successMessage && <p className="success">{successMessage}</p>} {/* Success message */}
                     <h3>Your Cars</h3>
                     {loading ? (
                         <p>Loading cars...</p>
@@ -91,7 +90,7 @@ const Home = () => {
                                             {car.brand} {car.model} - {car.year} ({car.color})
                                         </a>
                                         <button onClick={() => handleEditCar(car.id)}>Edit</button>
-                                        <button onClick={() => onRemoveCar(car.id)}>Remove</button> {/* Remove car */}
+                                        <button onClick={() => onRemoveCar(car.id)}>Remove</button>
                                     </li>
                                 ))
                             )}
