@@ -9,6 +9,7 @@ import CarForm from "./components/CarForm";
 import CarDetails from "./components/CarDetails/CarDetails";
 import EditCarForm from "./components/EditCarForm";
 import AddService from "./components/AddService/AddService";
+import EditService from "./components/AddService/EditService";
 
 const App = () => {
     const { user, logout } = useAuth();
@@ -45,6 +46,7 @@ const App = () => {
                     <Route path="/cars/:carId" element={<CarDetails />} />
                     <Route path="/edit-car/:carId" element={<ProtectedRoute> <EditCarForm /> </ProtectedRoute>} />
                     <Route path="/cars/:carId/add-service" element={<AddService />} />
+                    <Route path="/cars/:carId/services/:serviceId/edit" element={<EditService />} />
                 </Routes>
             </div>
         </Router>

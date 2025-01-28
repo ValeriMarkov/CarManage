@@ -109,8 +109,10 @@ const CarDetails = () => {
         }
     };
 
-    const onEditService = (id) => {
-        console.log(`Edit service with ID ${id}`);
+    const onEditService = async (id) => {
+        navigate(`/cars/${carId}/services/${id}/edit`, {
+            state: { carId: carId, serviceId: id }
+        });
     };
 
     if (loading) {
