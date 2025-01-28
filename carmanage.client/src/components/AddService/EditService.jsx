@@ -14,12 +14,20 @@ const EditService = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
+    const getIdToken = async () => {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (user) {
+            return await user.getIdToken(true);
+        } else {
+            throw new Error('User is not authenticated');
+        }
+    };
+
     useEffect(() => {
         const fetchServiceDetails = async () => {
             try {
-                const auth = getAuth();
-                const user = auth.currentUser;
-                const idToken = await user.getIdToken(true);
+                const idToken = await getIdToken();
                 const response = await fetch(`https://localhost:7025/api/cars/${carId}/services/${serviceId}`, {
                     method: 'GET',
                     headers: {
@@ -28,12 +36,12 @@ const EditService = () => {
                     }
                 });
                 const data = await response.json();
-                setServiceData({
-                    ...data,
-                    selectedServicesInput: data.selectedServices
-                });
+                const selectedServicesInput = Array.isArray(data.selectedServicesInput) ? data.selectedServicesInput.map((service) => service.name) : [];
+                setServiceData({ ...data, selectedServicesInput });
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching service details:', error);
+                setLoading(false);
             }
         };
         fetchServiceDetails();
@@ -52,46 +60,54 @@ const EditService = () => {
         if (checked) {
             setServiceData((prevState) => ({
                 ...prevState,
-                selectedServicesInput: [...prevState.selectedServicesInput, name]
+                selectedServicesInput: [...(prevState.selectedServicesInput || []), name]
             }));
         } else {
             setServiceData((prevState) => ({
                 ...prevState,
-                selectedServicesInput: prevState.selectedServicesInput.filter((service) => service !== name)
+                selectedServicesInput: (prevState.selectedServicesInput || []).filter((service) => service !== name)
             }));
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const auth = getAuth();
-        const user = auth.currentUser;
-
-        if (user) {
-            const idToken = await user.getIdToken(true);
-
-            try {
-                const response = await fetch(`https://localhost:7025/api/cars/${carId}/services/${serviceId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${idToken}`
-                    },
-                    body: JSON.stringify(serviceData)
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to update service details');
-                }
-
-                const data = await response.json();
-                alert('Service details updated successfully');
-                navigate("/");
-            } catch (err) {
-                setError(err.message);
+        const idToken = await getIdToken();
+        console.log('serviceTypes:', serviceTypes);
+        console.log('selectedServicesInput:', serviceData.selectedServicesInput);
+        const serviceHistoryUpdateInput = {
+            ServiceDate: serviceData.serviceDate.split('T')[0],
+            OdometerAtService: serviceData.odometerAtService,
+            Notes: serviceData.notes,
+            SelectedServicesInput: serviceData.selectedServicesInput.map(service => {
+                console.log('service:', service);
+                const serviceType = serviceTypes.find(st => st.name === service);
+                console.log('serviceType:', serviceType);
+                return serviceType?.id.toString();
+            })
+        };
+        console.log('serviceHistoryUpdateInput:', serviceHistoryUpdateInput);
+        try {
+            const response = await fetch(`https://localhost:7025/api/cars/${carId}/services/${serviceId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${idToken}`
+                },
+                body: JSON.stringify(serviceHistoryUpdateInput)
+            });
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error('Error updating service details:', errorResponse);
+                console.log('serviceHistoryUpdateInput:', serviceHistoryUpdateInput);
+                console.log('PUT https://localhost:7025/api/cars/${carId}/services/${serviceId} ${response.status} (${response.statusText})');
+                throw new Error('Failed to update service details');
             }
-        } else {
-            setError('User is not authenticated');
+            const data = await response.json();
+            alert('Service details updated successfully');
+            navigate("/");
+        } catch (err) {
+            setError(err.message);
         }
     };
 
@@ -130,7 +146,6 @@ const EditService = () => {
                     value={serviceData.notes || ''}
                     onChange={handleInputChange}
                     placeholder="Notes"
-                    required
                 />
                 {serviceTypes.map((serviceType) => (
                     <div key={serviceType}>

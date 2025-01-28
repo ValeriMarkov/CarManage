@@ -169,7 +169,7 @@ namespace CarManage.Server.Controllers
 
         // PUT: api/cars/{carId}/services/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateServiceHistory(int carId, int id, [FromBody] ServiceHistory serviceHistory)
+        public async Task<IActionResult> UpdateServiceHistory(int carId, int id, [FromBody] ServiceHistoryUpdateInput serviceHistoryUpdateInput)
         {
             _logger.LogInformation($"Received request to update service history for CarId: {carId} and ServiceId: {id}");
 
@@ -189,14 +189,22 @@ namespace CarManage.Server.Controllers
                 return NotFound("Service not found");
             }
 
-            existingService.ServiceDate = serviceHistory.ServiceDate;
-            existingService.OdometerAtService = serviceHistory.OdometerAtService;
-            existingService.Notes = serviceHistory.Notes;
+            existingService.ServiceDate = serviceHistoryUpdateInput.ServiceDate;
+            existingService.OdometerAtService = serviceHistoryUpdateInput.OdometerAtService;
+            existingService.Notes = serviceHistoryUpdateInput.Notes;
 
             int servicesBitmask = 0;
-            foreach (var service in serviceHistory.SelectedServicesInput)
+            foreach (var serviceId in serviceHistoryUpdateInput.SelectedServicesInput)
             {
-                servicesBitmask |= (int)service;
+                if (Enum.TryParse(serviceId, out ServiceType serviceType))
+                {
+                    servicesBitmask |= (int)serviceType;
+                }
+                else
+                {
+                    _logger.LogWarning($"Invalid service ID: {serviceId}");
+                    return BadRequest("Invalid service ID");
+                }
             }
 
             existingService.Services = servicesBitmask;
@@ -207,6 +215,14 @@ namespace CarManage.Server.Controllers
             _logger.LogInformation($"Service history updated successfully for CarId: {carId}, ServiceHistory Id: {existingService.Id}");
 
             return NoContent();
+        }
+
+        public class ServiceHistoryUpdateInput
+        {
+            public DateTime ServiceDate { get; set; }
+            public int OdometerAtService { get; set; }
+            public string Notes { get; set; }
+            public string[] SelectedServicesInput { get; set; }
         }
 
         // DELETE: api/cars/{carId}/services/{id}
