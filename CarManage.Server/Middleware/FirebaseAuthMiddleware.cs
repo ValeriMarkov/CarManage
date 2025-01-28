@@ -27,14 +27,14 @@ public class FirebaseAuthMiddleware
             }
             catch
             {
-                context.Response.StatusCode = 401; // Unauthorized
+                context.Response.StatusCode = 401;
                 await context.Response.WriteAsync("Unauthorized - Invalid token.");
                 return;
             }
         }
         else
         {
-            context.Response.StatusCode = 401; // Unauthorized
+            context.Response.StatusCode = 401;
             await context.Response.WriteAsync("Unauthorized - No token provided.");
             return;
         }

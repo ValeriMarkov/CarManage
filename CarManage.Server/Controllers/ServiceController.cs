@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CarManage.Server.Models;
-using Microsoft.Extensions.Logging; // Make sure this is included for logging
+using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,13 +13,12 @@ namespace CarManage.Server.Controllers
     public class ServiceController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<ServiceController> _logger; // Logger field
+        private readonly ILogger<ServiceController> _logger;
 
-        // Inject ILogger into the constructor
         public ServiceController(ApplicationDbContext context, ILogger<ServiceController> logger)
         {
             _context = context;
-            _logger = logger; // Assign logger to the field
+            _logger = logger;
         }
 
         // GET: api/cars/{carId}/services
@@ -47,7 +46,7 @@ namespace CarManage.Server.Controllers
                 sh.ServiceDate,
                 sh.OdometerAtService,
                 sh.Notes,
-                SelectedServices = sh.SelectedServices // Decode bitmask into service types
+                SelectedServices = sh.SelectedServices
             }));
         }
 
@@ -94,17 +93,14 @@ namespace CarManage.Server.Controllers
             {
                 _logger.LogInformation($"Received request to add service history for CarId: {carId}");
 
-                // Ensure CarId in URL matches the CarId in the body
                 if (carId != serviceHistoryInput.CarId)
                 {
                     _logger.LogWarning($"CarId in URL does not match CarId in request body. CarId: {carId}, ServiceHistory CarId: {serviceHistoryInput.CarId}");
                     return BadRequest("CarId in URL does not match CarId in request body");
                 }
 
-                // Log the SelectedServicesInput to check its contents
                 _logger.LogInformation($"SelectedServicesInput: {string.Join(", ", serviceHistoryInput.SelectedServicesInput)}");
 
-                // Check if the model is valid
                 if (!ModelState.IsValid)
                 {
                     var errorMessages = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)).ToList();
@@ -112,7 +108,6 @@ namespace CarManage.Server.Controllers
                     return BadRequest(errorMessages);
                 }
 
-                // Verify if the car exists
                 var car = await _context.Cars.FindAsync(carId);
                 if (car == null)
                 {
@@ -120,14 +115,12 @@ namespace CarManage.Server.Controllers
                     return NotFound("Car not found");
                 }
 
-                // Ensure SelectedServicesInput is populated
                 if (serviceHistoryInput.SelectedServicesInput == null || !serviceHistoryInput.SelectedServicesInput.Any())
                 {
                     _logger.LogWarning("SelectedServices cannot be empty");
                     return BadRequest("SelectedServices cannot be empty.");
                 }
 
-                // Convert selected services to a bitmask
                 int servicesBitmask = 0;
                 foreach (var serviceId in serviceHistoryInput.SelectedServicesInput)
                 {
@@ -142,7 +135,6 @@ namespace CarManage.Server.Controllers
                     }
                 }
 
-                // Create a new ServiceHistory object
                 var serviceHistory = new ServiceHistory
                 {
                     CarId = carId,
@@ -181,7 +173,6 @@ namespace CarManage.Server.Controllers
         {
             _logger.LogInformation($"Received request to update service history for CarId: {carId} and ServiceId: {id}");
 
-            // Check if the model is valid
             if (!ModelState.IsValid)
             {
                 var errorMessages = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage));
@@ -198,19 +189,17 @@ namespace CarManage.Server.Controllers
                 return NotFound("Service not found");
             }
 
-            // Update fields
             existingService.ServiceDate = serviceHistory.ServiceDate;
             existingService.OdometerAtService = serviceHistory.OdometerAtService;
             existingService.Notes = serviceHistory.Notes;
 
-            // Convert the list of selected services to a bitmask
             int servicesBitmask = 0;
             foreach (var service in serviceHistory.SelectedServicesInput)
             {
                 servicesBitmask |= (int)service;
             }
 
-            existingService.Services = servicesBitmask; // Update the bitmask field
+            existingService.Services = servicesBitmask;
 
             _context.Entry(existingService).State = EntityState.Modified;
             await _context.SaveChangesAsync();

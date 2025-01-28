@@ -17,13 +17,11 @@ namespace CarManage.Server
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Initialize Firebase Admin SDK (make sure the path is correct)
             FirebaseApp.Create(new AppOptions()
             {
                 Credential = GoogleCredential.FromFile("C:\\Users\\valer\\carmanage-59888-55751e2e69ac.json")
             });
 
-            // Add services to the container
             builder.Services.AddControllers(options =>
             {
                 options.Filters.Add<AddCorsHeadersFilter>();
@@ -38,7 +36,6 @@ namespace CarManage.Server
                 fv.RegisterValidatorsFromAssemblyContaining<ServiceHistoryValidator>();
             });
 
-            // Add Entity Framework Core and configure SQL Server connection
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -51,9 +48,9 @@ namespace CarManage.Server
             {
                 options.AddPolicy("AllowFrontendOrigin", policy =>
                 {
-                    policy.WithOrigins("https://localhost:5173", "http://localhost:5173") // Allow frontend origin
-                          .AllowAnyMethod()                     // Allow all HTTP methods (GET, POST, etc.)
-                          .AllowAnyHeader();                    // Allow all headers
+                    policy.WithOrigins("https://localhost:5173", "http://localhost:5173")
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
                 });
             });
 
@@ -68,26 +65,22 @@ namespace CarManage.Server
             // Configure the HTTP request pipeline
             if (app.Environment.IsDevelopment())
             {
-                // Serve Swagger UI before applying Firebase authentication
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
-            // Middleware to skip Firebase Authentication for Swagger requests
             app.Use(async (context, next) =>
             {
                 if (context.Request.Path.StartsWithSegments("/swagger"))
                 {
-                    await next(); // Skip Firebase Authentication for Swagger
+                    await next();
                 }
                 else
                 {
-                    // Apply Firebase Authentication Middleware for other routes
                     await next();
                 }
             });
 
-            // Use Firebase Authentication Middleware
             app.UseMiddleware<FirebaseAuthMiddleware>();
 
             // Serve static files

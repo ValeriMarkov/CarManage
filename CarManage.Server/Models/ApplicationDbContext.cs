@@ -9,19 +9,18 @@ namespace CarManage.Server.Models
             : base(options)
         { }
 
-        public DbSet<Car> Cars { get; set; }  // Represents the Cars table
-        public DbSet<ServiceHistory> ServiceHistories { get; set; } // Represents the ServiceHistories table
+        public DbSet<Car> Cars { get; set; }
+        public DbSet<ServiceHistory> ServiceHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configuring the first relationship: CarId (mandatory foreign key)
             modelBuilder.Entity<ServiceHistory>()
                 .HasOne(s => s.Car)
                 .WithMany(c => c.ServiceHistories)
                 .HasForeignKey(s => s.CarId)
-                .OnDelete(DeleteBehavior.Cascade);  // Cascade delete
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

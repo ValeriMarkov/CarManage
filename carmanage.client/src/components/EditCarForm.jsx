@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // useNavigate for redirect
+import { useParams, useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 
 const EditCarForm = () => {
-    const { carId } = useParams(); // Get carId from URL
+    const { carId } = useParams();
     const [carData, setCarData] = useState({
         brand: '',
         model: '',
@@ -15,9 +15,8 @@ const EditCarForm = () => {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const navigate = useNavigate(); // Initialize navigate for redirect
+    const navigate = useNavigate();
 
-    // Fetch car details when the component mounts
     useEffect(() => {
         const fetchCarDetails = async () => {
             try {
@@ -25,11 +24,11 @@ const EditCarForm = () => {
                 const user = auth.currentUser;
 
                 if (user) {
-                    const idToken = await user.getIdToken(true); // Get the authentication token
+                    const idToken = await user.getIdToken(true);
                     const response = await fetch(`https://localhost:7025/api/cars/${carId}`, {
                         method: 'GET',
                         headers: {
-                            'Authorization': `Bearer ${idToken}` // Send the token as a Bearer token in the Authorization header
+                            'Authorization': `Bearer ${idToken}`
                         }
                     });
 
@@ -38,19 +37,19 @@ const EditCarForm = () => {
                     }
 
                     const data = await response.json();
-                    setCarData(data); // Set the fetched car data
+                    setCarData(data);
                 } else {
                     setError('User is not authenticated');
                 }
             } catch (err) {
-                setError(err.message); // Set error message if fetching fails
+                setError(err.message);
             } finally {
-                setLoading(false); // End loading state
+                setLoading(false);
             }
         };
 
         fetchCarDetails();
-    }, [carId]); // Run when carId changes
+    }, [carId]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -66,9 +65,8 @@ const EditCarForm = () => {
         const user = auth.currentUser;
 
         if (user) {
-            const idToken = await user.getIdToken(true); // Get the authentication token
+            const idToken = await user.getIdToken(true);
 
-            // Send all car data including ServiceHistories if needed
             try {
                 const response = await fetch(`https://localhost:7025/api/cars/${carId}`, {
                     method: 'PUT',
@@ -76,7 +74,7 @@ const EditCarForm = () => {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${idToken}`
                     },
-                    body: JSON.stringify(carData) // Send car data along with ServiceHistories
+                    body: JSON.stringify(carData)
                 });
 
                 if (!response.ok) {
@@ -85,9 +83,9 @@ const EditCarForm = () => {
 
                 const data = await response.json();
                 alert('Car details updated successfully');
-                navigate("/"); // Redirect to the homepage after successful update
+                navigate("/");
             } catch (err) {
-                setError(err.message); // Set error message if update fails
+                setError(err.message);
             }
         } else {
             setError('User is not authenticated');
@@ -96,7 +94,7 @@ const EditCarForm = () => {
 
 
     const handleBack = () => {
-        navigate(-1); // Navigate back to the previous page
+        navigate(-1);
     };
 
     if (loading) {
@@ -166,7 +164,7 @@ const EditCarForm = () => {
                 />
                 <button type="submit">Update Car</button>
             </form>
-            <button onClick={handleBack}>Back</button> {/* Back button */}
+            <button onClick={handleBack}>Back</button>
         </div>
     );
 };

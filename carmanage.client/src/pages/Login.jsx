@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
-    const { login } = useAuth(); // Assuming the login function from context
+    const { login } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -12,9 +12,8 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await login(email, password); // Assuming login is the method in context
-            // Once logged in, redirect to Home page (not Dashboard)
-            navigate("/"); // Redirect to home after login
+            await login(email, password);
+            navigate("/");
         } catch (err) {
             setError("Invalid email or password");
         }

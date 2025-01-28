@@ -16,7 +16,6 @@ namespace CarManage.Server.Controllers
             _context = context;
         }
 
-        // Handle Preflight Requests for CORS
         [HttpOptions("")]
         public IActionResult Preflight()
         {
@@ -38,10 +37,8 @@ namespace CarManage.Server.Controllers
                 return Unauthorized("User is not authenticated.");
             }
 
-            // Associate the car with the user
             car.UserId = user.Uid;
 
-            // Save the car to the database
             _context.Cars.Add(car);
             await _context.SaveChangesAsync();
 
@@ -59,7 +56,6 @@ namespace CarManage.Server.Controllers
                 return Unauthorized("User is not authenticated.");
             }
 
-            // Fetch only the cars that belong to the logged-in user
             var cars = await _context.Cars.Where(c => c.UserId == user.Uid).ToListAsync();
 
             return Ok(cars);
@@ -95,16 +91,14 @@ namespace CarManage.Server.Controllers
                 return BadRequest("Car ID mismatch.");
             }
 
-            // Check if the car exists and belongs to the logged-in user
             var existingCar = await _context.Cars
-                                            .Include(c => c.ServiceHistories) // Ensure ServiceHistories are included only if needed
+                                            .Include(c => c.ServiceHistories)
                                             .FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Uid);
             if (existingCar == null)
             {
                 return NotFound("Car not found or you do not have permission to edit it.");
             }
 
-            // Update car details (excluding ServiceHistories)
             existingCar.Brand = car.Brand;
             existingCar.Model = car.Model;
             existingCar.Year = car.Year;
@@ -112,8 +106,6 @@ namespace CarManage.Server.Controllers
             existingCar.Vin = car.Vin;
             existingCar.Engine = car.Engine;
             existingCar.HorsePower = car.HorsePower;
-
-            // No need to touch ServiceHistories, so leave it as is
 
             _context.Entry(existingCar).State = EntityState.Modified;
 
@@ -133,7 +125,6 @@ namespace CarManage.Server.Controllers
                 }
             }
 
-            // Return the updated car object as a JSON response
             return Ok(existingCar);
         }
 
@@ -148,7 +139,6 @@ namespace CarManage.Server.Controllers
                 return Unauthorized("User is not authenticated.");
             }
 
-            // Find the car by ID and ensure it belongs to the authenticated user
             var car = await _context.Cars.FirstOrDefaultAsync(c => c.Id == id && c.UserId == user.Uid);
 
             if (car == null)
@@ -156,11 +146,9 @@ namespace CarManage.Server.Controllers
                 return NotFound("Car not found or you do not have permission to delete it.");
             }
 
-            // Remove the car
             _context.Cars.Remove(car);
             await _context.SaveChangesAsync();
 
-            // Return a successful response
             return Ok(new { message = "Car removed successfully." });
         }
     }

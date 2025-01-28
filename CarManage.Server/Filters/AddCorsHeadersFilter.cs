@@ -14,14 +14,12 @@ namespace CarManage.Server.Filters
             var request = context.HttpContext.Request;
             var response = context.HttpContext.Response;
 
-            // Add dynamic origin
             var origin = request.Headers["Origin"].ToString();
             if (!string.IsNullOrEmpty(origin))
             {
                 response.Headers.Add("Access-Control-Allow-Origin", origin);
             }
 
-            // Add other necessary headers
             response.Headers.Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
             response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
         }

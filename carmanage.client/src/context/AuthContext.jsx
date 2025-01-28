@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { auth } from "../firebase"; // Firebase authentication instance
+import { auth } from "../firebase";
 import {
     onAuthStateChanged,
     createUserWithEmailAndPassword,
@@ -10,44 +10,39 @@ import {
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null); // Current user state
-    const [loading, setLoading] = useState(true); // Loading state to handle async operations
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    // Monitor authentication state changes
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
             setLoading(false);
         });
 
-        return () => unsubscribe(); // Cleanup subscription on unmount
+        return () => unsubscribe();
     }, []);
 
-    // Sign up a new user
     const signup = async (email, password) => {
         try {
             await createUserWithEmailAndPassword(auth, email, password);
         } catch (error) {
-            throw new Error(error.message); // Propagate error to the caller
+            throw new Error(error.message);
         }
     };
 
-    // Log in an existing user
     const login = async (email, password) => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
         } catch (error) {
             console.error("Login error: ", error.message);
-            throw new Error(error.message); // Propagate error to the caller
+            throw new Error(error.message);
         }
     };
 
-    // Log out the current user
     const logout = async () => {
         await signOut(auth);
     };
 
-    // Remove a car by ID, requiring authentication
     const handleRemoveCar = async (carId) => {
         if (!user) return;
 
@@ -77,5 +72,4 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
-// Hook to consume the AuthContext
 export const useAuth = () => useContext(AuthContext);

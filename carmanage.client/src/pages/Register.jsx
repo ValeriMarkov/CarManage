@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext"; // Import the useAuth hook
+import { useAuth } from "../context/AuthContext";
 
 const Register = () => {
-    const { signup } = useAuth(); // Get the signup function from context
+    const { signup } = useAuth();
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -13,17 +13,17 @@ const Register = () => {
         e.preventDefault();
 
         try {
-            await signup(email, password); // Call the signup function from context
-            navigate("/"); // Redirect to the home page after successful registration
+            await signup(email, password);
+            navigate("/");
         } catch (err) {
-            setError(err.message); // If there's an error, set the error message
+            setError(err.message);
         }
     };
 
     return (
         <div>
             <h2>Register</h2>
-            {error && <p>{error}</p>} {/* Display error message if any */}
+            {error && <p>{error}</p>}
             <form onSubmit={handleSubmit}>
                 <input
                     type="email"

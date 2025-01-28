@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../context/AuthContext"; // Import useAuth hook
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 
 const Home = () => {
-    const { user, handleRemoveCar } = useAuth(); // Get handleRemoveCar from context
+    const { user, handleRemoveCar } = useAuth();
     const navigate = useNavigate();
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [successMessage, setSuccessMessage] = useState(''); // Success state for feedback
+    const [successMessage, setSuccessMessage] = useState('');
 
     const goToAddCarPage = () => {
         navigate("/add-car");
@@ -23,16 +23,15 @@ const Home = () => {
         navigate(`/edit-car/${carId}`);
     };
 
-    // Use the context's handleRemoveCar
     const onRemoveCar = async (carId) => {
         try {
             if (window.confirm("Are you sure you want to delete this car?")) {
-                await handleRemoveCar(carId); // Call handleRemoveCar from context
-                setCars(cars.filter((car) => car.id !== carId)); // Remove car from local list
-                setSuccessMessage("Car removed successfully!"); // Show success message
+                await handleRemoveCar(carId);
+                setCars(cars.filter((car) => car.id !== carId));
+                setSuccessMessage("Car removed successfully!");
             }
         } catch (err) {
-            setError(err.message); // Show error if removal fails
+            setError(err.message);
         }
     };
 
@@ -63,9 +62,9 @@ const Home = () => {
         if (user) {
             fetchCars();
         } else {
-            setLoading(false); // No user, stop loading
+            setLoading(false);
         }
-    }, [user]); // Only run when user changes
+    }, [user]);
 
     return (
         <div className="home-container">

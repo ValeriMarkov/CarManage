@@ -72,7 +72,6 @@ const AddService = () => {
         e.preventDefault();
         setError(null);
 
-        // Validate if at least one service is selected
         if (serviceData.selectedServices.length === 0) {
             setError('Please select at least one service.');
             return;
@@ -81,7 +80,6 @@ const AddService = () => {
         try {
             const token = await user.getIdToken(true);
 
-            // Create the payload with CarId field
             const newService = {
                 CarId: carId,
                 ServiceDate: serviceData.serviceDate,
@@ -102,13 +100,13 @@ const AddService = () => {
 
             if (!response.ok) {
                 const errorDetails = await response.json();
-                console.error('Backend Error:', errorDetails); // Log backend error details
+                console.error('Backend Error:', errorDetails);
                 throw new Error('Failed to add service');
             }
 
             const data = await response.json();
 
-            navigate(`/cars/${carId}`); // Redirect after successful service addition
+            navigate(`/cars/${carId}`);
         } catch (error) {
             console.error('An error occurred:', error);
             setError('Failed to add service. Please try again.');

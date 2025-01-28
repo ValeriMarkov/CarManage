@@ -46,11 +46,10 @@ public class ServiceHistory
         {
             if (SelectedServicesInput == null || SelectedServicesInput.Count == 0)
             {
-                Services = 0; // or some other default value
+                Services = 0;
                 return;
             }
 
-            // Ensure SelectedServicesInput only contains valid enum values
             foreach (var service in SelectedServicesInput)
             {
                 if (!Enum.IsDefined(typeof(ServiceType), service))
@@ -59,7 +58,6 @@ public class ServiceHistory
                 }
             }
 
-            // Convert selected services to a bitmask
             int servicesBitmask = 0;
             foreach (var service in SelectedServicesInput)
             {
@@ -70,7 +68,6 @@ public class ServiceHistory
         }
         catch (Exception ex)
         {
-            // Log the exception or handle it in some other way
             Console.WriteLine($"An error occurred: {ex.Message}");
         }
     }

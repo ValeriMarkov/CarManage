@@ -26,8 +26,6 @@ namespace CarManage.Server.Models
         public int HorsePower { get; set; }
         public string UserId { get; set; }
 
-        // If you want to include ServiceHistories in responses, remove this
-        // Otherwise, keep it as it is for not including them
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public List<ServiceHistory> ServiceHistories { get; set; } = new List<ServiceHistory>();
     }

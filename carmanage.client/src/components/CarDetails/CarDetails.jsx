@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext'; // Import the useAuth hook
+import { useAuth } from '../../context/AuthContext';
 import './CarDetails.css'
 
 const CarDetails = () => {
     const { carId } = useParams();
-    const { user, handleRemoveCar } = useAuth(); // Access handleRemoveCar from context
+    const { user, handleRemoveCar } = useAuth();
     const [car, setCar] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [services, setServices] = useState([]); // State for service history
-    const [loadingServices, setLoadingServices] = useState(true); // State for loading services
+    const [services, setServices] = useState([]);
+    const [loadingServices, setLoadingServices] = useState(true);
     const [successMessage, setSuccessMessage] = useState(null);
     const navigate = useNavigate();
 
@@ -20,7 +20,7 @@ const CarDetails = () => {
                 const response = await fetch(`https://localhost:7025/api/cars/${carId}`, {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${user ? await user.getIdToken(true) : ''}`, // Send user token
+                        'Authorization': `Bearer ${user ? await user.getIdToken(true) : ''}`,
                     }
                 });
 
@@ -42,7 +42,7 @@ const CarDetails = () => {
                 const response = await fetch(`https://localhost:7025/api/cars/${carId}/services`, {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${user ? await user.getIdToken(true) : ''}`, // Send user token
+                        'Authorization': `Bearer ${user ? await user.getIdToken(true) : ''}`,
                     }
                 });
 
@@ -51,7 +51,7 @@ const CarDetails = () => {
                 }
 
                 const data = await response.json();
-                setServices(data); // Set the service history
+                setServices(data);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -61,7 +61,7 @@ const CarDetails = () => {
 
         if (user) {
             fetchCarDetails();
-            fetchServiceHistory(); // Fetch services alongside car details
+            fetchServiceHistory();
         } else {
             setError('User is not authenticated');
             setLoading(false);
@@ -72,8 +72,8 @@ const CarDetails = () => {
     const onRemoveClick = async () => {
         try {
             if (window.confirm('Are you sure you want to remove this car?')) {
-                await handleRemoveCar(carId); // Call handleRemoveCar from context
-                navigate('/'); // After removal, navigate back to Home
+                await handleRemoveCar(carId);
+                navigate('/');
             }
         } catch (err) {
             alert('Failed to remove car: ' + err.message);
@@ -81,17 +81,16 @@ const CarDetails = () => {
     };
 
     const goToAddServicePage = () => {
-        navigate(`/cars/${carId}/add-service`); // Navigate to add service page
+        navigate(`/cars/${carId}/add-service`);
     };
 
     const onRemoveServiceHistory = async (carId, serviceHistoryId) => {
         try {
             if (window.confirm("Are you sure you want to delete this service history?")) {
-                // Call the API to remove the service history
                 const response = await fetch(`https://localhost:7025/api/cars/${carId}/services/${serviceHistoryId}`, {
                     method: 'DELETE',
                     headers: {
-                        'Authorization': `Bearer ${user ? await user.getIdToken(true) : ''}`, // Send user token
+                        'Authorization': `Bearer ${user ? await user.getIdToken(true) : ''}`,
                     }
                 });
 
@@ -99,15 +98,14 @@ const CarDetails = () => {
                     throw new Error('Failed to remove service history');
                 }
 
-                // Update the service history state
                 setServices(services.filter((service) => service.id !== serviceHistoryId));
-                alert("Service history removed successfully!"); // Display a popup message
-                setSuccessMessage("Service history removed successfully!"); // Show success message on the page
-                setError(null); // Clear any error message
+                alert("Service history removed successfully!");
+                setSuccessMessage("Service history removed successfully!");
+                setError(null);
             }
         } catch (err) {
-            setError(err.message); // Show error if removal fails
-            setSuccessMessage(null); // Clear any success message
+            setError(err.message);
+            setSuccessMessage(null);
         }
     };
 
@@ -138,7 +136,7 @@ const CarDetails = () => {
 
             <div>
                 <h2>Service History</h2>
-                <button onClick={goToAddServicePage}>Add Service</button> {/* Add service button */}
+                <button onClick={goToAddServicePage}>Add Service</button>
                 {loadingServices ? (
                     <p>Loading service history...</p>
                 ) : (
