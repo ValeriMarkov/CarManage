@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static CarManage.Server.Controllers.ServiceController;
 
 namespace CarManage.Server.Controllers
 {
@@ -142,11 +141,8 @@ namespace CarManage.Server.Controllers
                     ServiceDate = serviceHistoryInput.ServiceDate,
                     OdometerAtService = serviceHistoryInput.OdometerAtService,
                     Notes = serviceHistoryInput.Notes,
-                    Services = servicesBitmask,
-                    SelectedServicesInput = serviceHistoryInput.SelectedServicesInput.Select(x => (ServiceType)x).ToList()
+                    Services = servicesBitmask
                 };
-
-                serviceHistory.ConvertSelectedServicesToBitmask();
 
                 try
                 {
@@ -163,8 +159,8 @@ namespace CarManage.Server.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error occurred while handling request");
-                return new JsonResult(new { error = "An error occurred" }) { StatusCode = 500 };
+                _logger.LogError($"Error occurred while adding service history: {ex.Message}");
+                return StatusCode(500, new { error = "Internal server error" });
             }
         }
 
@@ -172,59 +168,59 @@ namespace CarManage.Server.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateServiceHistory(int carId, int id, [FromBody] ServiceHistoryUpdateInput serviceHistoryUpdateInput)
         {
-            _logger.LogInformation($"Received request to update service history for CarId: {carId} and ServiceId: {id}");
-
-            if (!ModelState.IsValid)
+            try
             {
-                var errorMessages = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage));
-                _logger.LogWarning($"ModelState errors: {string.Join(", ", errorMessages)}");
-                return BadRequest(errorMessages);
-            }
+                _logger.LogInformation($"Received request to update service history for CarId: {carId} and ServiceId: {id}");
 
-            var existingService = await _context.ServiceHistories
+                if (!ModelState.IsValid)
+                {
+                    var errorMessages = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage));
+                    _logger.LogWarning($"ModelState errors: {string.Join(", ", errorMessages)}");
+                    return BadRequest(errorMessages);
+                }
+
+                var existingService = await _context.ServiceHistories
                                                     .FirstOrDefaultAsync(s => s.CarId == carId && s.Id == id);
 
-            if (existingService == null)
-            {
-                _logger.LogWarning($"Service history with Id {id} not found for CarId {carId}");
-                return NotFound("Service not found");
-            }
-
-            existingService.ServiceDate = serviceHistoryUpdateInput.ServiceDate;
-            existingService.OdometerAtService = serviceHistoryUpdateInput.OdometerAtService;
-            existingService.Notes = serviceHistoryUpdateInput.Notes;
-
-            int servicesBitmask = 0;
-            foreach (var serviceId in serviceHistoryUpdateInput.SelectedServicesInput)
-            {
-                ServiceType serviceType;
-                if (Enum.TryParse(serviceId.ToString(), out serviceType))
+                if (existingService == null)
                 {
-                    servicesBitmask |= (int)serviceType;
+                    _logger.LogWarning($"Service history with Id {id} not found for CarId {carId}");
+                    return NotFound("Service not found");
                 }
-                else
+
+                existingService.ServiceDate = serviceHistoryUpdateInput.ServiceDate;
+                existingService.OdometerAtService = serviceHistoryUpdateInput.OdometerAtService;
+                existingService.Notes = serviceHistoryUpdateInput.Notes;
+
+                int servicesBitmask = 0;
+                foreach (var serviceId in serviceHistoryUpdateInput.SelectedServicesInput)
                 {
-                    _logger.LogWarning($"Invalid service ID: {serviceId}");
-                    return BadRequest("Invalid service ID");
+                    ServiceType serviceType;
+                    if (Enum.TryParse(serviceId.ToString(), out serviceType))
+                    {
+                        servicesBitmask |= (int)serviceType;
+                    }
+                    else
+                    {
+                        _logger.LogWarning($"Invalid service ID: {serviceId}");
+                        return BadRequest("Invalid service ID");
+                    }
                 }
+
+                existingService.Services = servicesBitmask;
+
+                _context.Entry(existingService).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation($"Service history updated successfully for CarId: {carId}, ServiceHistory Id: {existingService.Id}");
+
+                return NoContent();
             }
-
-            existingService.Services = servicesBitmask;
-
-            _context.Entry(existingService).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            _logger.LogInformation($"Service history updated successfully for CarId: {carId}, ServiceHistory Id: {existingService.Id}");
-
-            return NoContent();
-        }
-
-        public class ServiceHistoryUpdateInput
-        {
-            public DateTime ServiceDate { get; set; }
-            public int OdometerAtService { get; set; }
-            public string Notes { get; set; }
-            public string[] SelectedServicesInput { get; set; }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occurred while updating service history: {ex.Message}");
+                return StatusCode(500, new { error = "Internal server error" });
+            }
         }
 
         // DELETE: api/cars/{carId}/services/{id}
@@ -234,7 +230,7 @@ namespace CarManage.Server.Controllers
             _logger.LogInformation($"Received request to delete service history for CarId: {carId} and ServiceId: {id}");
 
             var serviceHistory = await _context.ServiceHistories
-                                                       .FirstOrDefaultAsync(s => s.CarId == carId && s.Id == id);
+                                                   .FirstOrDefaultAsync(s => s.CarId == carId && s.Id == id);
 
             if (serviceHistory == null)
             {
@@ -248,6 +244,21 @@ namespace CarManage.Server.Controllers
             _logger.LogInformation($"Service history deleted successfully for CarId: {carId}, ServiceHistory Id: {id}");
 
             return NoContent();
+        }
+
+        [HttpGet("ServiceTypes")]
+        public async Task<IActionResult> GetServiceTypes()
+        {
+            var serviceTypes = Enum.GetValues(typeof(ServiceType));
+            return Ok(serviceTypes);
+        }
+
+        public class ServiceHistoryUpdateInput
+        {
+            public DateTime ServiceDate { get; set; }
+            public int OdometerAtService { get; set; }
+            public string Notes { get; set; }
+            public string[] SelectedServicesInput { get; set; }
         }
     }
 }

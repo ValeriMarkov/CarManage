@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
+import axios from 'axios';
 
 const EditService = () => {
     const { carId, serviceId } = useParams();
@@ -28,14 +29,12 @@ const EditService = () => {
         const fetchServiceDetails = async () => {
             try {
                 const idToken = await getIdToken();
-                const response = await fetch(`https://localhost:7025/api/cars/${carId}/services/${serviceId}`, {
-                    method: 'GET',
+                const response = await axios.get(`https://localhost:7025/api/cars/${carId}/services/${serviceId}`, {
                     headers: {
-                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${idToken}`
                     }
                 });
-                const data = await response.json();
+                const data = response.data;
                 const selectedServicesInput = Array.isArray(data.selectedServicesInput) ? data.selectedServicesInput.map((service) => service.name) : [];
                 setServiceData({ ...data, selectedServicesInput });
                 setLoading(false);
@@ -55,17 +54,19 @@ const EditService = () => {
         }));
     };
 
-    const handleServiceChange = (e) => {
-        const { name, checked } = e.target;
+    const handleServiceChange = (e, serviceType) => {
+        console.log('e.target:', e.target);
+        const { checked } = e.target;
+        console.log('handleServiceChange:', checked);
         if (checked) {
             setServiceData((prevState) => ({
                 ...prevState,
-                selectedServicesInput: [...(prevState.selectedServicesInput || []), name]
+                selectedServicesInput: [...(prevState.selectedServicesInput || []), serviceType.Name]
             }));
         } else {
             setServiceData((prevState) => ({
                 ...prevState,
-                selectedServicesInput: (prevState.selectedServicesInput || []).filter((service) => service !== name)
+                selectedServicesInput: (prevState.selectedServicesInput || []).filter((service) => service !== serviceType.Name)
             }));
         }
     };
@@ -74,33 +75,34 @@ const EditService = () => {
         e.preventDefault();
         const idToken = await getIdToken();
 
+        console.log('serviceData.selectedServicesInput:', serviceData.selectedServicesInput);
+
         const serviceHistoryUpdateInput = {
             ServiceDate: serviceData.serviceDate.split('T')[0],
             OdometerAtService: serviceData.odometerAtService,
             Notes: serviceData.notes,
-            SelectedServicesInput: serviceData.selectedServicesInput.map(serviceType => serviceType.toString())
+            SelectedServicesInput: serviceData.selectedServicesInput.filter((serviceType) => serviceType !== "")
         };
+
+        if (serviceHistoryUpdateInput.SelectedServicesInput.length === 0) {
+            console.error('SelectedServicesInput is empty');
+            return;
+        }
+
         console.log('serviceHistoryUpdateInput:', serviceHistoryUpdateInput);
         try {
-            const response = await fetch(`https://localhost:7025/api/cars/${carId}/services/${serviceId}`, {
-                method: 'PUT',
+            const response = await axios.put(`https://localhost:7025/api/cars/${carId}/services/${serviceId}`, serviceHistoryUpdateInput, {
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${idToken}`
-                },
-                body: JSON.stringify(serviceHistoryUpdateInput)
+                }
             });
             console.log(response); // Added this line to log the response object
-            if (!response.ok) {
-                const errorResponse = await response.json();
-                console.error('Error updating service details:', errorResponse);
-                console.log('serviceHistoryUpdateInput:', serviceHistoryUpdateInput);
-                console.log(`PUT https://localhost:7025/api/cars/${carId}/services/${serviceId} ${response.status} (${response.statusText})`);
-                throw new Error('Failed to update service details');
+            if (response.status === 204) {
+                alert('Service details updated successfully');
+                navigate("/");
+            } else {
+                console.error('Error updating service details:', response);
             }
-            const data = await response.json();
-            alert('Service details updated successfully');
-            navigate("/");
         } catch (err) {
             setError(err.message);
         }
@@ -109,6 +111,29 @@ const EditService = () => {
     const handleBack = () => {
         navigate(-1);
     };
+
+    const [serviceTypes, setServiceTypes] = useState([]);
+
+    useEffect(() => {
+        const fetchServiceTypes = async () => {
+            try {
+                const idToken = await getIdToken();
+                const response = await fetch(`https://localhost:7025/api/cars/${carId}/services/ServiceTypes`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${idToken}`,
+                    },
+                });
+                const data = await response.json();
+                const serviceTypes = data;
+                setServiceTypes(serviceTypes);
+            } catch (error) {
+                console.error('Error fetching service types:', error);
+            }
+        };
+        fetchServiceTypes();
+    }, []);
 
     if (loading) {
         return <p>Loading service details...</p>;
@@ -142,41 +167,24 @@ const EditService = () => {
                     onChange={handleInputChange}
                     placeholder="Notes"
                 />
-                {serviceTypes.map((serviceType) => (
-                    <div key={serviceType}>
+                {serviceTypes.map((serviceType, index) => (
+                    <div key={index}>
                         <input
                             type="checkbox"
-                            name={serviceType}
-                            defaultChecked={Array.isArray(serviceData.selectedServicesInput) && serviceData.selectedServicesInput.includes(serviceType)}
-                            onChange={handleServiceChange}
+                            id={serviceType.Name}
+                            defaultChecked={Array.isArray(serviceData.selectedServicesInput) && serviceData.selectedServicesInput.includes(serviceType.Name)}
+                            onChange={(e) => handleServiceChange(e, serviceType)}
                         />
-                        <label>{serviceType}</label>
+                        <span>{serviceType.Name}</span>
+                        <span>{JSON.stringify(serviceType)}</span>
                     </div>
                 ))}
+
                 <button type="submit">Update Service</button>
             </form>
             <button onClick={handleBack}>Back</button>
         </div>
     );
 };
-
-const serviceTypes = [
-    "Oil Change",
-    "Tire Rotation",
-    "Brake Pads Replacement",
-    "Battery Check",
-    "Transmission Fluid Change",
-    "Engine Flush",
-    "Coolant Flush",
-    "Spark Plug Replacement",
-    "Timing Belt Replacement",
-    "Fuel Injection Cleaning",
-    "Alignment",
-    "Suspension Check",
-    "AC Recharge",
-    "Differential Fluid Change",
-    "Timing Chain Replacement",
-    "Clutch Replacement"
-];
 
 export default EditService;
