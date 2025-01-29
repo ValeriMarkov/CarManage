@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static CarManage.Server.Controllers.ServiceController;
 
 namespace CarManage.Server.Controllers
 {
@@ -124,9 +125,9 @@ namespace CarManage.Server.Controllers
                 int servicesBitmask = 0;
                 foreach (var serviceId in serviceHistoryInput.SelectedServicesInput)
                 {
-                    if (Enum.IsDefined(typeof(ServiceType), serviceId))
+                    if (Enum.TryParse(serviceId.ToString(), out ServiceType serviceType))
                     {
-                        servicesBitmask |= (int)(ServiceType)serviceId;
+                        servicesBitmask |= (int)serviceType;
                     }
                     else
                     {
@@ -196,7 +197,8 @@ namespace CarManage.Server.Controllers
             int servicesBitmask = 0;
             foreach (var serviceId in serviceHistoryUpdateInput.SelectedServicesInput)
             {
-                if (Enum.TryParse(serviceId, out ServiceType serviceType))
+                ServiceType serviceType;
+                if (Enum.TryParse(serviceId.ToString(), out serviceType))
                 {
                     servicesBitmask |= (int)serviceType;
                 }

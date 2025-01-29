@@ -73,18 +73,12 @@ const EditService = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const idToken = await getIdToken();
-        console.log('serviceTypes:', serviceTypes);
-        console.log('selectedServicesInput:', serviceData.selectedServicesInput);
+
         const serviceHistoryUpdateInput = {
             ServiceDate: serviceData.serviceDate.split('T')[0],
             OdometerAtService: serviceData.odometerAtService,
             Notes: serviceData.notes,
-            SelectedServicesInput: serviceData.selectedServicesInput.map(service => {
-                console.log('service:', service);
-                const serviceType = serviceTypes.find(st => st.name === service);
-                console.log('serviceType:', serviceType);
-                return serviceType?.id.toString();
-            })
+            SelectedServicesInput: serviceData.selectedServicesInput.map(serviceType => serviceType.toString())
         };
         console.log('serviceHistoryUpdateInput:', serviceHistoryUpdateInput);
         try {
@@ -96,11 +90,12 @@ const EditService = () => {
                 },
                 body: JSON.stringify(serviceHistoryUpdateInput)
             });
+            console.log(response); // Added this line to log the response object
             if (!response.ok) {
                 const errorResponse = await response.json();
                 console.error('Error updating service details:', errorResponse);
                 console.log('serviceHistoryUpdateInput:', serviceHistoryUpdateInput);
-                console.log('PUT https://localhost:7025/api/cars/${carId}/services/${serviceId} ${response.status} (${response.statusText})');
+                console.log(`PUT https://localhost:7025/api/cars/${carId}/services/${serviceId} ${response.status} (${response.statusText})`);
                 throw new Error('Failed to update service details');
             }
             const data = await response.json();
