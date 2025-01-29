@@ -188,22 +188,22 @@ namespace CarManage.Server.Controllers
                     return NotFound("Service not found");
                 }
 
-                existingService.ServiceDate = serviceHistoryUpdateInput.ServiceDate;
-                existingService.OdometerAtService = serviceHistoryUpdateInput.OdometerAtService;
+                existingService.ServiceDate = DateTime.Parse(serviceHistoryUpdateInput.ServiceDate);
+                existingService.OdometerAtService = int.Parse(serviceHistoryUpdateInput.OdometerAtService);
                 existingService.Notes = serviceHistoryUpdateInput.Notes;
 
                 int servicesBitmask = 0;
-                foreach (var serviceId in serviceHistoryUpdateInput.SelectedServicesInput)
+                foreach (var serviceName in serviceHistoryUpdateInput.SelectedServicesInput)
                 {
-                    ServiceType serviceType;
-                    if (Enum.TryParse(serviceId.ToString(), out serviceType))
+                    if (Enum.IsDefined(typeof(ServiceType), serviceName))
                     {
+                        ServiceType serviceType = (ServiceType)serviceName;
                         servicesBitmask |= (int)serviceType;
                     }
                     else
                     {
-                        _logger.LogWarning($"Invalid service ID: {serviceId}");
-                        return BadRequest("Invalid service ID");
+                        _logger.LogWarning($"Invalid service name: {serviceName}");
+                        return BadRequest("Invalid service name");
                     }
                 }
 
@@ -255,10 +255,10 @@ namespace CarManage.Server.Controllers
 
         public class ServiceHistoryUpdateInput
         {
-            public DateTime ServiceDate { get; set; }
-            public int OdometerAtService { get; set; }
+            public string ServiceDate { get; set; }
+            public string OdometerAtService { get; set; }
             public string Notes { get; set; }
-            public string[] SelectedServicesInput { get; set; }
+            public List<ServiceType> SelectedServicesInput { get; set; }
         }
     }
 }

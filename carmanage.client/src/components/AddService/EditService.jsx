@@ -55,9 +55,7 @@ const EditService = () => {
     };
 
     const handleServiceChange = (e, serviceType) => {
-        console.log('e.target:', e.target);
         const { checked } = e.target;
-        console.log('handleServiceChange:', checked);
         if (checked) {
             setServiceData((prevState) => ({
                 ...prevState,
