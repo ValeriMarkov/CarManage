@@ -59,12 +59,12 @@ const EditService = () => {
         if (checked) {
             setServiceData((prevState) => ({
                 ...prevState,
-                selectedServicesInput: [...(prevState.selectedServicesInput || []), serviceType.Name]
+                selectedServicesInput: [...(prevState.selectedServicesInput || []), serviceType]
             }));
         } else {
             setServiceData((prevState) => ({
                 ...prevState,
-                selectedServicesInput: (prevState.selectedServicesInput || []).filter((service) => service !== serviceType.Name)
+                selectedServicesInput: (prevState.selectedServicesInput || []).filter((service) => service !== serviceType)
             }));
         }
     };
@@ -76,25 +76,27 @@ const EditService = () => {
         console.log('serviceData.selectedServicesInput:', serviceData.selectedServicesInput);
 
         const serviceHistoryUpdateInput = {
-            ServiceDate: serviceData.serviceDate.split('T')[0],
-            OdometerAtService: serviceData.odometerAtService,
-            Notes: serviceData.notes,
-            SelectedServicesInput: serviceData.selectedServicesInput.filter((serviceType) => serviceType !== "")
+            serviceHistoryUpdateInput: {
+                ServiceDate: serviceData.serviceDate,
+                OdometerAtService: serviceData.odometerAtService.toString(),
+                Notes: serviceData.notes,
+                SelectedServicesInput: serviceData.selectedServicesInput
+            }
         };
-
-        if (serviceHistoryUpdateInput.SelectedServicesInput.length === 0) {
+        if (serviceHistoryUpdateInput.serviceHistoryUpdateInput.SelectedServicesInput.length === 0) {
             console.error('SelectedServicesInput is empty');
             return;
         }
 
         console.log('serviceHistoryUpdateInput:', serviceHistoryUpdateInput);
         try {
-            const response = await axios.put(`https://localhost:7025/api/cars/${carId}/services/${serviceId}`, serviceHistoryUpdateInput, {
+            const response = await axios.put(`https://localhost:7025/api/cars/${carId}/services/${serviceId}`, JSON.stringify(serviceHistoryUpdateInput.serviceHistoryUpdateInput), {
                 headers: {
-                    'Authorization': `Bearer ${idToken}`
+                    'Authorization': `Bearer ${idToken}`,
+                    'Content-Type': 'application/json'
                 }
             });
-            console.log(response); // Added this line to log the response object
+            console.log(response);
             if (response.status === 204) {
                 alert('Service details updated successfully');
                 navigate("/");
