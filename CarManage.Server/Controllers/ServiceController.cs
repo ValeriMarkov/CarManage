@@ -5,6 +5,9 @@ using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Globalization;
+using CarManage.Server.Controllers;
+using Newtonsoft.Json;
 
 namespace CarManage.Server.Controllers
 {
@@ -19,6 +22,15 @@ namespace CarManage.Server.Controllers
         {
             _context = context;
             _logger = logger;
+        }
+
+        public class ServiceHistoryInput
+        {
+            public int CarId { get; set; }
+            public string ServiceDate { get; set; }
+            public string OdometerAtService { get; set; }
+            public string Notes { get; set; }
+            public List<ServiceType>? SelectedServices { get; set; }
         }
 
         // GET: api/cars/{carId}/services
@@ -46,13 +58,17 @@ namespace CarManage.Server.Controllers
                 sh.ServiceDate,
                 sh.OdometerAtService,
                 sh.Notes,
-                SelectedServices = sh.SelectedServices
+                selectedServices = Enum.GetValues(typeof(ServiceType))
+                    .Cast<ServiceType>()
+                    .Where(st => (sh.Services & (int)st) != 0)
+                    .Select(st => st.ToString())
+                    .ToList()
             }));
         }
 
         // GET: api/cars/{carId}/services/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<object>> GetServiceHistory(int carId, int id)
+        public async Task<ActionResult<ServiceHistoryInput>> GetServiceHistory(int carId, int id)
         {
             try
             {
@@ -69,13 +85,18 @@ namespace CarManage.Server.Controllers
 
                 _logger.LogInformation($"Found service history: {serviceHistory.Id}");
 
-                return Ok(new
+                var selectedServices = Enum.GetValues(typeof(ServiceType))
+                    .Cast<ServiceType>()
+                    .Where(st => (serviceHistory.Services & (int)st) != 0)
+                    .ToList();
+
+                return Ok(new ServiceHistoryInput
                 {
-                    serviceHistory.Id,
-                    serviceHistory.ServiceDate,
-                    serviceHistory.OdometerAtService,
-                    serviceHistory.Notes,
-                    SelectedServices = serviceHistory.SelectedServices
+                    CarId = carId,
+                    ServiceDate = serviceHistory.ServiceDate.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                    OdometerAtService = serviceHistory.OdometerAtService.ToString(),
+                    Notes = serviceHistory.Notes,
+                    SelectedServices = selectedServices
                 });
             }
             catch (Exception ex)
@@ -85,7 +106,6 @@ namespace CarManage.Server.Controllers
             }
         }
 
-        // POST: api/cars/{carId}/services
         [HttpPost]
         public async Task<ActionResult<ServiceHistory>> AddServiceHistory([FromRoute] int carId, [FromBody] ServiceHistoryInput serviceHistoryInput)
         {
@@ -93,13 +113,32 @@ namespace CarManage.Server.Controllers
             {
                 _logger.LogInformation($"Received request to add service history for CarId: {carId}");
 
+                // Add logging statement to see if ModelState is valid
+                if (!ModelState.IsValid)
+                {
+                    var errorMessages = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)).ToList();
+                    _logger.LogWarning($"ModelState is not valid. Errors: {string.Join(", ", errorMessages)}");
+                }
+
+                // Add logging statement to see if CarId is valid
+                if (carId <= 0)
+                {
+                    _logger.LogWarning($"CarId is not valid. CarId: {carId}");
+                }
+
+                // Add logging statement to see if ServiceHistoryInput is valid
+                if (serviceHistoryInput == null)
+                {
+                    _logger.LogWarning($"ServiceHistoryInput is null.");
+                }
+
+                _logger.LogInformation($"ServiceHistoryInput: {JsonConvert.SerializeObject(serviceHistoryInput)}");
+
                 if (carId != serviceHistoryInput.CarId)
                 {
                     _logger.LogWarning($"CarId in URL does not match CarId in request body. CarId: {carId}, ServiceHistory CarId: {serviceHistoryInput.CarId}");
                     return BadRequest("CarId in URL does not match CarId in request body");
                 }
-
-                _logger.LogInformation($"SelectedServicesInput: {string.Join(", ", serviceHistoryInput.SelectedServicesInput)}");
 
                 if (!ModelState.IsValid)
                 {
@@ -108,6 +147,8 @@ namespace CarManage.Server.Controllers
                     return BadRequest(errorMessages);
                 }
 
+                _logger.LogInformation($"ModelState is valid. ServiceHistoryInput: {JsonConvert.SerializeObject(serviceHistoryInput)}");
+
                 var car = await _context.Cars.FindAsync(carId);
                 if (car == null)
                 {
@@ -115,59 +156,67 @@ namespace CarManage.Server.Controllers
                     return NotFound("Car not found");
                 }
 
-                if (serviceHistoryInput.SelectedServicesInput == null || !serviceHistoryInput.SelectedServicesInput.Any())
-                {
-                    _logger.LogWarning("SelectedServices cannot be empty");
-                    return BadRequest("SelectedServices cannot be empty.");
-                }
-
-                int servicesBitmask = 0;
-                foreach (var serviceId in serviceHistoryInput.SelectedServicesInput)
-                {
-                    if (Enum.TryParse(serviceId.ToString(), out ServiceType serviceType))
-                    {
-                        servicesBitmask |= (int)serviceType;
-                    }
-                    else
-                    {
-                        _logger.LogWarning($"Invalid service ID: {serviceId}");
-                        return BadRequest("Invalid service ID");
-                    }
-                }
+                _logger.LogInformation($"Car found. CarId: {carId}, Car: {JsonConvert.SerializeObject(car)}");
 
                 var serviceHistory = new ServiceHistory
                 {
                     CarId = carId,
-                    ServiceDate = serviceHistoryInput.ServiceDate,
-                    OdometerAtService = serviceHistoryInput.OdometerAtService,
+                    ServiceDate = ParseServiceDate(serviceHistoryInput.ServiceDate),
+                    OdometerAtService = int.Parse(serviceHistoryInput.OdometerAtService),
                     Notes = serviceHistoryInput.Notes,
-                    Services = servicesBitmask
+                    Services = 0,
                 };
+
+                foreach (var serviceType in Enum.GetValues(typeof(ServiceType)))
+                {
+                    if (serviceHistoryInput.SelectedServices.Contains((ServiceType)serviceType))
+                    {
+                        serviceHistory.Services |= (int)serviceType;
+                    }
+                }
+
+                _logger.LogInformation($"ServiceHistory created. ServiceHistory: {JsonConvert.SerializeObject(serviceHistory)}");
 
                 try
                 {
+                    _logger.LogInformation($"Attempting to add ServiceHistory to database. ServiceHistory: {JsonConvert.SerializeObject(serviceHistory)}");
                     _context.ServiceHistories.Add(serviceHistory);
                     await _context.SaveChangesAsync();
                     _logger.LogInformation($"Service history added successfully for CarId: {carId}, ServiceHistory Id: {serviceHistory.Id}");
                     return CreatedAtAction(nameof(GetServiceHistory), new { carId, id = serviceHistory.Id }, serviceHistory);
                 }
+                catch (DbUpdateException ex)
+                {
+                    _logger.LogError($"Database update error occurred while adding service history: {ex.Message}");
+                    _logger.LogError($"ServiceHistory: {JsonConvert.SerializeObject(serviceHistory)}");
+                    _logger.LogError($"Exception details: {ex.StackTrace}");
+                    return new JsonResult(new { error = "A database error occurred" }) { StatusCode = 500 };
+                }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Error occurred while adding service history");
+                    _logger.LogError($"Error occurred while adding service history: {ex.Message}");
+                    _logger.LogError($"ServiceHistory: {JsonConvert.SerializeObject(serviceHistory)}");
+                    _logger.LogError($"Exception details: {ex.StackTrace}");
                     return new JsonResult(new { error = "An error occurred" }) { StatusCode = 500 };
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error occurred while adding service history: {ex.Message}");
+                _logger.LogError($"Exception details: {ex.StackTrace}");
                 return StatusCode(500, new { error = "Internal server error" });
             }
         }
 
-        // PUT: api/cars/{carId}/services/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateServiceHistory(int carId, int id, [FromBody] ServiceHistoryUpdateInput serviceHistoryUpdateInput)
+        public async Task<ActionResult<ServiceHistoryInput>> UpdateServiceHistory(int carId, int id, [FromBody] ServiceHistoryInput serviceHistoryInput)
         {
+            if (serviceHistoryInput == null)
+            {
+                _logger.LogError("ServiceHistoryInput is null.");
+                return BadRequest("ServiceHistoryInput is null.");
+            }
+
             try
             {
                 _logger.LogInformation($"Received request to update service history for CarId: {carId} and ServiceId: {id}");
@@ -188,33 +237,51 @@ namespace CarManage.Server.Controllers
                     return NotFound("Service not found");
                 }
 
-                existingService.ServiceDate = DateTime.Parse(serviceHistoryUpdateInput.ServiceDate);
-                existingService.OdometerAtService = int.Parse(serviceHistoryUpdateInput.OdometerAtService);
-                existingService.Notes = serviceHistoryUpdateInput.Notes;
-
-                int servicesBitmask = 0;
-                foreach (var serviceName in serviceHistoryUpdateInput.SelectedServicesInput)
+                if (!int.TryParse(serviceHistoryInput.OdometerAtService, out var odometerAtService))
                 {
-                    if (Enum.IsDefined(typeof(ServiceType), serviceName))
-                    {
-                        ServiceType serviceType = (ServiceType)serviceName;
-                        servicesBitmask |= (int)serviceType;
-                    }
-                    else
-                    {
-                        _logger.LogWarning($"Invalid service name: {serviceName}");
-                        return BadRequest("Invalid service name");
-                    }
+                    _logger.LogError("Failed to parse odometerAtService");
+                    return BadRequest("Failed to parse odometerAtService");
                 }
 
-                existingService.Services = servicesBitmask;
+                try
+                {
+                    existingService.ServiceDate = ParseServiceDate(serviceHistoryInput.ServiceDate);
+                }
+                catch (FormatException ex)
+                {
+                    _logger.LogError($"Error parsing ServiceDate: {ex.Message}");
+                    return BadRequest("Invalid ServiceDate format");
+                }
+
+                existingService.OdometerAtService = odometerAtService;
+                existingService.Notes = serviceHistoryInput.Notes;
+                existingService.Services = 0;
+                foreach (var serviceType in Enum.GetValues(typeof(ServiceType)))
+                {
+                    if (serviceHistoryInput.SelectedServices.Contains((ServiceType)serviceType))
+                    {
+                        existingService.Services |= (int)serviceType;
+                    }
+                }
 
                 _context.Entry(existingService).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation($"Service history updated successfully for CarId: {carId}, ServiceHistory Id: {existingService.Id}");
 
-                return NoContent();
+                var updatedServiceHistoryInput = new ServiceHistoryInput
+                {
+                    CarId = carId,
+                    ServiceDate = existingService.ServiceDate.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                    OdometerAtService = existingService.OdometerAtService.ToString(),
+                    Notes = existingService.Notes,
+                    SelectedServices = Enum.GetValues(typeof(ServiceType))
+                        .Cast<ServiceType>()
+                        .Where(st => (existingService.Services & (int)st) != 0)
+                        .ToList()
+                };
+
+                return Ok(updatedServiceHistoryInput);
             }
             catch (Exception ex)
             {
@@ -253,12 +320,17 @@ namespace CarManage.Server.Controllers
             return Ok(serviceTypes);
         }
 
-        public class ServiceHistoryUpdateInput
+        private DateTime ParseServiceDate(string serviceDate)
         {
-            public string ServiceDate { get; set; }
-            public string OdometerAtService { get; set; }
-            public string Notes { get; set; }
-            public List<ServiceType> SelectedServicesInput { get; set; }
+            try
+            {
+                return DateTime.ParseExact(serviceDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+            }
+            catch (FormatException ex)
+            {
+                _logger.LogError($"Error parsing ServiceDate: {ex.Message}");
+                throw;
+            }
         }
     }
 }

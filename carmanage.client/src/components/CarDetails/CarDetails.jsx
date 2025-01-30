@@ -69,6 +69,32 @@ const CarDetails = () => {
         }
     }, [carId, user]);
 
+    useEffect(() => {
+        const fetchLatestServiceHistory = async () => {
+            if (user && carId) {
+                try {
+                    const response = await fetch(`https://localhost:7025/api/cars/${carId}/services`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${user ? await user.getIdToken(true) : ''}`,
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch latest service history');
+                    }
+
+                    const data = await response.json();
+                    setServices(data);
+                } catch (err) {
+                    setError(err.message);
+                }
+            }
+        };
+
+        fetchLatestServiceHistory();
+    }, [carId, user]);
+
     const onRemoveClick = async () => {
         try {
             if (window.confirm('Are you sure you want to remove this car?')) {
@@ -123,6 +149,8 @@ const CarDetails = () => {
         return <p className="error">{error}</p>;
     }
 
+    console.log(services);
+
     return (
         <div className="center">
             <div>
@@ -147,15 +175,15 @@ const CarDetails = () => {
                     ) : (
                         <ul>
                             {services.map(service => (
-                                <li key={service.id}>
-                                    <strong>Service Date:</strong> {new Date(service.serviceDate).toLocaleDateString()}<br />
-                                    <strong>Odometer at Service:</strong> {service.odometerAtService} km<br />
-                                    <strong>Notes:</strong> {service.notes}<br />
-                                    <strong>Selected Services:</strong> {service.selectedServices.join(", ")}<br />
-                                    <button onClick={() => onRemoveServiceHistory(car.id, service.id)}>Delete</button>
-                                    <button onClick={() => onEditService(service.id)}>Edit</button>
-                                </li>
-                            ))}
+                            <li key={service.id}>
+                                <strong>Service Date:</strong> {new Date(service.serviceDate).toLocaleDateString()}<br />
+                                <strong>Odometer at Service:</strong> {service.odometerAtService} km<br />
+                                <strong>Notes:</strong> {service.notes}<br />
+                                <strong>Selected Services:</strong> {service.selectedServices && service.selectedServices.join(", ")}<br />
+                                <button onClick={() => onRemoveServiceHistory(car.id, service.id)}>Delete</button>
+                                <button onClick={() => onEditService(service.id)}>Edit</button>
+                             </li>
+                        ))}
                         </ul>
                     )
                 )}

@@ -61,7 +61,7 @@ namespace CarManage.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cars");
+                    b.ToTable("Cars", (string)null);
                 });
 
             modelBuilder.Entity("ServiceHistory", b =>
@@ -97,7 +97,7 @@ namespace CarManage.Server.Migrations
 
                     b.HasIndex("CarId");
 
-                    b.ToTable("ServiceHistories");
+                    b.ToTable("ServiceHistories", (string)null);
                 });
 
             modelBuilder.Entity("ServiceHistory", b =>

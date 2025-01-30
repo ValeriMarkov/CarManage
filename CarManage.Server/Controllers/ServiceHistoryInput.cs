@@ -8,6 +8,5 @@ namespace CarManage.Server.Controllers
         public DateTime ServiceDate { get; set; }
         public int OdometerAtService { get; set; }
         public string Notes { get; set; }
-        public List<ServiceType> SelectedServicesInput { get; set; }
     }
 }

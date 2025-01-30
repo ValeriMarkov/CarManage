@@ -9,7 +9,7 @@ const EditService = () => {
         serviceDate: '',
         odometerAtService: '',
         notes: '',
-        selectedServicesInput: []
+        selectedServices: [],
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -35,8 +35,8 @@ const EditService = () => {
                     }
                 });
                 const data = response.data;
-                const selectedServicesInput = Array.isArray(data.selectedServicesInput) ? data.selectedServicesInput.map((service) => service.name) : [];
-                setServiceData({ ...data, selectedServicesInput });
+                console.log('Fetched service data:', data);
+                setServiceData(data);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching service details:', error);
@@ -48,10 +48,17 @@ const EditService = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setServiceData((prevState) => ({
-            ...prevState,
-            [name]: value
-        }));
+        if (name === 'notes') {
+            setServiceData((prevState) => ({
+                ...prevState,
+                notes: value,
+            }));
+        } else {
+            setServiceData((prevState) => ({
+                ...prevState,
+                [name]: value,
+            }));
+        }
     };
 
     const handleServiceChange = (e, serviceType) => {
@@ -59,51 +66,41 @@ const EditService = () => {
         if (checked) {
             setServiceData((prevState) => ({
                 ...prevState,
-                selectedServicesInput: [...(prevState.selectedServicesInput || []), serviceType]
+                selectedServices: [...prevState.selectedServices, serviceType],
             }));
         } else {
             setServiceData((prevState) => ({
                 ...prevState,
-                selectedServicesInput: (prevState.selectedServicesInput || []).filter((service) => service !== serviceType)
+                selectedServices: prevState.selectedServices.filter((service) => service !== serviceType),
             }));
         }
     };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         const idToken = await getIdToken();
-
-        console.log('serviceData.selectedServicesInput:', serviceData.selectedServicesInput);
-
         const serviceHistoryUpdateInput = {
-            serviceHistoryUpdateInput: {
-                ServiceDate: serviceData.serviceDate,
-                OdometerAtService: serviceData.odometerAtService.toString(),
-                Notes: serviceData.notes,
-                SelectedServicesInput: serviceData.selectedServicesInput
-            }
+            ServiceDate: new Date(serviceData.serviceDate).toLocaleDateString('en-CA'),
+            OdometerAtService: serviceData.odometerAtService.toString(),
+            Notes: serviceData.notes || '',
+            selectedServices: serviceData.selectedServices,
         };
-        if (serviceHistoryUpdateInput.serviceHistoryUpdateInput.SelectedServicesInput.length === 0) {
-            console.error('SelectedServicesInput is empty');
-            return;
-        }
-
-        console.log('serviceHistoryUpdateInput:', serviceHistoryUpdateInput);
+        console.log('Request data:', serviceHistoryUpdateInput);
         try {
-            const response = await axios.put(`https://localhost:7025/api/cars/${carId}/services/${serviceId}`, JSON.stringify(serviceHistoryUpdateInput.serviceHistoryUpdateInput), {
+            const response = await axios.put(`https://localhost:7025/api/cars/${carId}/services/${serviceId}`, JSON.stringify(serviceHistoryUpdateInput), {
                 headers: {
                     'Authorization': `Bearer ${idToken}`,
                     'Content-Type': 'application/json'
                 }
             });
             console.log(response);
-            if (response.status === 204) {
+            if (response.status === 200 || response.status === 204) {
                 alert('Service details updated successfully');
                 navigate("/");
             } else {
                 console.error('Error updating service details:', response);
             }
         } catch (err) {
+            console.log(err.response.data);
             setError(err.message);
         }
     };
@@ -172,14 +169,13 @@ const EditService = () => {
                         <input
                             type="checkbox"
                             id={serviceType.Name}
-                            defaultChecked={Array.isArray(serviceData.selectedServicesInput) && serviceData.selectedServicesInput.includes(serviceType.Name)}
+                            checked={serviceData.selectedServices && serviceData.selectedServices.includes(serviceType)}
                             onChange={(e) => handleServiceChange(e, serviceType)}
                         />
                         <span>{serviceType.Name}</span>
                         <span>{JSON.stringify(serviceType)}</span>
                     </div>
                 ))}
-
                 <button type="submit">Update Service</button>
             </form>
             <button onClick={handleBack}>Back</button>

@@ -83,10 +83,9 @@ const AddService = () => {
             const newService = {
                 CarId: carId,
                 ServiceDate: serviceData.serviceDate,
-                OdometerAtService: parseInt(serviceData.odometerAtService),
+                OdometerAtService: serviceData.odometerAtService.toString(),
                 Notes: serviceData.notes,
-                SelectedServicesInput: serviceData.selectedServices,
-                serviceHistoryInput: [{ id: 0, date: new Date(), note: '' }],
+                SelectedServices: serviceData.selectedServices,
             };
 
             const response = await fetch(`https://localhost:7025/api/cars/${carId}/services`, {
