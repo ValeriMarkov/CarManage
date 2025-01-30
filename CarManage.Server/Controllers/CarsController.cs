@@ -2,6 +2,7 @@
 using CarManage.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using FirebaseAdmin.Auth;
+using Newtonsoft.Json;
 
 namespace CarManage.Server.Controllers
 {
@@ -10,10 +11,12 @@ namespace CarManage.Server.Controllers
     public class CarsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger _logger;
 
-        public CarsController(ApplicationDbContext context)
+        public CarsController(ApplicationDbContext context, ILogger<CarsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [HttpOptions("")]
@@ -79,6 +82,14 @@ namespace CarManage.Server.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCar(int id, [FromBody] Car car)
         {
+            _logger.LogInformation($"Received update request for car {id} with values: {JsonConvert.SerializeObject(car)}");
+            _logger.LogInformation($"Received update request for car {id} with HorsePower: {car.HorsePower}");
+
+            if (car.HorsePower == null || car.HorsePower == 0)
+            {
+                _logger.LogInformation("HorsePower property is null or empty");
+            }
+
             var user = HttpContext.Items["User"] as FirebaseToken;
 
             if (user == null)
@@ -106,6 +117,7 @@ namespace CarManage.Server.Controllers
             existingCar.Vin = car.Vin;
             existingCar.Engine = car.Engine;
             existingCar.HorsePower = car.HorsePower;
+            existingCar.Odometer = car.Odometer;
 
             _context.Entry(existingCar).State = EntityState.Modified;
 

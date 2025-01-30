@@ -4,7 +4,7 @@ namespace CarManage.Server.Models
 {
     public class Car
     {
-        public Car(string brand, string model, int year, string color, string vin, double engine, int horsePower, string userId)
+        public Car(string brand, string model, int year, string color, string vin, double engine, int horsePower,int odometer, string userId)
         {
             Brand = brand;
             Model = model;
@@ -13,6 +13,7 @@ namespace CarManage.Server.Models
             Vin = vin;
             Engine = engine;
             HorsePower = horsePower;
+            Odometer = odometer;
             UserId = userId;
         }
 
@@ -24,6 +25,7 @@ namespace CarManage.Server.Models
         public string Vin { get; set; }
         public double Engine { get; set; }
         public int HorsePower { get; set; }
+        public int Odometer { get; set; }
         public string UserId { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

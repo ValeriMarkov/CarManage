@@ -11,7 +11,8 @@ const EditCarForm = () => {
         color: '',
         vin: '',
         engine: '',
-        horsepower: ''
+        horsepower: '',
+        odometer: '',
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -68,13 +69,17 @@ const EditCarForm = () => {
             const idToken = await user.getIdToken(true);
 
             try {
+                const updatedCarData = { ...carData };
+                delete updatedCarData.horsepower;
+                updatedCarData.HorsePower = carData.horsepower;
+
                 const response = await fetch(`https://localhost:7025/api/cars/${carId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${idToken}`
                     },
-                    body: JSON.stringify(carData)
+                    body: JSON.stringify(updatedCarData)
                 });
 
                 if (!response.ok) {
@@ -91,7 +96,6 @@ const EditCarForm = () => {
             setError('User is not authenticated');
         }
     };
-
 
     const handleBack = () => {
         navigate(-1);
@@ -160,6 +164,14 @@ const EditCarForm = () => {
                     value={carData.horsepower || ''}
                     onChange={handleInputChange}
                     placeholder="Horsepower"
+                    required
+                />
+                <input
+                    type="number"
+                    name="odometer"
+                    value={carData.odometer || ''}
+                    onChange={handleInputChange}
+                    placeholder="Odometer"
                     required
                 />
                 <button type="submit">Update Car</button>

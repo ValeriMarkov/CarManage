@@ -16,7 +16,8 @@ const CarForm = () => {
         color: '',
         vin: '',
         engine: '',
-        horsepower: ''
+        horsepower: '',
+        odometer: ''
     });
 
     const [loading, setLoading] = useState(false);
@@ -70,7 +71,8 @@ const CarForm = () => {
                             color: '',
                             vin: '',
                             engine: '',
-                            horsepower: ''
+                            horsepower: '',
+                            odometer: ''
                         });
                         navigate('/');
                     })
@@ -143,6 +145,14 @@ const CarForm = () => {
                 value={carData.horsepower}
                 onChange={handleInputChange}
                 placeholder="Horsepower"
+                required
+            />
+            <input
+                type="number"
+                name="odometer"
+                value={carData.odometer}
+                onChange={handleInputChange}
+                placeholder="Odometer"
                 required
             />
             <button type="submit" disabled={loading}>

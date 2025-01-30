@@ -162,6 +162,7 @@ const CarDetails = () => {
                 <p><strong>VIN:</strong> {car.vin}</p>
                 <p><strong>Engine:</strong> {car.engine}L</p>
                 <p><strong>Horsepower:</strong> {car.horsePower} HP</p>
+                <p><strong>Odometer:</strong> {car.odometer} km</p>
             </div>
 
             <div>
