@@ -83,7 +83,7 @@ namespace CarManage.Server.Controllers
                     return NotFound("Service not found");
                 }
 
-                _logger.LogInformation($"Found service history: {serviceHistory.Id}");
+                _logger.LogInformation($"Found service history with Id: {serviceHistory.Id} for CarId: {carId}");
 
                 var selectedServices = Enum.GetValues(typeof(ServiceType))
                     .Cast<ServiceType>()
@@ -111,28 +111,22 @@ namespace CarManage.Server.Controllers
         {
             try
             {
-                _logger.LogInformation($"Received request to add service history for CarId: {carId}");
 
-                // Add logging statement to see if ModelState is valid
                 if (!ModelState.IsValid)
                 {
                     var errorMessages = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)).ToList();
                     _logger.LogWarning($"ModelState is not valid. Errors: {string.Join(", ", errorMessages)}");
                 }
 
-                // Add logging statement to see if CarId is valid
                 if (carId <= 0)
                 {
                     _logger.LogWarning($"CarId is not valid. CarId: {carId}");
                 }
 
-                // Add logging statement to see if ServiceHistoryInput is valid
                 if (serviceHistoryInput == null)
                 {
                     _logger.LogWarning($"ServiceHistoryInput is null.");
                 }
-
-                _logger.LogInformation($"ServiceHistoryInput: {JsonConvert.SerializeObject(serviceHistoryInput)}");
 
                 if (carId != serviceHistoryInput.CarId)
                 {
@@ -147,16 +141,12 @@ namespace CarManage.Server.Controllers
                     return BadRequest(errorMessages);
                 }
 
-                _logger.LogInformation($"ModelState is valid. ServiceHistoryInput: {JsonConvert.SerializeObject(serviceHistoryInput)}");
-
                 var car = await _context.Cars.FindAsync(carId);
                 if (car == null)
                 {
                     _logger.LogWarning($"Car with CarId: {carId} not found");
                     return NotFound("Car not found");
                 }
-
-                _logger.LogInformation($"Car found. CarId: {carId}, Car: {JsonConvert.SerializeObject(car)}");
 
                 var serviceHistory = new ServiceHistory
                 {
@@ -175,7 +165,7 @@ namespace CarManage.Server.Controllers
                     }
                 }
 
-                _logger.LogInformation($"ServiceHistory created. ServiceHistory: {JsonConvert.SerializeObject(serviceHistory)}");
+                _logger.LogInformation($"ServiceHistory created with Id: {serviceHistory.Id} for CarId: {carId}");
 
                 try
                 {
@@ -219,7 +209,6 @@ namespace CarManage.Server.Controllers
 
             try
             {
-                _logger.LogInformation($"Received request to update service history for CarId: {carId} and ServiceId: {id}");
 
                 if (!ModelState.IsValid)
                 {
@@ -294,8 +283,6 @@ namespace CarManage.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteServiceHistory(int carId, int id)
         {
-            _logger.LogInformation($"Received request to delete service history for CarId: {carId} and ServiceId: {id}");
-
             var serviceHistory = await _context.ServiceHistories
                                                    .FirstOrDefaultAsync(s => s.CarId == carId && s.Id == id);
 

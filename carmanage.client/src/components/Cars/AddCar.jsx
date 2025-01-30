@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { getAuth } from 'firebase/auth';
 import { initializeApp, getApps } from 'firebase/app';
-import { firebaseConfig } from '../firebase';
+import { firebaseConfig } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
 
 if (!getApps().length) {

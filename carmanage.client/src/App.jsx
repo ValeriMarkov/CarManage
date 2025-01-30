@@ -5,11 +5,11 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
-import CarForm from "./components/CarForm";
-import CarDetails from "./components/CarDetails/CarDetails";
-import EditCarForm from "./components/EditCarForm";
-import AddService from "./components/AddService/AddService";
-import EditService from "./components/AddService/EditService";
+import CarForm from "./components/Cars/AddCar";
+import CarDetails from "./components/Cars/CarDetails";
+import EditCarForm from "./components/Cars/EditCar";
+import AddService from "./components/Services/AddService";
+import EditService from "./components/Services/EditService";
 
 const App = () => {
     const { user, logout } = useAuth();
