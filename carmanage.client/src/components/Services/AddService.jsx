@@ -112,6 +112,10 @@ const AddService = () => {
         }
     };
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className="add-service-container">
             <h2>Add Service History</h2>
@@ -164,8 +168,9 @@ const AddService = () => {
 
                 {error && <p className="error">{error}</p>}
 
-                <button type="submit">Submit</button>
+                <button className="buttons" type="submit">Submit</button>
             </form>
+            <button className="buttons" onClick={handleBack}>Back</button>
         </div>
     );
 };

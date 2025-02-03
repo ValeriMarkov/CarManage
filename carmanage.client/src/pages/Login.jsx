@@ -19,6 +19,10 @@ const Login = () => {
         }
     };
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div>
             <h2>Login</h2>
@@ -36,8 +40,9 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <button type="submit">Login</button>
+                <button className ="buttons" type="submit">Login</button>
             </form>
+            <button className="buttons" onClick={handleBack}>Back</button>
         </div>
     );
 };

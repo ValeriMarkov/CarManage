@@ -14,24 +14,12 @@ button:hover {
 .home-container {
     text-align: center;
     padding: 20px;
-    background-color: #f9f9f9;
 }
 
-.home-container h2 {
-    color: #333;
-    font-size: 24px;
+body {
+    background-color: #565656;
 }
 
-.home-container button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #007bff;
+p , h2, h3, a {
     color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.home-container button:hover {
-    background-color: #0056b3;
 }

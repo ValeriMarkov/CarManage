@@ -20,6 +20,10 @@ const Register = () => {
         }
     };
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div>
             <h2>Register</h2>
@@ -39,8 +43,9 @@ const Register = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button type="submit">Register</button>
+                <button className="buttons" type="submit">Register</button>
             </form>
+            <button className="buttons" onClick={handleBack}>Back</button>
         </div>
     );
 };

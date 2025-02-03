@@ -174,9 +174,9 @@ const EditCarForm = () => {
                     placeholder="Odometer"
                     required
                 />
-                <button type="submit">Update Car</button>
+                <button className="buttons" type="submit">Update Car</button>
             </form>
-            <button onClick={handleBack}>Back</button>
+            <button className="buttons" onClick={handleBack}>Back</button>
         </div>
     );
 };

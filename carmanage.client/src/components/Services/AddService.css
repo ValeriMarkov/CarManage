@@ -31,3 +31,7 @@ button {
     color: red;
     font-size: 14px;
 }
+
+input[type="checkbox"] {
+    accent-color: #393939;
+}

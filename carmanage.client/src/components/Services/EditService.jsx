@@ -176,9 +176,9 @@ const EditService = () => {
                         <span>{JSON.stringify(serviceType)}</span>
                     </div>
                 ))}
-                <button type="submit">Update Service</button>
+                <button className="buttons" type="submit">Update Service</button>
             </form>
-            <button onClick={handleBack}>Back</button>
+            <button className="buttons" onClick={handleBack}>Back</button>
         </div>
     );
 };

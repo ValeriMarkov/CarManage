@@ -152,10 +152,10 @@ const CarDetails = () => {
     console.log(services);
 
     return (
-        <div className="center">
+        <div>
             <div>
-                <button onClick={() => navigate('/', { replace: true })}>Back to Home</button>
-                <button onClick={onRemoveClick}>Remove</button>
+                <button className="buttons" onClick={() => navigate('/', { replace: true })}>Back to Home</button>
+                <button className="buttons" onClick={onRemoveClick}>Remove</button>
                 <h2>Car Details</h2>
                 <h3>{car.brand} {car.model} - {car.year}</h3>
                 <p><strong>Color:</strong> {car.color}</p>
@@ -167,7 +167,7 @@ const CarDetails = () => {
 
             <div>
                 <h2>Service History</h2>
-                <button onClick={goToAddServicePage}>Add Service</button>
+                <button className="buttons" onClick={goToAddServicePage}>Add Service</button>
                 {loadingServices ? (
                     <p>Loading service history...</p>
                 ) : (
@@ -177,12 +177,12 @@ const CarDetails = () => {
                         <ul>
                             {services.map(service => (
                             <li key={service.id}>
-                                <strong>Service Date:</strong> {new Date(service.serviceDate).toLocaleDateString()}<br />
-                                <strong>Odometer at Service:</strong> {service.odometerAtService} km<br />
-                                <strong>Notes:</strong> {service.notes}<br />
-                                <strong>Selected Services:</strong> {service.selectedServices && service.selectedServices.join(", ")}<br />
-                                <button onClick={() => onRemoveServiceHistory(car.id, service.id)}>Delete</button>
-                                <button onClick={() => onEditService(service.id)}>Edit</button>
+                                <strong>Service Date:</strong><span>{new Date(service.serviceDate).toLocaleDateString()}</span><br />
+                                <strong>Odometer at Service:</strong><span>{service.odometerAtService} km</span><br />
+                                <strong>Notes:</strong> <span>{service.notes}</span><br />
+                                <strong>Selected Services:</strong> <span>{service.selectedServices && service.selectedServices.join(", ")}</span><br />
+                                <button className="buttons" onClick={() => onRemoveServiceHistory(car.id, service.id)}>Delete</button>
+                                <button className="buttons" onClick={() => onEditService(service.id)}>Edit</button>
                              </li>
                         ))}
                         </ul>
