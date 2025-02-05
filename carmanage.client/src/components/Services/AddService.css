@@ -11,9 +11,9 @@ form {
     flex-direction: column;
 }
 
-    form div {
-        margin-bottom: 15px;
-    }
+form div {
+    margin-bottom: 15px;
+}
 
 button {
     padding: 10px;
@@ -23,9 +23,9 @@ button {
     cursor: pointer;
 }
 
-    button:hover {
-        background-color: #0056b3;
-    }
+button:hover {
+    background-color: #0056b3;
+}
 
 .error {
     color: red;

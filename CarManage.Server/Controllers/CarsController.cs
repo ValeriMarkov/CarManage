@@ -33,6 +33,10 @@ namespace CarManage.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCar([FromBody] Car car)
         {
+            string requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
+            _logger.LogInformation($"Received add car request with JSON payload: {requestBody}");
+            _logger.LogInformation($"Deserialized car object: {JsonConvert.SerializeObject(car)}");
+
             var user = HttpContext.Items["User"] as FirebaseToken;
 
             if (user == null)

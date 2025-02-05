@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 
-const EditCarForm = () => {
+const EditCar = () => {
     const { carId } = useParams();
     const [carData, setCarData] = useState({
         brand: '',
@@ -181,4 +181,4 @@ const EditCarForm = () => {
     );
 };
 
-export default EditCarForm;
+export default EditCar;

@@ -11,6 +11,7 @@ namespace CarManage.Server.Models
 
         public DbSet<Car> Cars { get; set; }
         public DbSet<ServiceHistory> ServiceHistories { get; set; }
+        public DbSet<NotificationSettings> NotificationSettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,6 +22,11 @@ namespace CarManage.Server.Models
                 .WithMany(c => c.ServiceHistories)
                 .HasForeignKey(s => s.CarId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<NotificationSettings>()
+                .HasOne(ns => ns.Car)
+                .WithMany(c => c.NotificationSettings)
+                .HasForeignKey(ns => ns.CarId);
         }
     }
 }

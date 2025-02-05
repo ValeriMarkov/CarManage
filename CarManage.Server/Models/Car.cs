@@ -1,10 +1,12 @@
 ﻿using System.Text.Json.Serialization;
+using System.Collections.Generic;
+using AutoMapper.Configuration.Annotations;
 
 namespace CarManage.Server.Models
 {
     public class Car
     {
-        public Car(string brand, string model, int year, string color, string vin, double engine, int horsePower,int odometer, string userId)
+        public Car(string brand, string model, int year, string color, string vin, double engine, int horsePower, int odometer, string userId)
         {
             Brand = brand;
             Model = model;
@@ -30,5 +32,8 @@ namespace CarManage.Server.Models
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public List<ServiceHistory> ServiceHistories { get; set; } = new List<ServiceHistory>();
+
+        [JsonIgnore]
+        public List<NotificationSettings> NotificationSettings { get; set; } = new List<NotificationSettings>();
     }
 }
