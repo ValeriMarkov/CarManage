@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateNotificationSettings } from './actions';
 import { Tooltip } from 'react-tooltip';
+import notificationService from '../services/notification.service';
 
 const NotificationSettings = () => {
     const { carId } = useParams();
@@ -23,20 +24,27 @@ const NotificationSettings = () => {
         const { name, type, checked, value } = event.target;
         let newValue = type === 'checkbox' ? checked : value;
 
-        if (name === "autoNotification") {
-            newValue = value === "true";
+        if (name === 'autoNotification') {
+            newValue = value === 'true';
         }
 
         setNotificationSettingsData((prev) => ({
             ...prev,
             [name]: newValue,
-            ...(name === "autoNotification" && !newValue ? { averageWeeklyMileage: "" } : {}),
+            ...(name === 'autoNotification' && !newValue ? { averageWeeklyMileage: '' } : {}),
         }));
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         dispatch(updateNotificationSettings(carId, notificationSettingsData));
+
+        // Send email notification
+        await notificationService.sendNotification(
+            notificationSettingsData.email,
+            'Notification Settings Updated',
+            `Notification settings for car ${carId} have been updated.`,
+        );
     };
 
     return (
@@ -60,15 +68,15 @@ const NotificationSettings = () => {
                             data-tooltip-id="notification-tooltip"
                             style={{
                                 fontSize: 14,
-                                color: "white",
-                                cursor: "help",
-                                border: "1px solid white",
-                                borderRadius: "50%",
-                                width: "16px",
-                                height: "16px",
-                                display: "inline-flex",
-                                alignItems: "center",
-                                justifyContent: "center",
+                                color: 'white',
+                                cursor: 'help',
+                                border: '1px solid white',
+                                borderRadius: '50%',
+                                width: '16px',
+                                height: '16px',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
                             }}
                         >
                             ?
@@ -77,9 +85,9 @@ const NotificationSettings = () => {
                             id="notification-tooltip"
                             place="right"
                             effect="solid"
-                            style={{ whiteSpace: "pre-line", maxWidth: "250px", textAlign: "left" }}
+                            style={{ whiteSpace: 'pre-line', maxWidth: '250px', textAlign: 'left' }}
                         >
-                            Manual mode: Receive notifications when manually updating mileage. {"\n"}
+                            Manual mode: Receive notifications when manually updating mileage. {'\n'}
                             Auto mode: Receive notifications using average weekly mileage.
                         </Tooltip>
                     </label>
@@ -107,7 +115,6 @@ const NotificationSettings = () => {
                         />
                     </label>
                 </div>
-
                 {notificationSettingsData.autoNotification && (
                     <div>
                         <label>
@@ -162,5 +169,5 @@ const NotificationSettings = () => {
         </div>
     );
 };
-0
+
 export default NotificationSettings;

@@ -2,6 +2,7 @@
   "dependencies": {
     "axios": "^1.7.9",
     "firebase": "^11.1.0",
+    "mailkit": "^0.1.6",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.1.1",
     "react-tooltip": "^5.28.0",

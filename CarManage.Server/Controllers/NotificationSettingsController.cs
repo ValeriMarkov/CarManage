@@ -1,15 +1,18 @@
 ﻿using CarManage.Server.Models;
 using Microsoft.AspNetCore.Mvc;
+using CarManage.Server.Services;
 
 [ApiController]
 [Route("api/[controller]")]
 public class NotificationSettingsController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly INotificationService _notificationService;
 
-    public NotificationSettingsController(ApplicationDbContext context)
+    public NotificationSettingsController(ApplicationDbContext context, INotificationService notificationService)
     {
         _context = context;
+        _notificationService = notificationService;
     }
 
     [HttpPut("{carId}")]
@@ -34,6 +37,14 @@ public class NotificationSettingsController : ControllerBase
             existingNotificationSettings.ManualOdometerEntry = notificationSettings.ManualOdometerEntry;
 
             await _context.SaveChangesAsync();
+
+            // Send email notification
+            await _notificationService.SendNotification(
+                notificationSettings.Email,
+                "Notification Settings Updated",
+                $"Notification settings for car {carId} have been updated."
+            );
+
             return Ok(existingNotificationSettings);
         }
         else
@@ -41,6 +52,14 @@ public class NotificationSettingsController : ControllerBase
             notificationSettings.CarId = carId;
             car.NotificationSettings = new List<NotificationSettings> { notificationSettings };
             await _context.SaveChangesAsync();
+
+            // Send email notification
+            await _notificationService.SendNotification(
+                notificationSettings.Email,
+                "Notification Settings Created",
+                $"Notification settings for car {carId} have been created."
+            );
+
             return Ok(notificationSettings);
         }
     }
