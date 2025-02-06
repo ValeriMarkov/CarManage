@@ -6,7 +6,7 @@ import { firebaseConfig } from '../../firebase';
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-async function getToken() {
+const getToken = async () => {
     if (auth.currentUser) {
         const token = await auth.currentUser.getIdToken();
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -14,17 +14,7 @@ async function getToken() {
     } else {
         return null;
     }
-}
-
-getToken().then((token) => {
-    if (token) {
-        console.log("Token:", token);
-    } else {
-        console.log("No token");
-    }
-}).catch((error) => {
-    console.error("Error getting token:", error);
-});
+};
 
 export const updateNotificationSettings = (carId, notificationSettingsData) => {
     return async (dispatch) => {
@@ -56,10 +46,12 @@ export const updateNotificationSettings = (carId, notificationSettingsData) => {
                     });
                 })
                 .catch((error) => {
-                    console.error(error);
+                    console.error('Error updating notification settings:', error);
+                    throw error;
                 });
         } catch (error) {
-            console.error(error);
+            console.error('Error updating notification settings:', error);
+            throw error;
         }
     };
 };

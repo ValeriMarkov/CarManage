@@ -12,13 +12,10 @@ const sendNotification = async (email, subject, message) => {
             'Content-Type': 'application/json',
         };
 
-        const axiosInstance = axios.create({
-            headers: headers,
-        });
-
-        const response = await axiosInstance.post(
+        const response = await axios.post(
             'https://localhost:7025/api/email/send',
-            { email, subject, message }
+            { email, subject, message },
+            { headers }
         );
 
         if (response.status === 401) {
@@ -36,4 +33,4 @@ const sendNotification = async (email, subject, message) => {
     }
 };
 
-export default { sendNotification };
+export { sendNotification };
