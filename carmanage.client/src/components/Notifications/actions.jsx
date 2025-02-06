@@ -7,23 +7,13 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 async function getToken() {
-    return new Promise((resolve, reject) => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-            unsubscribe();
-            if (user) {
-                user.getIdToken().then((token) => {
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                    resolve(token);
-                }).catch((error) => {
-                    console.error("Error getting token:", error);
-                    reject(error);
-                });
-            } else {
-                console.error("No current user");
-                resolve(null);
-            }
-        });
-    });
+    if (auth.currentUser) {
+        const token = await auth.currentUser.getIdToken();
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        return token;
+    } else {
+        return null;
+    }
 }
 
 getToken().then((token) => {
@@ -41,28 +31,31 @@ export const updateNotificationSettings = (carId, notificationSettingsData) => {
         try {
             const token = await getToken();
             if (!token) {
-                console.error("No token provided");
+                console.error('No token provided');
                 return;
             }
             const updatedData = {
                 ...notificationSettingsData,
-                Car: { Id: carId },
-                UserId: auth.currentUser.uid
+                CarId: carId,
+                UserId: auth.currentUser.uid,
             };
-            axios.put(`https://localhost:7025/api/notificationsettings/${carId}`, updatedData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+            axios.put(
+                `https://localhost:7025/api/notificationsettings/${carId}`,
+                updatedData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
                 }
-            })
-                .then(response => {
-                    console.log('Request payload:', updatedData);
+            )
+                .then((response) => {
                     dispatch({
                         type: 'UPDATE_NOTIFICATION_SETTINGS',
-                        payload: response.data
+                        payload: response.data,
                     });
                 })
-                .catch(error => {
+                .catch((error) => {
                     console.error(error);
                 });
         } catch (error) {

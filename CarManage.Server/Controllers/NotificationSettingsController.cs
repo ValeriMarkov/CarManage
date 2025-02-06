@@ -35,6 +35,7 @@ public class NotificationSettingsController : ControllerBase
             existingNotificationSettings.OilChangeInterval = notificationSettings.OilChangeInterval;
             existingNotificationSettings.IsAutomaticMileageTracking = notificationSettings.IsAutomaticMileageTracking;
             existingNotificationSettings.ManualOdometerEntry = notificationSettings.ManualOdometerEntry;
+            existingNotificationSettings.UserId = notificationSettings.UserId;
 
             await _context.SaveChangesAsync();
 
@@ -50,6 +51,7 @@ public class NotificationSettingsController : ControllerBase
         else
         {
             notificationSettings.CarId = carId;
+            notificationSettings.UserId = notificationSettings.UserId;
             car.NotificationSettings = new List<NotificationSettings> { notificationSettings };
             await _context.SaveChangesAsync();
 
