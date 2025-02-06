@@ -39,7 +39,7 @@ public class NotificationSettingsController : ControllerBase
             await _context.SaveChangesAsync();
 
             // Send email notification
-            await _notificationService.SendNotification(
+            await _notificationService.SendNotificationAsync(
                 notificationSettings.Email,
                 "Notification Settings Updated",
                 $"Notification settings for car {carId} have been updated."
@@ -54,7 +54,7 @@ public class NotificationSettingsController : ControllerBase
             await _context.SaveChangesAsync();
 
             // Send email notification
-            await _notificationService.SendNotification(
+            await _notificationService.SendNotificationAsync(
                 notificationSettings.Email,
                 "Notification Settings Created",
                 $"Notification settings for car {carId} have been created."

@@ -15,6 +15,7 @@ namespace CarManage.Server.Models
         public int OilChangeInterval { get; set; }
         public bool IsAutomaticMileageTracking { get; set; }
         public int ManualOdometerEntry { get; set; }
+        public string Email { get; set; }
 
         [JsonIgnore]
         public Car Car { get; set; }
