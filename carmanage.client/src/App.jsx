@@ -50,11 +50,11 @@ const App = () => {
                         <Route path="/register" element={<Register />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/add-car" element={<ProtectedRoute> <CarForm /> </ProtectedRoute>} />
-                        <Route path="/cars/:carId" element={<CarDetails />} />
+                        <Route path="/cars/:carId" element={<ProtectedRoute> {<CarDetails />} </ProtectedRoute>} />
                         <Route path="/edit-car/:carId" element={<ProtectedRoute> <EditCar /> </ProtectedRoute>} />
-                        <Route path="/cars/:carId/add-service" element={<AddService />} />
-                        <Route path="/cars/:carId/services/:serviceId/edit" element={<EditService />} />
-                        <Route path="/cars/:carId/notification-settings" element={<NotificationSettings />} />
+                        <Route path="/cars/:carId/add-service" element={<ProtectedRoute> {<AddService />} </ProtectedRoute>} />
+                        <Route path="/cars/:carId/services/:serviceId/edit" element={<ProtectedRoute> {<EditService />} </ProtectedRoute>} />
+                        <Route path="/cars/:carId/notification-settings" element={<ProtectedRoute> {<NotificationSettings />} </ProtectedRoute>} />
                     </Routes>
                 </div>
             </Router>

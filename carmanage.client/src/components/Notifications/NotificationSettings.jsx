@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateNotificationSettings } from './actions';
 import { Tooltip } from 'react-tooltip';
-import notificationService from '../services/notification.service';
+import notificationService from '../../services/notificationService';
 
 const NotificationSettings = () => {
     const { carId } = useParams();
@@ -11,13 +11,14 @@ const NotificationSettings = () => {
     const notificationSettings = useSelector(state => state.notificationSettings);
 
     const [notificationSettingsData, setNotificationSettingsData] = useState({
-        oilChangeNotification: notificationSettings.oilChangeNotification,
-        filterChangeNotification: notificationSettings.filterChangeNotification,
-        averageWeeklyMileage: notificationSettings.averageWeeklyMileage,
-        currentOdometer: notificationSettings.currentOdometer,
-        lastOilChangeMileage: notificationSettings.lastOilChangeMileage,
-        oilChangeInterval: notificationSettings.oilChangeInterval,
-        autoNotification: notificationSettings.autoNotification,
+        oilChangeNotification: notificationSettings.oilChangeNotification !== undefined ? notificationSettings.oilChangeNotification : false,
+        filterChangeNotification: notificationSettings.filterChangeNotification !== undefined ? notificationSettings.filterChangeNotification : false,
+        averageWeeklyMileage: notificationSettings.averageWeeklyMileage !== undefined ? notificationSettings.averageWeeklyMileage : '',
+        currentOdometer: notificationSettings.currentOdometer !== undefined ? notificationSettings.currentOdometer : '',
+        lastOilChangeMileage: notificationSettings.lastOilChangeMileage !== undefined ? notificationSettings.lastOilChangeMileage : '',
+        oilChangeInterval: notificationSettings.oilChangeInterval !== undefined ? notificationSettings.oilChangeInterval : '',
+        autoNotification: notificationSettings.autoNotification !== undefined ? notificationSettings.autoNotification : false,
+        email: '',
     });
 
     const handleInputChange = (event) => {
@@ -37,13 +38,13 @@ const NotificationSettings = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
         dispatch(updateNotificationSettings(carId, notificationSettingsData));
 
-        // Send email notification
         await notificationService.sendNotification(
-            notificationSettingsData.email,
-            'Notification Settings Updated',
-            `Notification settings for car ${carId} have been updated.`,
+            notificationSettingsData.email, // This line was missing
+            "Notification Settings Updated",
+            `Notification settings for car ${carId} have been updated.`
         );
     };
 

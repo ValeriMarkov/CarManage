@@ -94,78 +94,81 @@ const CarForm = () => {
     };
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    name="brand"
-                    value={carData.brand}
-                    onChange={handleInputChange}
-                    placeholder="Brand"
-                    required
-                />
-                <input
-                    type="text"
-                    name="model"
-                    value={carData.model}
-                    onChange={handleInputChange}
-                    placeholder="Model"
-                    required
-                />
-                <input
-                    type="number"
-                    name="year"
-                    value={carData.year}
-                    onChange={handleInputChange}
-                    placeholder="Year"
-                    required
-                />
-                <input
-                    type="text"
-                    name="color"
-                    value={carData.color}
-                    onChange={handleInputChange}
-                    placeholder="Color"
-                    required
-                />
-                <input
-                    type="text"
-                    name="vin"
-                    value={carData.vin}
-                    onChange={handleInputChange}
-                    placeholder="VIN"
-                    required
-                />
-                <input
-                    type="number"
-                    name="engine"
-                    value={carData.engine}
-                    onChange={handleInputChange}
-                    placeholder="Engine"
-                    required
-                />
-                <input
-                    type="number"
-                    name="horsepower"
-                    value={carData.horsepower}
-                    onChange={handleInputChange}
-                    placeholder="Horsepower"
-                    required
-                />
-                <input
-                    type="number"
-                    name="odometer"
-                    value={carData.odometer}
-                    onChange={handleInputChange}
-                    placeholder="Odometer"
-                    required
-                />
-                <button className="buttons" type="submit" disabled={loading}>
-                    {loading ? 'Adding Car...' : 'Add Car'}
-                </button>
-                {error && <p className="error">{error}</p>}
-            </form>
-            <button className="buttons" onClick={handleBack}>Back</button>
+        <div className="form-wrapper">
+            <div className="form-container">
+            <br /> <br />
+                <form onSubmit={handleSubmit}>
+                    <input
+                        type="text"
+                        name="brand"
+                        value={carData.brand}
+                        onChange={handleInputChange}
+                        placeholder="Brand"
+                        required
+                    />
+                    <input
+                        type="text"
+                        name="model"
+                        value={carData.model}
+                        onChange={handleInputChange}
+                        placeholder="Model"
+                        required
+                    />
+                    <input
+                        type="number"
+                        name="year"
+                        value={carData.year}
+                        onChange={handleInputChange}
+                        placeholder="Year"
+                        required
+                    />
+                    <input
+                        type="text"
+                        name="color"
+                        value={carData.color}
+                        onChange={handleInputChange}
+                        placeholder="Color"
+                        required
+                    />
+                    <input
+                        type="text"
+                        name="vin"
+                        value={carData.vin}
+                        onChange={handleInputChange}
+                        placeholder="VIN"
+                        required
+                    />
+                    <input
+                        type="number"
+                        name="engine"
+                        value={carData.engine}
+                        onChange={handleInputChange}
+                        placeholder="Engine"
+                        required
+                    />
+                    <input
+                        type="number"
+                        name="horsepower"
+                        value={carData.horsepower}
+                        onChange={handleInputChange}
+                        placeholder="Horsepower"
+                        required
+                    />
+                    <input
+                        type="number"
+                        name="odometer"
+                        value={carData.odometer}
+                        onChange={handleInputChange}
+                        placeholder="Odometer"
+                        required
+                    />
+                    <button className="buttons" type="submit" disabled={loading}>
+                        {loading ? 'Adding Car...' : 'Add Car'}
+                    </button>
+                    {error && <p className="error">{error}</p>}
+                </form>
+                <button className="buttons" onClick={handleBack}>Back</button>
+            </div>
         </div>
     );
 };
