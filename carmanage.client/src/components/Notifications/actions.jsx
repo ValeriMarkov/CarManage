@@ -12,6 +12,7 @@ const getToken = async () => {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         return token;
     } else {
+        console.warn('No authenticated user found.');
         return null;
     }
 };
@@ -19,17 +20,26 @@ const getToken = async () => {
 export const updateNotificationSettings = (carId, notificationSettingsData) => {
     return async (dispatch) => {
         try {
+            console.log("Attempting to update notification settings...");
+
             const token = await getToken();
             if (!token) {
-                console.error('No token provided');
+                console.error('No token provided. Aborting request.');
                 return;
             }
+
             const updatedData = {
+                Car: {
+                    Id: carId,
+                },
                 ...notificationSettingsData,
                 CarId: carId,
-                UserId: auth.currentUser.uid,
+                UserId: auth.currentUser ? auth.currentUser.uid : null,
             };
-            axios.put(
+
+            console.log("Sending Notification Settings Payload:", updatedData);
+
+            const response = await axios.put(
                 `https://localhost:7025/api/notificationsettings/${carId}`,
                 updatedData,
                 {
@@ -38,20 +48,16 @@ export const updateNotificationSettings = (carId, notificationSettingsData) => {
                         'Content-Type': 'application/json',
                     },
                 }
-            )
-                .then((response) => {
-                    dispatch({
-                        type: 'UPDATE_NOTIFICATION_SETTINGS',
-                        payload: response.data,
-                    });
-                })
-                .catch((error) => {
-                    console.error('Error updating notification settings:', error);
-                    throw error;
-                });
+            );
+
+            console.log("Successfully updated notification settings. Server response:", response.data);
+
+            dispatch({
+                type: 'UPDATE_NOTIFICATION_SETTINGS',
+                payload: response.data,
+            });
         } catch (error) {
-            console.error('Error updating notification settings:', error);
-            throw error;
+            console.error("Error updating notification settings:", error.response ? error.response.data : error.message);
         }
     };
 };

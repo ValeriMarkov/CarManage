@@ -4,11 +4,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateNotificationSettings } from './actions';
 import { Tooltip } from 'react-tooltip';
 import { sendNotification } from '../../services/notificationService';
+import { initializeApp } from 'firebase/app';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const NotificationSettings = () => {
     const { carId } = useParams();
     const dispatch = useDispatch();
     const notificationSettings = useSelector((state) => state.notificationSettings);
+    const auth = getAuth();
+    const user = auth.currentUser;
+    const email = user?.email;
 
     const [notificationSettingsData, setNotificationSettingsData] = useState({
         oilChangeNotification: notificationSettings.oilChangeNotification !== undefined ? notificationSettings.oilChangeNotification : false,
@@ -18,7 +23,7 @@ const NotificationSettings = () => {
         lastOilChangeMileage: notificationSettings.lastOilChangeMileage !== undefined ? notificationSettings.lastOilChangeMileage : '',
         oilChangeInterval: notificationSettings.oilChangeInterval !== undefined ? notificationSettings.oilChangeInterval : '',
         autoNotification: notificationSettings.autoNotification !== undefined ? notificationSettings.autoNotification : false,
-        email: '',
+        email: email,
     });
 
     const handleInputChange = (event) => {

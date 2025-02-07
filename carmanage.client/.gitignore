@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+CarManage/CarManage.Server/appsettings.json
+CarManage\carmanage.client\src\mailkit.config.js
+CarManage\carmanage.client\src\firebase.js

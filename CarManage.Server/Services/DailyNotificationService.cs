@@ -34,7 +34,6 @@ public class DailyNotificationService : BackgroundService
                 await SendNotificationsAsync(dbContext, notificationService);
             }
 
-            // Wait for 24 hours before running again
             await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
         }
     }
@@ -43,16 +42,15 @@ public class DailyNotificationService : BackgroundService
     {
         var cars = await dbContext.Cars
             .Include(c => c.NotificationSettings)
-            .Where(c => c.NotificationSettings.Any())  // ✅ Ensure we only process cars with notification settings
+            .Where(c => c.NotificationSettings.Any())
             .ToListAsync();
 
         foreach (var car in cars)
         {
-            var settings = car.NotificationSettings.FirstOrDefault(); // ✅ Corrected to access the first notification settings
+            var settings = car.NotificationSettings.FirstOrDefault();
 
-            if (settings == null) continue; // Skip if no settings exist
+            if (settings == null) continue;
 
-            // Auto-update odometer for automatic tracking
             if (settings.IsAutomaticMileageTracking)
             {
                 settings.CurrentOdometer += settings.AverageWeeklyMileage / 7;
