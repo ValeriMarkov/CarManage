@@ -26,7 +26,9 @@ namespace CarManage.Server.Models
             modelBuilder.Entity<NotificationSettings>()
                 .HasOne(ns => ns.Car)
                 .WithMany(c => c.NotificationSettings)
-                .HasForeignKey(ns => ns.CarId);
+                .HasForeignKey(ns => ns.CarId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .IsRequired(false);
         }
     }
 }

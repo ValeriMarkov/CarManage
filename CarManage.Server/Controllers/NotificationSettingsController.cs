@@ -43,10 +43,11 @@ public class NotificationSettingsController : ControllerBase
 
         try
         {
-            if (car.NotificationSettings == null)
+            if (car.NotificationSettings == null || !car.NotificationSettings.Any(ns => ns.CarId == carId))
             {
                 car.NotificationSettings = new List<NotificationSettings>();
             }
+
 
             var existingSettings = car.NotificationSettings.FirstOrDefault(ns => ns.CarId == carId);
             if (existingSettings != null)

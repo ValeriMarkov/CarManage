@@ -5,7 +5,7 @@ namespace CarManage.Server.Models
     public class NotificationSettings
     {
         public int Id { get; set; }
-        public int CarId { get; set; }
+        public int? CarId { get; set; }
         public string UserId { get; set; }
         public bool OilChangeNotification { get; set; }
         public bool FilterChangeNotification { get; set; }
@@ -18,6 +18,6 @@ namespace CarManage.Server.Models
         public string Email { get; set; }
 
         [JsonIgnore]
-        public Car Car { get; set; }
+        public Car? Car { get; set; }
     }
 }

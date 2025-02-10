@@ -29,9 +29,6 @@ export const updateNotificationSettings = (carId, notificationSettingsData) => {
             }
 
             const updatedData = {
-                Car: {
-                    Id: carId,
-                },
                 ...notificationSettingsData,
                 CarId: carId,
                 UserId: auth.currentUser ? auth.currentUser.uid : null,

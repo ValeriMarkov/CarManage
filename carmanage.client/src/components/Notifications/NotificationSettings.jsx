@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateNotificationSettings } from './actions';
 import { Tooltip } from 'react-tooltip';
@@ -10,6 +10,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 const NotificationSettings = () => {
     const { carId } = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const notificationSettings = useSelector((state) => state.notificationSettings);
     const auth = getAuth();
     const user = auth.currentUser;
@@ -22,7 +23,7 @@ const NotificationSettings = () => {
         currentOdometer: notificationSettings.currentOdometer !== undefined ? notificationSettings.currentOdometer : '',
         lastOilChangeMileage: notificationSettings.lastOilChangeMileage !== undefined ? notificationSettings.lastOilChangeMileage : '',
         oilChangeInterval: notificationSettings.oilChangeInterval !== undefined ? notificationSettings.oilChangeInterval : '',
-        autoNotification: notificationSettings.autoNotification !== undefined ? notificationSettings.autoNotification : false,
+        isAutomaticMileageTracking: notificationSettings.isAutomaticMileageTracking !== undefined ? notificationSettings.isAutomaticMileageTracking : false,
         email: email,
     });
 
@@ -30,14 +31,14 @@ const NotificationSettings = () => {
         const { name, type, checked, value } = event.target;
         let newValue = type === 'checkbox' ? checked : value;
 
-        if (name === 'autoNotification') {
+        if (name === 'isAutomaticMileageTracking') {
             newValue = value === 'true';
         }
 
         setNotificationSettingsData((prev) => ({
             ...prev,
             [name]: newValue,
-            ...(name === 'autoNotification' && !newValue ? { averageWeeklyMileage: '' } : {}),
+            ...(name === 'isAutomaticMileageTracking' && newValue ? { averageWeeklyMileage: '' } : {}),
         }));
     };
 
@@ -56,6 +57,10 @@ const NotificationSettings = () => {
         }
     };
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div>
             <h2>Notification Settings</h2>
@@ -65,8 +70,8 @@ const NotificationSettings = () => {
                     <label>
                         Notification Mode:
                         <select
-                            name="autoNotification"
-                            value={notificationSettingsData.autoNotification}
+                            name="isAutomaticMileageTracking"
+                            value={notificationSettingsData.isAutomaticMileageTracking}
                             onChange={handleInputChange}
                         >
                             <option value={false}>Manual</option>
@@ -124,7 +129,7 @@ const NotificationSettings = () => {
                         />
                     </label>
                 </div>
-                {notificationSettingsData.autoNotification && (
+                {notificationSettingsData.isAutomaticMileageTracking && (
                     <div>
                         <label>
                             Average weekly mileage:
@@ -175,6 +180,7 @@ const NotificationSettings = () => {
                     <button className="buttons" type="submit">Save</button>
                 </div>
             </form>
+            <button className="buttons" onClick={handleBack}>Back</button>
         </div>
     );
 };
