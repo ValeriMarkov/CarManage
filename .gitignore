@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/CarManage.Server/appsettings.json
+/carmanage.client/src/mailkit.config.js
+/carmanage.client/src/firebase.js
