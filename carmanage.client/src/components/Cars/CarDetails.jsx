@@ -163,7 +163,7 @@ const CarDetails = () => {
                 <p><strong>Engine:</strong> {car.engine}L</p>
                 <p><strong>Horsepower:</strong> {car.horsePower} HP</p>
                 <p><strong>Odometer:</strong> {car.odometer} km</p>
-                <button className="buttons" onClick={() => navigate(`/cars/${carId}/notification-settings`)}>Notification Settings</button>
+                <button className="buttons" onClick={() => navigate(`/cars/${carId}/notifications`)}>Notifications</button>
             </div>
 
             <div>

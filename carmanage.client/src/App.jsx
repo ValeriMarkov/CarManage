@@ -13,6 +13,8 @@ import AddService from "./components/Services/AddService";
 import EditService from "./components/Services/EditService";
 import NotificationSettings from "./components/Notifications/NotificationSettings";
 import store from './components/Notifications/store';
+import Notifications from "./components/Notifications/Notifications";
+import EditNotificationSettings from "./components/Notifications/EditNotificationSettings";
 import { Provider } from 'react-redux';
 
 const App = () => {
@@ -54,7 +56,9 @@ const App = () => {
                         <Route path="/edit-car/:carId" element={<ProtectedRoute> <EditCar /> </ProtectedRoute>} />
                         <Route path="/cars/:carId/add-service" element={<ProtectedRoute> {<AddService />} </ProtectedRoute>} />
                         <Route path="/cars/:carId/services/:serviceId/edit" element={<ProtectedRoute> {<EditService />} </ProtectedRoute>} />
-                        <Route path="/cars/:carId/notification-settings" element={<ProtectedRoute> {<NotificationSettings />} </ProtectedRoute>} />
+                        <Route path="/cars/:carId/notifications" element={<ProtectedRoute> {<Notifications />} </ProtectedRoute>} />
+                        <Route path="/cars/:carId/notifications/notification-settings" element={<ProtectedRoute> {<NotificationSettings />} </ProtectedRoute>} />
+                        <Route path="/cars/:carId/notifications/notification-settings/edit/:notificationId" element={<ProtectedRoute> {<EditNotificationSettings />} </ProtectedRoute>} />
                     </Routes>
                 </div>
             </Router>

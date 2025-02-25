@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -86,5 +87,74 @@ public class NotificationSettingsController : ControllerBase
             _logger.LogError(ex, "Error updating notification settings for Car ID: {CarId}", carId);
             return BadRequest(new { Message = ex.Message });
         }
+    }
+
+    [HttpGet("{carId}")]
+    public async Task<IActionResult> GetNotificationSettings(int carId)
+    {
+        _logger.LogInformation("Fetching notification settings for Car ID: {CarId}", carId);
+
+        var car = await _context.Cars
+            .Include(c => c.NotificationSettings)
+            .FirstOrDefaultAsync(c => c.Id == carId);
+
+        if (car == null || car.NotificationSettings == null || !car.NotificationSettings.Any())
+        {
+            return NotFound(new { Message = "No notification settings found for this car." });
+        }
+
+        return Ok(car.NotificationSettings);
+    }
+
+    [HttpGet("{carId}/{notificationId}")]
+    public async Task<IActionResult> GetSingleNotification(int carId, int notificationId)
+    {
+        _logger.LogInformation("Fetching notification {NotificationId} for Car ID: {CarId}", notificationId, carId);
+
+        var car = await _context.Cars
+            .Include(c => c.NotificationSettings)
+            .FirstOrDefaultAsync(c => c.Id == carId);
+
+        if (car == null || car.NotificationSettings == null)
+        {
+            return NotFound(new { Message = "Car or notification settings not found." });
+        }
+
+        var notification = car.NotificationSettings.FirstOrDefault(ns => ns.Id == notificationId);
+        if (notification == null)
+        {
+            return NotFound(new { Message = "Notification settings not found." });
+        }
+
+        return Ok(notification);
+    }
+
+
+    [HttpDelete("{carId}/{notificationId}")]
+    public async Task<IActionResult> DeleteNotification(int carId, int notificationId)
+    {
+        _logger.LogInformation("Deleting notification with ID: {NotificationId} for Car ID: {CarId}", notificationId, carId);
+
+        var car = await _context.Cars
+            .Include(c => c.NotificationSettings)
+            .FirstOrDefaultAsync(c => c.Id == carId);
+
+        if (car == null || car.NotificationSettings == null)
+        {
+            return NotFound(new { Message = "Car or notification settings not found." });
+        }
+
+        var notificationSettings = car.NotificationSettings.FirstOrDefault(ns => ns.Id == notificationId);
+        if (notificationSettings == null)
+        {
+            return NotFound(new { Message = "Notification settings not found." });
+        }
+
+        car.NotificationSettings.Remove(notificationSettings);
+
+        await _context.SaveChangesAsync();
+        _logger.LogInformation("Successfully deleted notification for Car ID: {CarId}", carId);
+
+        return Ok(new { Message = "Notification removed successfully." });
     }
 }
