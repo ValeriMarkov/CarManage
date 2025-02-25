@@ -100,6 +100,7 @@ const Notifications = () => {
 
                             if (notification.oilChangeNotification) services.push("Engine oil");
                             if (notification.filterChangeNotification) services.push("Filters");
+
                             // TODO - add the rest of the services
 
                             const serviceType = services.length > 0 ? services.join(", ") : "Unknown Service";

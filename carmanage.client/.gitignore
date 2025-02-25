@@ -24,6 +24,6 @@ dist-ssr
 *.sw?
 
 # Ignore specific files
-CarManage.Server/appsettings.json
-carmanage.client/src/mailkit.config.js
-carmanage.client/src/firebase.js
+/carmanage.client/src/firebase.js
+/carmanage.client/src/mailkit.config.js
+/CarManage.Server/appsettings.json
