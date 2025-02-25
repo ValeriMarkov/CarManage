@@ -19,7 +19,6 @@ namespace CarManage.Server
             {
                 var builder = WebApplication.CreateBuilder(args);
 
-                // Firebase Initialization inside ConfigureServices
                 builder.Services.AddSingleton(FirebaseApp.Create(new AppOptions()
                 {
                     Credential = GoogleCredential.FromFile("C:\\Users\\valer\\carmanage-59888-55751e2e69ac.json")

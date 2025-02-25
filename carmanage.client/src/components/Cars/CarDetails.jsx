@@ -181,7 +181,7 @@ const CarDetails = () => {
                                 <strong>Service Date:</strong><span>{new Date(service.serviceDate).toLocaleDateString()}</span><br />
                                 <strong>Odometer at Service:</strong><span>{service.odometerAtService} km</span><br />
                                 <strong>Notes:</strong> <span>{service.notes}</span><br />
-                                <strong>Selected Services:</strong> <span>{service.selectedServices && service.selectedServices.join(", ")}</span><br />
+                                <strong>Services made:</strong> <span>{service.selectedServices && service.selectedServices.join(", ")}</span><br />
                                 <button className="buttons" onClick={() => onRemoveServiceHistory(car.id, service.id)}>Delete</button>
                                 <button className="buttons" onClick={() => onEditService(service.id)}>Edit</button>
                              </li>

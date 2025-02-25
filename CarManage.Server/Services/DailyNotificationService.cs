@@ -56,7 +56,6 @@ public class DailyNotificationService : BackgroundService
                 settings.CurrentOdometer += settings.AverageWeeklyMileage / 7;
             }
 
-            // Check if oil change is due
             if (settings.OilChangeNotification &&
                 settings.CurrentOdometer >= settings.LastOilChangeMileage + settings.OilChangeInterval)
             {
@@ -67,7 +66,6 @@ public class DailyNotificationService : BackgroundService
                 );
             }
 
-            // Check if filter change is due
             if (settings.FilterChangeNotification &&
                 settings.CurrentOdometer >= settings.LastOilChangeMileage + (settings.OilChangeInterval * 2))
             {

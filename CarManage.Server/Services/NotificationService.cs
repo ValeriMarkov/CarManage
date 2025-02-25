@@ -23,7 +23,7 @@ namespace CarManage.Server.Services
             _smtpPort = int.Parse(configuration["SmtpSettings:Port"]);
             _smtpUsername = configuration["SmtpSettings:Username"];
             _smtpPassword = configuration["SmtpSettings:Password"];
-            _fromEmail = configuration["SmtpSettings:FromEmail"]; // Use separate FromEmail config
+            _fromEmail = configuration["SmtpSettings:FromEmail"];
             _logger = logger;
         }
 
@@ -32,7 +32,7 @@ namespace CarManage.Server.Services
             try
             {
                 var message = new MimeMessage();
-                message.From.Add(MailboxAddress.Parse(_fromEmail)); // Use fromEmail instead of username
+                message.From.Add(MailboxAddress.Parse(_fromEmail));
                 message.To.Add(MailboxAddress.Parse(toEmail));
                 message.Subject = subject;
 

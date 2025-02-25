@@ -11,7 +11,7 @@ export const sendNotification = async (email, subject, message) => {
         );
 
         console.log("Email sent successfully:", response.data);
-        return response.data; // Fixes "response is not defined" error
+        return response.data;
     } catch (error) {
         console.error("Error sending email:", error.response ? error.response.data : error.message);
         throw error;

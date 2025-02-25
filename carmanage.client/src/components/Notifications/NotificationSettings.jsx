@@ -52,6 +52,7 @@ const NotificationSettings = () => {
                 'Notification Settings Updated',
                 `Notification settings for car ${carId} have been updated.`
             );
+            navigate(`/cars/${carId}/notifications`);
         } catch (error) {
             console.error('Error updating notification settings:', error);
         }

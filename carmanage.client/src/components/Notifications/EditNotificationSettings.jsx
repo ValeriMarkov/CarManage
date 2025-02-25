@@ -25,7 +25,6 @@ const EditNotificationSettings = () => {
         email: email,
     });
 
-    // Fetch notification details for editing
     useEffect(() => {
         const fetchNotification = async () => {
             try {
@@ -83,7 +82,7 @@ const EditNotificationSettings = () => {
                 `Notification settings for car ${carId} have been updated.`
             );
 
-            navigate(`/cars/${carId}/notifications`); // Redirect back to notifications list
+            navigate(`/cars/${carId}/notifications`);
         } catch (error) {
             console.error('Error updating notification settings:', error);
         }
