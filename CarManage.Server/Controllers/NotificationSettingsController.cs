@@ -135,24 +135,17 @@ public class NotificationSettingsController : ControllerBase
     {
         _logger.LogInformation("Deleting notification with ID: {NotificationId} for Car ID: {CarId}", notificationId, carId);
 
-        var car = await _context.Cars
-            .Include(c => c.NotificationSettings)
-            .FirstOrDefaultAsync(c => c.Id == carId);
+        var notificationSettings = await _context.NotificationSettings
+            .FirstOrDefaultAsync(ns => ns.Id == notificationId && ns.CarId == carId);
 
-        if (car == null || car.NotificationSettings == null)
-        {
-            return NotFound(new { Message = "Car or notification settings not found." });
-        }
-
-        var notificationSettings = car.NotificationSettings.FirstOrDefault(ns => ns.Id == notificationId);
         if (notificationSettings == null)
         {
             return NotFound(new { Message = "Notification settings not found." });
         }
 
-        car.NotificationSettings.Remove(notificationSettings);
-
+        _context.NotificationSettings.Remove(notificationSettings);
         await _context.SaveChangesAsync();
+
         _logger.LogInformation("Successfully deleted notification for Car ID: {CarId}", carId);
 
         return Ok(new { Message = "Notification removed successfully." });

@@ -4,8 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateNotificationSettings } from './actions';
 import { Tooltip } from 'react-tooltip';
 import { sendNotification } from '../../services/notificationService';
-import { initializeApp } from 'firebase/app';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 
 const NotificationSettings = () => {
     const { carId } = useParams();
@@ -23,7 +22,7 @@ const NotificationSettings = () => {
         currentOdometer: notificationSettings.currentOdometer !== undefined ? notificationSettings.currentOdometer : '',
         lastOilChangeMileage: notificationSettings.lastOilChangeMileage !== undefined ? notificationSettings.lastOilChangeMileage : '',
         oilChangeInterval: notificationSettings.oilChangeInterval !== undefined ? notificationSettings.oilChangeInterval : '',
-        isAutomaticMileageTracking: notificationSettings.isAutomaticMileageTracking !== undefined ? notificationSettings.isAutomaticMileageTracking : false,
+        isAutomaticMileageTracking: notificationSettings.isAutomaticMileageTracking !== undefined ? notificationSettings.isAutomaticMileageTracking : true,
         email: email,
     });
 
@@ -45,8 +44,29 @@ const NotificationSettings = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        const payload = {
+            oilChangeNotification: notificationSettingsData.oilChangeNotification,
+            filterChangeNotification: notificationSettingsData.filterChangeNotification,
+            averageWeeklyMileage: notificationSettingsData.averageWeeklyMileage === ""
+                ? 0
+                : Number(notificationSettingsData.averageWeeklyMileage),
+            currentOdometer: notificationSettingsData.currentOdometer === ""
+                ? 0
+                : Number(notificationSettingsData.currentOdometer),
+            lastOilChangeMileage: notificationSettingsData.lastOilChangeMileage === ""
+                ? 0
+                : Number(notificationSettingsData.lastOilChangeMileage),
+            oilChangeInterval: notificationSettingsData.oilChangeInterval === ""
+                ? 0
+                : Number(notificationSettingsData.oilChangeInterval),
+            isAutomaticMileageTracking: notificationSettingsData.isAutomaticMileageTracking,
+            email: notificationSettingsData.email,
+        };
+
         try {
-            await dispatch(updateNotificationSettings(carId, notificationSettingsData));
+            console.log("Sending Payload:", payload);
+
+            await dispatch(updateNotificationSettings(carId, payload));
             await sendNotification(
                 notificationSettingsData.email,
                 'Notification Settings Updated',

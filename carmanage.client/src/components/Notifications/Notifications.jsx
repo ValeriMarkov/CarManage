@@ -41,53 +41,50 @@ const Notifications = () => {
         navigate(`/cars/${carId}/notifications/notification-settings/edit/${notificationId}`);
     };
 
-/*    const handleRemoveNotification = async (notificationId) => {
-        try {
-            const auth = getAuth();
-            const token = await auth.currentUser.getIdToken(true);
-
-            await axios.delete(`https://localhost:7025/api/notificationsettings/${carId}/${notificationId}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            setNotifications(notifications.filter((notification) => notification.id !== notificationId));
-        } catch (error) {
-            console.error('Error removing notification:', error);
-        }
-    };*/
-
     const handleRemoveNotification = async (notificationId) => {
         try {
             if (window.confirm("Are you sure you want to delete this notification?")) {
+                const auth = getAuth();
+                const user = auth.currentUser;
+
+                if (!user) {
+                    throw new Error("User is not authenticated");
+                }
+
+                const token = await user.getIdToken(true);
+
                 const response = await fetch(`https://localhost:7025/api/notificationsettings/${carId}/${notificationId}`, {
                     method: 'DELETE',
                     headers: {
-                        'Authorization': `Bearer ${user ? await user.getIdToken(true) : ''}`,
-                    }
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to remove notification');
+                    throw new Error("Failed to remove notification");
                 }
 
-                setSNotifications(notifications.filter((notification) => notification.id !== serviceHistoryId));
+                setNotifications(notifications.filter((notification) => notification.id !== notificationId));
                 alert("Notification removed successfully!");
                 setSuccessMessage("Notification removed successfully!");
                 setError(null);
             }
         } catch (err) {
+            console.error("Error removing notification:", err);
             setError(err.message);
             setSuccessMessage(null);
         }
     };
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div>
             <h2>Notifications for Car {carId}</h2>
-            <button onClick={handleAddNotification}>Add New Notification</button>
+            <button className="buttons"  onClick={handleAddNotification}>Add New Notification</button>
 
             <div>
                 <h3>Active Notifications:</h3>
@@ -97,36 +94,35 @@ const Notifications = () => {
                     <ul>
                         {notifications.map((notification) => {
                             let services = [];
-
                             if (notification.oilChangeNotification) services.push("Engine oil");
                             if (notification.filterChangeNotification) services.push("Filters");
 
-                            // TODO - add the rest of the services
-
                             const serviceType = services.length > 0 ? services.join(", ") : "Unknown Service";
 
-                            const kilometersLeft = notification.isAutomaticMileageTracking
-                                ? notification.oilChangeInterval - (notification.currentOdometer - notification.lastOilChangeMileage)
-                                : "N/A";
+                            let changeInKm = 0;
+
+                            if (notification.isAutomaticMileageTracking) {
+                                const remainingKm = notification.oilChangeInterval - (notification.currentOdometer - notification.lastOilChangeMileage);
+                                changeInKm = remainingKm < 0 ? 0 : remainingKm;
+                            }
+
+                            if (!notification.isAutomaticMileageTracking) {
+                                changeInKm = (notification.lastOilChangeMileage - notification.currentOdometer) + notification.oilChangeInterval;
+                            }
 
                             return (
                                 <li key={notification.id}>
                                     <div>
                                         <span>{serviceType}</span> -{" "}
-                                        {notification.isAutomaticMileageTracking ? (
-                                            <>Change in: {kilometersLeft} km</>
-                                        ) : (
-                                            <>Current Odometer: {notification.currentOdometer}, Target: {notification.manualOdometerEntry}</>
-                                        )}
-
-                                        <button onClick={() => handleEditNotification(notification.id)}>Edit</button>
-                                        <button onClick={() => handleRemoveNotification(notification.id)}>Remove</button>
-                                        <button onClick={() => handleMarkAsDone(notification.id)}>Mark as Done</button>
+                                        <>Change in: {changeInKm} km</>
+                                        <button className="buttons"  onClick={() => handleEditNotification(notification.id)}>Edit</button>
+                                        <button className="buttons"  onClick={() => handleRemoveNotification(notification.id)}>Remove</button>
                                     </div>
                                 </li>
                             );
                         })}
-                    </ul>
+                    <button className="buttons" onClick={handleBack}>Back</button>
+                        </ul>
                 )}
             </div>
         </div>

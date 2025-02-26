@@ -17,10 +17,10 @@ const EditNotificationSettings = () => {
     const [notificationData, setNotificationData] = useState({
         oilChangeNotification: false,
         filterChangeNotification: false,
-        averageWeeklyMileage: '',
-        currentOdometer: '',
-        lastOilChangeMileage: '',
-        oilChangeInterval: '',
+        averageWeeklyMileage: 0,
+        currentOdometer: 0,
+        lastOilChangeMileage: 0,
+        oilChangeInterval: 0,
         isAutomaticMileageTracking: false,
         email: email,
     });
@@ -29,22 +29,24 @@ const EditNotificationSettings = () => {
         const fetchNotification = async () => {
             try {
                 const token = await auth.currentUser.getIdToken(true);
-                const response = await axios.get(`https://localhost:7025/api/notificationsettings/${carId}/${notificationId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                });
-
+                const response = await axios.get(
+                    `https://localhost:7025/api/notificationsettings/${carId}/${notificationId}`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                );
                 console.log("Fetched Notification for Edit:", response.data);
 
                 setNotificationData({
                     oilChangeNotification: response.data.oilChangeNotification,
                     filterChangeNotification: response.data.filterChangeNotification,
-                    averageWeeklyMileage: response.data.averageWeeklyMileage || '',
-                    currentOdometer: response.data.currentOdometer || '',
-                    lastOilChangeMileage: response.data.lastOilChangeMileage || '',
-                    oilChangeInterval: response.data.oilChangeInterval || '',
+                    averageWeeklyMileage: response.data.averageWeeklyMileage ?? 0,
+                    currentOdometer: response.data.currentOdometer ?? 0,
+                    lastOilChangeMileage: response.data.lastOilChangeMileage ?? 0,
+                    oilChangeInterval: response.data.oilChangeInterval ?? 0,
                     isAutomaticMileageTracking: response.data.isAutomaticMileageTracking,
                     email: response.data.email || email,
                 });
@@ -74,14 +76,30 @@ const EditNotificationSettings = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        const payload = {
+            id: parseInt(notificationId, 10),
+            carId: parseInt(carId, 10),
+            userId: notificationData.userId || user?.uid,
+            oilChangeNotification: notificationData.oilChangeNotification,
+            filterChangeNotification: notificationData.filterChangeNotification,
+            averageWeeklyMileage: notificationData.isAutomaticMileageTracking
+                ? Number(notificationData.averageWeeklyMileage)
+                : 0,
+            currentOdometer: Number(notificationData.currentOdometer),
+            lastOilChangeMileage: Number(notificationData.lastOilChangeMileage),
+            oilChangeInterval: Number(notificationData.oilChangeInterval),
+            isAutomaticMileageTracking: notificationData.isAutomaticMileageTracking,
+            email: notificationData.email,
+        };
+
         try {
-            await dispatch(updateNotificationSettings(carId, notificationId, notificationData));
+            console.log("Sending Payload:", payload);
+            await dispatch(updateNotificationSettings(carId, payload));
             await sendNotification(
-                notificationData.email,
+                payload.email,
                 'Notification Settings Updated',
                 `Notification settings for car ${carId} have been updated.`
             );
-
             navigate(`/cars/${carId}/notifications`);
         } catch (error) {
             console.error('Error updating notification settings:', error);
