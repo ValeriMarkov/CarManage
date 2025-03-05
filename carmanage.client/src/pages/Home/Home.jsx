@@ -88,9 +88,11 @@ const Home = () => {
                                         <a href="#" onClick={() => goToCarDetailsPage(car.id)}>
                                             {car.brand} {car.model} - {car.year} ({car.color})
                                         </a>
-                                        <button className="buttons" onClick={() => goToCarDetailsPage(car.id)}>Details</button>
-                                        <button className="buttons" onClick={() => handleEditCar(car.id)}>Edit</button>
-                                        <button className="buttons" onClick={() => onRemoveCar(car.id)}>Remove</button>
+                                        <div className="button-container">
+                                            <button className="buttons" onClick={() => goToCarDetailsPage(car.id)}>Details</button>
+                                            <button className="buttons" onClick={() => handleEditCar(car.id)}>Edit</button>
+                                            <button className="buttons" onClick={() => onRemoveCar(car.id)}>Remove</button>
+                                        </div>
                                     </li>
                                 ))
                             )}

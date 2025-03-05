@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
+import './EditCar.css'; // Import the CSS file
 
 const EditCar = () => {
     const { carId } = useParams();
@@ -106,7 +107,7 @@ const EditCar = () => {
     }
 
     return (
-        <div>
+        <div className="edit-car-container">
             <h2>Edit Car</h2>
             {error && <p className="error">{error}</p>}
             <form onSubmit={handleSubmit}>
@@ -176,7 +177,7 @@ const EditCar = () => {
                 />
                 <button className="buttons" type="submit">Update Car</button>
             </form>
-            <button className="buttons" onClick={handleBack}>Back</button>
+            <button className="buttons back-button" onClick={handleBack}>Back</button>
         </div>
     );
 };

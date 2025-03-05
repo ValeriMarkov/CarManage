@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateNotificationSettings } from './actions';
 import { Tooltip } from 'react-tooltip';
 import { sendNotification } from '../../services/notificationService';
 import { getAuth } from 'firebase/auth';
+import './NotificationSettings.css';
 
 const NotificationSettings = () => {
     const { carId } = useParams();
@@ -16,15 +17,17 @@ const NotificationSettings = () => {
     const email = user?.email;
 
     const [notificationSettingsData, setNotificationSettingsData] = useState({
-        oilChangeNotification: notificationSettings.oilChangeNotification !== undefined ? notificationSettings.oilChangeNotification : false,
-        filterChangeNotification: notificationSettings.filterChangeNotification !== undefined ? notificationSettings.filterChangeNotification : false,
-        averageWeeklyMileage: notificationSettings.averageWeeklyMileage !== undefined ? notificationSettings.averageWeeklyMileage : '',
-        currentOdometer: notificationSettings.currentOdometer !== undefined ? notificationSettings.currentOdometer : '',
-        lastOilChangeMileage: notificationSettings.lastOilChangeMileage !== undefined ? notificationSettings.lastOilChangeMileage : '',
-        oilChangeInterval: notificationSettings.oilChangeInterval !== undefined ? notificationSettings.oilChangeInterval : '',
+        oilChangeNotification: notificationSettings.oilChangeNotification || false,
+        filterChangeNotification: notificationSettings.filterChangeNotification || false,
+        averageWeeklyMileage: notificationSettings.averageWeeklyMileage || '',
+        currentOdometer: notificationSettings.currentOdometer || '',
+        lastOilChangeMileage: notificationSettings.lastOilChangeMileage || '',
+        oilChangeInterval: notificationSettings.oilChangeInterval || '',
         isAutomaticMileageTracking: notificationSettings.isAutomaticMileageTracking !== undefined ? notificationSettings.isAutomaticMileageTracking : true,
         email: email,
     });
+
+    const [isOilFilterExpanded, setIsOilFilterExpanded] = useState(false);
 
     const handleInputChange = (event) => {
         const { name, type, checked, value } = event.target;
@@ -45,33 +48,17 @@ const NotificationSettings = () => {
         event.preventDefault();
 
         const payload = {
-            oilChangeNotification: notificationSettingsData.oilChangeNotification,
-            filterChangeNotification: notificationSettingsData.filterChangeNotification,
-            averageWeeklyMileage: notificationSettingsData.averageWeeklyMileage === ""
-                ? 0
-                : Number(notificationSettingsData.averageWeeklyMileage),
-            currentOdometer: notificationSettingsData.currentOdometer === ""
-                ? 0
-                : Number(notificationSettingsData.currentOdometer),
-            lastOilChangeMileage: notificationSettingsData.lastOilChangeMileage === ""
-                ? 0
-                : Number(notificationSettingsData.lastOilChangeMileage),
-            oilChangeInterval: notificationSettingsData.oilChangeInterval === ""
-                ? 0
-                : Number(notificationSettingsData.oilChangeInterval),
-            isAutomaticMileageTracking: notificationSettingsData.isAutomaticMileageTracking,
-            email: notificationSettingsData.email,
+            ...notificationSettingsData,
+            averageWeeklyMileage: Number(notificationSettingsData.averageWeeklyMileage) || 0,
+            currentOdometer: Number(notificationSettingsData.currentOdometer) || 0,
+            lastOilChangeMileage: Number(notificationSettingsData.lastOilChangeMileage) || 0,
+            oilChangeInterval: Number(notificationSettingsData.oilChangeInterval) || 0,
         };
 
         try {
             console.log("Sending Payload:", payload);
-
             await dispatch(updateNotificationSettings(carId, payload));
-            await sendNotification(
-                notificationSettingsData.email,
-                'Notification Settings Updated',
-                `Notification settings for car ${carId} have been updated.`
-            );
+            await sendNotification(email, 'Notification Settings Updated', `Notification settings for car ${carId} have been updated.`);
             navigate(`/cars/${carId}/notifications`);
         } catch (error) {
             console.error('Error updating notification settings:', error);
@@ -82,76 +69,37 @@ const NotificationSettings = () => {
         navigate(-1);
     };
 
+    const toggleOilFilterSection = () => {
+        setIsOilFilterExpanded(!isOilFilterExpanded);
+    };
+
     return (
-        <div>
+        <div className="notification-settings-container">
             <h2>Notification Settings</h2>
 
-            <form onSubmit={handleSubmit}>
-                <div style={{ position: 'relative' }}>
+            <form onSubmit={handleSubmit} className="notification-form">
+                <div className="form-group">
                     <label>
                         Notification Mode:
                         <select
                             name="isAutomaticMileageTracking"
                             value={notificationSettingsData.isAutomaticMileageTracking}
                             onChange={handleInputChange}
+                            className="dropdown"
                         >
                             <option value={false}>Manual</option>
                             <option value={true}>Auto</option>
                         </select>
-
-                        <span
-                            data-tooltip-id="notification-tooltip"
-                            style={{
-                                fontSize: 14,
-                                color: 'white',
-                                cursor: 'help',
-                                border: '1px solid white',
-                                borderRadius: '50%',
-                                width: '16px',
-                                height: '16px',
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
-                        >
-                            ?
-                        </span>
-                        <Tooltip
-                            id="notification-tooltip"
-                            place="right"
-                            effect="solid"
-                            style={{ whiteSpace: 'pre-line', maxWidth: '250px', textAlign: 'left' }}
-                        >
-                            Manual mode: Receive notifications when manually updating mileage. {'\n'}
+                        <span className="tooltip-icon" data-tooltip-id="notification-tooltip">?</span>
+                        <Tooltip id="notification-tooltip" place="right" effect="solid" className="tooltip-text">
+                            Manual mode: Receive notifications when manually updating mileage. <br />
                             Auto mode: Receive notifications using average weekly mileage.
                         </Tooltip>
                     </label>
                 </div>
 
-                <div>
-                    <label>
-                        Oil change notification:
-                        <input
-                            type="checkbox"
-                            name="oilChangeNotification"
-                            checked={notificationSettingsData.oilChangeNotification}
-                            onChange={handleInputChange}
-                        />
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        Filter change notification:
-                        <input
-                            type="checkbox"
-                            name="filterChangeNotification"
-                            checked={notificationSettingsData.filterChangeNotification}
-                            onChange={handleInputChange}
-                        />
-                    </label>
-                </div>
                 {notificationSettingsData.isAutomaticMileageTracking && (
-                    <div>
+                    <div className="form-group">
                         <label>
                             Average weekly mileage:
                             <input
@@ -159,12 +107,13 @@ const NotificationSettings = () => {
                                 name="averageWeeklyMileage"
                                 value={notificationSettingsData.averageWeeklyMileage}
                                 onChange={handleInputChange}
+                                className="input-field"
                             />
                         </label>
                     </div>
                 )}
 
-                <div>
+                <div className="form-group">
                     <label>
                         Current odometer:
                         <input
@@ -172,36 +121,72 @@ const NotificationSettings = () => {
                             name="currentOdometer"
                             value={notificationSettingsData.currentOdometer}
                             onChange={handleInputChange}
+                            className="input-field"
                         />
                     </label>
                 </div>
-                <div>
-                    <label>
-                        Last oil change odometer:
-                        <input
-                            type="number"
-                            name="lastOilChangeMileage"
-                            value={notificationSettingsData.lastOilChangeMileage}
-                            onChange={handleInputChange}
-                        />
-                    </label>
+
+                <div className="section-header" onClick={toggleOilFilterSection}>
+                    Oil and filters
+                    <span className={`expand-arrow ${isOilFilterExpanded ? 'expanded' : ''}`}>⮟</span>
                 </div>
-                <div>
-                    <label>
-                        Oil change interval:
-                        <input
-                            type="number"
-                            name="oilChangeInterval"
-                            value={notificationSettingsData.oilChangeInterval}
-                            onChange={handleInputChange}
-                        />
-                    </label>
+
+                <div className={`collapsible-section ${isOilFilterExpanded ? 'active' : ''}`}>
+                    <div className="form-group">
+                        <label>
+                            Oil change notification:
+                            <input
+                                type="checkbox"
+                                name="oilChangeNotification"
+                                checked={notificationSettingsData.oilChangeNotification}
+                                onChange={handleInputChange}
+                                className="checkbox"
+                            />
+                        </label>
+                    </div>
+                    <div className="form-group">
+                        <label>
+                            Filter change notification:
+                            <input
+                                type="checkbox"
+                                name="filterChangeNotification"
+                                checked={notificationSettingsData.filterChangeNotification}
+                                onChange={handleInputChange}
+                                className="checkbox"
+                            />
+                        </label>
+                    </div>
+                    <div className="form-group">
+                        <label>
+                            Last oil change odometer:
+                            <input
+                                type="number"
+                                name="lastOilChangeMileage"
+                                value={notificationSettingsData.lastOilChangeMileage}
+                                onChange={handleInputChange}
+                                className="input-field"
+                            />
+                        </label>
+                    </div>
+                    <div className="form-group">
+                        <label>
+                            Oil change interval:
+                            <input
+                                type="number"
+                                name="oilChangeInterval"
+                                value={notificationSettingsData.oilChangeInterval}
+                                onChange={handleInputChange}
+                                className="input-field"
+                            />
+                        </label>
+                    </div>
                 </div>
-                <div>
-                    <button className="buttons" type="submit">Save</button>
+
+                <div className="button-container">
+                    <button type="submit" className="buttons">Save</button>
+                    <button type="button" onClick={handleBack} className="buttons">Back</button>
                 </div>
             </form>
-            <button className="buttons" onClick={handleBack}>Back</button>
         </div>
     );
 };

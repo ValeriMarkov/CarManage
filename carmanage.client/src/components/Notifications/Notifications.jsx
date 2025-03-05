@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getAuth } from 'firebase/auth';
+import './Notifications.css';
 
 const Notifications = () => {
     const { carId } = useParams();
@@ -66,7 +67,6 @@ const Notifications = () => {
                 }
 
                 setNotifications(notifications.filter((notification) => notification.id !== notificationId));
-                alert("Notification removed successfully!");
                 setSuccessMessage("Notification removed successfully!");
                 setError(null);
             }
@@ -82,9 +82,9 @@ const Notifications = () => {
     };
 
     return (
-        <div>
+        <div className="notifications-container">
             <h2>Notifications for Car {carId}</h2>
-            <button className="buttons"  onClick={handleAddNotification}>Add New Notification</button>
+            <button className="buttons" onClick={handleAddNotification}>Add New Notification</button>
 
             <div>
                 <h3>Active Notifications:</h3>
@@ -100,31 +100,29 @@ const Notifications = () => {
                             const serviceType = services.length > 0 ? services.join(", ") : "Unknown Service";
 
                             let changeInKm = 0;
-
                             if (notification.isAutomaticMileageTracking) {
                                 const remainingKm = notification.oilChangeInterval - (notification.currentOdometer - notification.lastOilChangeMileage);
                                 changeInKm = remainingKm < 0 ? 0 : remainingKm;
-                            }
-
-                            if (!notification.isAutomaticMileageTracking) {
+                            } else {
                                 changeInKm = (notification.lastOilChangeMileage - notification.currentOdometer) + notification.oilChangeInterval;
                             }
 
                             return (
                                 <li key={notification.id}>
                                     <div>
-                                        <span>{serviceType}</span> -{" "}
-                                        <>Change in: {changeInKm} km</>
-                                        <button className="buttons"  onClick={() => handleEditNotification(notification.id)}>Edit</button>
-                                        <button className="buttons"  onClick={() => handleRemoveNotification(notification.id)}>Remove</button>
+                                        <span>{serviceType}</span> - Change in: {changeInKm} km
+                                        <div className="button-container">
+                                            <button className="buttons" onClick={() => handleEditNotification(notification.id)}>Edit</button>
+                                            <button className="buttons" onClick={() => handleRemoveNotification(notification.id)}>Remove</button>
+                                        </div>
                                     </div>
                                 </li>
                             );
                         })}
-                    <button className="buttons" onClick={handleBack}>Back</button>
-                        </ul>
+                    </ul>
                 )}
             </div>
+            <button className="buttons" onClick={handleBack}>Back</button>
         </div>
     );
 };

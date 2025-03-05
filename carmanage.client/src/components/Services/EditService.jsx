@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import axios from 'axios';
+import './EditService.css';
 
 const EditService = () => {
     const { carId, serviceId } = useParams();
@@ -30,12 +31,9 @@ const EditService = () => {
             try {
                 const idToken = await getIdToken();
                 const response = await axios.get(`https://localhost:7025/api/cars/${carId}/services/${serviceId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${idToken}`
-                    }
+                    headers: { 'Authorization': `Bearer ${idToken}` }
                 });
                 const data = response.data;
-                console.log('Fetched service data:', data);
                 setServiceData(data);
                 setLoading(false);
             } catch (error) {
@@ -48,17 +46,10 @@ const EditService = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        if (name === 'notes') {
-            setServiceData((prevState) => ({
-                ...prevState,
-                notes: value,
-            }));
-        } else {
-            setServiceData((prevState) => ({
-                ...prevState,
-                [name]: value,
-            }));
-        }
+        setServiceData((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
     };
 
     const handleServiceChange = (e, serviceType) => {
@@ -75,6 +66,7 @@ const EditService = () => {
             }));
         }
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const idToken = await getIdToken();
@@ -84,15 +76,17 @@ const EditService = () => {
             Notes: serviceData.notes || '',
             selectedServices: serviceData.selectedServices,
         };
-        console.log('Request data:', serviceHistoryUpdateInput);
         try {
-            const response = await axios.put(`https://localhost:7025/api/cars/${carId}/services/${serviceId}`, JSON.stringify(serviceHistoryUpdateInput), {
-                headers: {
-                    'Authorization': `Bearer ${idToken}`,
-                    'Content-Type': 'application/json'
+            const response = await axios.put(
+                `https://localhost:7025/api/cars/${carId}/services/${serviceId}`,
+                JSON.stringify(serviceHistoryUpdateInput),
+                {
+                    headers: {
+                        'Authorization': `Bearer ${idToken}`,
+                        'Content-Type': 'application/json'
+                    }
                 }
-            });
-            console.log(response);
+            );
             if (response.status === 200 || response.status === 204) {
                 alert('Service details updated successfully');
                 navigate("/");
@@ -109,6 +103,10 @@ const EditService = () => {
         navigate(-1);
     };
 
+    const formatServiceType = (serviceType) => {
+        return serviceType.replace(/([a-z])([A-Z])/g, '$1 $2');
+    };
+
     const [serviceTypes, setServiceTypes] = useState([]);
 
     useEffect(() => {
@@ -123,62 +121,82 @@ const EditService = () => {
                     },
                 });
                 const data = await response.json();
-                const serviceTypes = data;
-                setServiceTypes(serviceTypes);
+                setServiceTypes(data);
             } catch (error) {
                 console.error('Error fetching service types:', error);
             }
         };
         fetchServiceTypes();
-    }, []);
+    }, [carId]);
 
     if (loading) {
         return <p>Loading service details...</p>;
     }
 
     return (
-        <div>
+        <div className="edit-service-container">
             <h2>Edit Service</h2>
             {error && <p className="error">{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="date"
-                    name="serviceDate"
-                    defaultValue={serviceData.serviceDate ? serviceData.serviceDate.split('T')[0] : ''}
-                    onChange={handleInputChange}
-                    placeholder="Service Date"
-                    required
-                />
-                <input
-                    type="number"
-                    name="odometerAtService"
-                    value={serviceData.odometerAtService || ''}
-                    onChange={handleInputChange}
-                    placeholder="Odometer at Service"
-                    required
-                />
-                <input
-                    type="text"
-                    name="notes"
-                    value={serviceData.notes || ''}
-                    onChange={handleInputChange}
-                    placeholder="Notes"
-                />
-                {serviceTypes.map((serviceType, index) => (
-                    <div key={index}>
+            <div className="edit-service-form-container">
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label htmlFor="serviceDateField">Service Date:</label>
                         <input
-                            type="checkbox"
-                            id={serviceType.Name}
-                            checked={serviceData.selectedServices && serviceData.selectedServices.includes(serviceType)}
-                            onChange={(e) => handleServiceChange(e, serviceType)}
+                            type="date"
+                            name="serviceDate"
+                            id="serviceDateField"
+                            defaultValue={serviceData.serviceDate ? serviceData.serviceDate.split('T')[0] : ''}
+                            onChange={handleInputChange}
+                            placeholder="Service Date"
+                            required
                         />
-                        <span>{serviceType.Name}</span>
-                        <span>{JSON.stringify(serviceType)}</span>
                     </div>
-                ))}
-                <button className="buttons" type="submit">Update Service</button>
-            </form>
-            <button className="buttons" onClick={handleBack}>Back</button>
+                    <div>
+                        <label htmlFor="odometerAtServiceField">Odometer at Service:</label>
+                        <input
+                            type="number"
+                            name="odometerAtService"
+                            id="odometerAtServiceField"
+                            value={serviceData.odometerAtService || ''}
+                            onChange={handleInputChange}
+                            placeholder="Odometer at Service"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="notesField">Notes:</label>
+                        <input
+                            type="text"
+                            name="notes"
+                            id="notesField"
+                            value={serviceData.notes || ''}
+                            onChange={handleInputChange}
+                            placeholder="Notes"
+                        />
+                    </div>
+                    <div>
+                        <h3>Selected Services:</h3>
+                    </div>
+                    <div className="checkboxes">
+                        {serviceTypes.map((serviceType, index) => (
+                            <div key={index} className="checkbox-item">
+                                <label htmlFor={serviceType.Name}>{serviceType.Name}</label>
+                                <input
+                                    type="checkbox"
+                                    id={serviceType.Name}
+                                    checked={serviceData.selectedServices && serviceData.selectedServices.includes(serviceType)}
+                                    onChange={(e) => handleServiceChange(e, serviceType)}
+                                />
+                                <label htmlFor={serviceType}>
+                                    {formatServiceType(serviceType)}
+                                </label>
+                            </div>
+                        ))}
+                    </div>
+                    <button className="buttons" type="submit">Update Service</button>
+                </form>
+                <button className="buttons back-button" onClick={handleBack}>Back</button>
+            </div>
         </div>
     );
 };

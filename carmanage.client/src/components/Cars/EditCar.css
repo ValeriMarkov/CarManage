@@ -1,2 +1,90 @@
-body {
+/* Scoped styles for EditCar page only */
+.edit-car-container {
+    background-color: #2a2a2a; /* Dark background */
+    color: #fff; /* White text */
+    border-radius: 8px;
+    padding: 30px;
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Box around the form */
+.edit-car-form-container {
+    background-color: #333; /* Dark background for the form */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.edit-car-container h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.edit-car-container input {
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0;
+    background-color: #444;
+    border: 1px solid #333;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.edit-car-container input::placeholder {
+    color: #bbb;
+}
+
+/* Error message styling */
+.edit-car-container .error {
+    color: red;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+/* Button styling */
+.edit-car-container .buttons {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.edit-car-container .buttons.back-button {
+    margin-top: 20px; /* Add some space between the back and submit button */
+}
+
+.edit-car-container .buttons.back-button:hover {
+    background-color: #5a6268;
+}
+
+.edit-car-container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.edit-car-container form input {
+    margin-bottom: 20px;
+}
+
+.edit-car-container form button {
+    width: 100%; /* Ensure buttons take full width */
+    margin-top: 10px;
+}
+
+.edit-car-container .back-button {
+    margin-top: 20px; /* Move the back button down */
 }

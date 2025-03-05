@@ -58,16 +58,6 @@ const AddService = () => {
         }));
     };
 
-    const getServiceTypeName = (serviceId) => {
-        const service = services.find((service) => service.id === serviceId);
-        return service ? service.label : 'Unknown Service';
-    };
-
-    const getServiceTypeDescription = (serviceId) => {
-        const service = services.find((service) => service.id === serviceId);
-        return service ? service.description || 'No description available' : 'Unknown Service';
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
@@ -119,58 +109,64 @@ const AddService = () => {
     return (
         <div className="add-service-container">
             <h2>Add Service History</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="serviceDate">Service Date:</label>
-                    <input
-                        type="date"
-                        id="serviceDate"
-                        value={serviceData.serviceDate}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
+            <div className="add-service-form-container">
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label htmlFor="serviceDate">Service Date:</label>
+                        <input
+                            type="date"
+                            id="serviceDate"
+                            value={serviceData.serviceDate}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </div>
 
-                <div>
-                    <label htmlFor="odometerAtService">Odometer at Service:</label>
-                    <input
-                        type="number"
-                        id="odometerAtService"
-                        value={serviceData.odometerAtService}
-                        onChange={handleInputChange}
-                        required
-                    />
-                </div>
+                    <div>
+                        <label htmlFor="odometerAtService">Odometer at Service:</label>
+                        <input
+                            type="number"
+                            id="odometerAtService"
+                            value={serviceData.odometerAtService}
+                            onChange={handleInputChange}
+                            required
+                        />
+                    </div>
 
-                <div>
-                    <label htmlFor="notes">Notes:</label>
-                    <textarea
-                        id="notes"
-                        value={serviceData.notes}
-                        onChange={handleInputChange}
-                    />
-                </div>
+                    <div>
+                        <label htmlFor="notes">Notes:</label>
+                        <textarea
+                            id="notes"
+                            value={serviceData.notes}
+                            onChange={handleInputChange}
+                        />
+                    </div>
 
-                <div>
-                    <h3>Select Services:</h3>
-                    {services.map((service) => (
-                        <div key={service.id}>
-                            <input
-                                type="checkbox"
-                                checked={serviceData.selectedServices.includes(service.id)}
-                                onChange={() => handleServiceSelection(service.id)}
-                                value={service.id}
-                            />
-                            <label htmlFor={service.label}>{service.label}</label>
-                        </div>
-                    ))}
-                </div>
+                    <div>
+                        <h3>Selected Services:</h3>
+                    </div>
 
-                {error && <p className="error">{error}</p>}
+                    <div className="checkboxes">
+                        {services.map((service) => (
+                            <div key={service.id} className="checkbox-item">
+                                <input
+                                    type="checkbox"
+                                    checked={serviceData.selectedServices.includes(service.id)}
+                                    onChange={() => handleServiceSelection(service.id)}
+                                    value={service.id}
+                                    id={`service-${service.id}`}
+                                />
+                                <label htmlFor={`service-${service.id}`}>{service.label}</label>
+                            </div>
+                        ))}
+                    </div>
 
-                <button className="buttons" type="submit">Submit</button>
-            </form>
-            <button className="buttons" onClick={handleBack}>Back</button>
+                    {error && <p className="error">{error}</p>}
+
+                    <button className="buttons" type="submit">Submit</button>
+                </form>
+                <button className="buttons" onClick={handleBack}>Back</button>
+            </div>
         </div>
     );
 };

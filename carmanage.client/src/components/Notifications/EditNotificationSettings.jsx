@@ -130,26 +130,29 @@ const EditNotificationSettings = () => {
                 </div>
 
                 <div>
-                    <label>
-                        Oil change notification:
-                        <input
-                            type="checkbox"
-                            name="oilChangeNotification"
-                            checked={notificationData.oilChangeNotification}
-                            onChange={handleInputChange}
-                        />
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        Filter change notification:
-                        <input
-                            type="checkbox"
-                            name="filterChangeNotification"
-                            checked={notificationData.filterChangeNotification}
-                            onChange={handleInputChange}
-                        />
-                    </label>
+                    <p>Oil and filters</p>
+                    <div>
+                        <label>
+                            Oil change notification:
+                            <input
+                                type="checkbox"
+                                name="oilChangeNotification"
+                                checked={notificationData.oilChangeNotification}
+                                onChange={handleInputChange}
+                            />
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            Filter change notification:
+                            <input
+                                type="checkbox"
+                                name="filterChangeNotification"
+                                checked={notificationData.filterChangeNotification}
+                                onChange={handleInputChange}
+                            />
+                        </label>
+                        </div>
                 </div>
                 {notificationData.isAutomaticMileageTracking && (
                     <div>
