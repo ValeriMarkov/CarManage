@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
-import './EditCar.css'; // Import the CSS file
+import './EditCar.css';
 
 const EditCar = () => {
     const { carId } = useParams();

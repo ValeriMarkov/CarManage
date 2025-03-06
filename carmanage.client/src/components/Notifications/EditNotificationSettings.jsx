@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getAuth } from 'firebase/auth';
 import { useDispatch } from 'react-redux';
 import { updateNotificationSettings } from './actions';
+import { Tooltip } from 'react-tooltip';
 import { sendNotification } from '../../services/notificationService';
+import './EditNotificationSettings.css';
 
 const EditNotificationSettings = () => {
     const { carId, notificationId } = useParams();
@@ -24,6 +26,8 @@ const EditNotificationSettings = () => {
         isAutomaticMileageTracking: false,
         email: email,
     });
+
+    const [isOilFilterExpanded, setIsOilFilterExpanded] = useState(false);
 
     useEffect(() => {
         const fetchNotification = async () => {
@@ -110,52 +114,37 @@ const EditNotificationSettings = () => {
         navigate(-1);
     };
 
+    const toggleOilFilterSection = () => {
+        setIsOilFilterExpanded((prev) => !prev);
+    };
+
     return (
-        <div>
+        <div className="edit-notification-settings-container">
             <h2>Edit Notification Settings</h2>
 
-            <form onSubmit={handleSubmit}>
-                <div style={{ position: 'relative' }}>
+            <form onSubmit={handleSubmit} className="notification-form">
+                <div className="form-group">
                     <label>
                         Notification Mode:
                         <select
                             name="isAutomaticMileageTracking"
                             value={notificationData.isAutomaticMileageTracking}
                             onChange={handleInputChange}
+                            className="dropdown"
                         >
                             <option value={false}>Manual</option>
                             <option value={true}>Auto</option>
                         </select>
+                        <span className="tooltip-icon" data-tooltip-id="notification-tooltip">?</span>
+                        <Tooltip id="notification-tooltip" place="right" effect="solid" className="tooltip-text">
+                            Manual mode: Receive notifications when manually updating mileage. <br />
+                            Auto mode: Receive notifications using average weekly mileage.
+                        </Tooltip>
                     </label>
                 </div>
 
-                <div>
-                    <p>Oil and filters</p>
-                    <div>
-                        <label>
-                            Oil change notification:
-                            <input
-                                type="checkbox"
-                                name="oilChangeNotification"
-                                checked={notificationData.oilChangeNotification}
-                                onChange={handleInputChange}
-                            />
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            Filter change notification:
-                            <input
-                                type="checkbox"
-                                name="filterChangeNotification"
-                                checked={notificationData.filterChangeNotification}
-                                onChange={handleInputChange}
-                            />
-                        </label>
-                        </div>
-                </div>
                 {notificationData.isAutomaticMileageTracking && (
-                    <div>
+                    <div className="form-group">
                         <label>
                             Average weekly mileage:
                             <input
@@ -163,12 +152,13 @@ const EditNotificationSettings = () => {
                                 name="averageWeeklyMileage"
                                 value={notificationData.averageWeeklyMileage}
                                 onChange={handleInputChange}
+                                className="input-field"
                             />
                         </label>
                     </div>
                 )}
 
-                <div>
+                <div className="form-group">
                     <label>
                         Current odometer:
                         <input
@@ -176,36 +166,72 @@ const EditNotificationSettings = () => {
                             name="currentOdometer"
                             value={notificationData.currentOdometer}
                             onChange={handleInputChange}
+                            className="input-field"
                         />
                     </label>
                 </div>
-                <div>
-                    <label>
-                        Last oil change odometer:
-                        <input
-                            type="number"
-                            name="lastOilChangeMileage"
-                            value={notificationData.lastOilChangeMileage}
-                            onChange={handleInputChange}
-                        />
-                    </label>
+
+                <div className="section-header" onClick={toggleOilFilterSection}>
+                    Oil and filters
+                    <span className={`expand-arrow ${isOilFilterExpanded ? 'expanded' : ''}`}>⮟</span>
                 </div>
-                <div>
-                    <label>
-                        Oil change interval:
-                        <input
-                            type="number"
-                            name="oilChangeInterval"
-                            value={notificationData.oilChangeInterval}
-                            onChange={handleInputChange}
-                        />
-                    </label>
+
+                <div className={`collapsible-section ${isOilFilterExpanded ? 'active' : ''}`}>
+                    <div className="form-group">
+                        <label>
+                            Oil change notification:
+                            <input
+                                type="checkbox"
+                                name="oilChangeNotification"
+                                checked={notificationData.oilChangeNotification}
+                                onChange={handleInputChange}
+                                className="checkbox"
+                            />
+                        </label>
+                    </div>
+                    <div className="form-group">
+                        <label>
+                            Filter change notification:
+                            <input
+                                type="checkbox"
+                                name="filterChangeNotification"
+                                checked={notificationData.filterChangeNotification}
+                                onChange={handleInputChange}
+                                className="checkbox"
+                            />
+                        </label>
+                    </div>
+                    <div className="form-group">
+                        <label>
+                            Last oil change odometer:
+                            <input
+                                type="number"
+                                name="lastOilChangeMileage"
+                                value={notificationData.lastOilChangeMileage}
+                                onChange={handleInputChange}
+                                className="input-field"
+                            />
+                        </label>
+                    </div>
+                    <div className="form-group">
+                        <label>
+                            Oil change interval:
+                            <input
+                                type="number"
+                                name="oilChangeInterval"
+                                value={notificationData.oilChangeInterval}
+                                onChange={handleInputChange}
+                                className="input-field"
+                            />
+                        </label>
+                    </div>
                 </div>
-                <div>
-                    <button className="buttons" type="submit">Save Changes</button>
+
+                <div className="button-container">
+                    <button type="submit" className="buttons">Save Changes</button>
+                    <button type="button" onClick={handleBack} className="buttons">Back</button>
                 </div>
             </form>
-            <button className="buttons" onClick={handleBack}>Back</button>
         </div>
     );
 };

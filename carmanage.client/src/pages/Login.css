@@ -1,4 +1,3 @@
-/* Login Page Styles (Scoped to login-page) */
 .login-page {
     background-color: #1e1e1e;
     color: #fff;
@@ -16,10 +15,10 @@
     align-items: center;
 }
 
-    .login-container h2 {
-        color: #004C99;
-        margin-bottom: 20px;
-    }
+.login-container h2 {
+    color: #004C99;
+    margin-bottom: 20px;
+}
 
 .input-field {
     width: 100%;
@@ -32,10 +31,10 @@
     font-size: 16px;
 }
 
-    .input-field:focus {
-        outline: none;
-        border-color: #004C99;
-    }
+.input-field:focus {
+    outline: none;
+    border-color: #004C99;
+}
 
 button.buttons {
     width: 100%;
@@ -51,9 +50,9 @@ button.buttons {
     margin-top: 10px;
 }
 
-    button.buttons:hover {
-        background-color: #003366;
-    }
+button.buttons:hover {
+    background-color: #003366;
+}
 
 .error {
     color: red;
@@ -61,7 +60,6 @@ button.buttons {
     margin-bottom: 10px;
 }
 
-/* Mobile Responsive Styles */
 @media (max-width: 768px) {
     .login-page {
         padding: 15px;

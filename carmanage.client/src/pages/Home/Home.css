@@ -13,60 +13,60 @@ body {
     font-family: Arial, sans-serif;
 }
 
-    .home-container h2 {
-        text-align: center;
-        font-size: 24px;
-        margin-bottom: 20px;
-        color: #ddd;
-    }
+.home-container h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #ddd;
+}
 
-    .home-container a {
-        color: #ddd;
-        font-size: 18px;
-        font-weight: bold;
-        text-decoration: none;
-        display: block; /* Ensure the link is block-level */
-        margin-bottom: 5px; /* Add 5px margin below the link */
-    }
+.home-container a {
+    color: #ddd;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 5px;
+}
 
-        .home-container a:hover {
-            text-decoration: underline;
-        }
+.home-container a:hover {
+    text-decoration: underline;
+}
 
-    .home-container .button-container {
-        display: flex;
-        gap: 10px;
-        margin-top: 10px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
+.home-container .button-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
 
-    .home-container .buttons {
-        background-color: #444;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 20px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
+.home-container .buttons {
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
-        .home-container .buttons:hover {
-            background-color: #666;
-        }
+.home-container .buttons:hover {
+    background-color: #666;
+}
 
 @media (max-width: 600px) {
     .home-container {
         padding: 10px;
     }
 
-        .home-container h2 {
-            font-size: 20px;
-        }
+    .home-container h2 {
+        font-size: 20px;
+    }
 
-        .home-container .buttons {
-            font-size: 14px;
-            padding: 8px 16px;
-        }
+    .home-container .buttons {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
 }

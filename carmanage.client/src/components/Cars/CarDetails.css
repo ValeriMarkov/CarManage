@@ -58,31 +58,30 @@
     margin-top: 20px;
 }
 
-    .service-history h2 {
-        text-align: center;
-        color: #004C99;
-    }
+.service-history h2 {
+    text-align: center;
+    color: #004C99;
+}
 
-    .service-history ul {
-        list-style: none;
-        padding: 0;
-    }
+.service-history ul {
+    list-style: none;
+    padding: 0;
+}
 
-    .service-history li {
-        background-color: #444;
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 10px;
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
+.service-history li {
+    background-color: #444;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
 
-    .service-history .buttons {
-        font-size: 14px;
-    }
+.service-history .buttons {
+    font-size: 14px;
+}
 
-/* Mobile Responsive Styles */
 @media (max-width: 768px) {
     .car-details-container {
         padding: 15px;
@@ -90,27 +89,27 @@
         max-width: 100%;
     }
 
-        .car-details-container h2 {
-            font-size: 20px;
-        }
+    .car-details-container h2 {
+        font-size: 20px;
+    }
 
-        .car-details-container p {
-            font-size: 14px;
-        }
+    .car-details-container p {
+        font-size: 14px;
+    }
 
     .button-group {
-        flex-direction: column; /* Stack buttons vertically */
+        flex-direction: column;
         gap: 8px;
     }
 
     .buttons {
-        width: 100%; /* Make buttons take full width */
-        padding: 12px; /* Increase button height for easier tapping */
-        font-size: 14px; /* Smaller font size for mobile */
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
     }
 
     .add-service-btn {
-        max-width: 100%; /* Ensure Add Service button takes full width */
+        max-width: 100%;
         margin: 15px 0;
     }
 

@@ -1,4 +1,3 @@
-/* Scoped styles for the NotificationSettings page */
 .notification-settings-container {
     display: flex;
     flex-direction: column;
@@ -10,163 +9,163 @@
     font-family: Arial, sans-serif;
 }
 
-    .notification-settings-container h2 {
-        text-align: center;
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
+.notification-settings-container h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
 
-    .notification-settings-container .notification-form {
-        width: 100%;
-        max-width: 500px;
-        background-color: #3c3c3c;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
-    }
+.notification-settings-container .notification-form {
+    width: 100%;
+    max-width: 500px;
+    background-color: #3c3c3c;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+}
 
-    .notification-settings-container .form-group {
-        margin-bottom: 15px;
-        display: flex;
-        flex-direction: column;
-    }
+.notification-settings-container .form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
 
-    .notification-settings-container label {
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
+.notification-settings-container label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
 
-    .notification-settings-container .dropdown,
-    .notification-settings-container .input-field {
-        width: 80%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        background-color: #fff;
-        color: #333;
-    }
+.notification-settings-container .dropdown,
+.notification-settings-container .input-field {
+    width: 80%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+}
 
-    .notification-settings-container .checkbox-group {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
+.notification-settings-container .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-    .notification-settings-container .section-header {
-        text-align: center;
-        font-size: 18px;
-        font-weight: bold;
-        margin-top: 20px;
-        padding-bottom: 5px;
-        border-bottom: 2px solid #555;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-    }
+.notification-settings-container .section-header {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #555;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
 
-    .notification-settings-container .expand-arrow {
-        font-size: 20px;
-        transition: transform 0.3s ease;
-    }
+.notification-settings-container .expand-arrow {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
 
-        .notification-settings-container .expand-arrow.expanded {
-            transform: rotate(180deg);
-        }
+.notification-settings-container .expand-arrow.expanded {
+    transform: rotate(180deg);
+}
 
-    .notification-settings-container .collapsible-section {
-        background-color: #3c3c3c;
-        border: 1px solid #555;
-        padding: 15px;
-        border-radius: 5px;
-        margin-top: 10px;
-        display: none;
-    }
+.notification-settings-container .collapsible-section {
+    background-color: #3c3c3c;
+    border: 1px solid #555;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+    display: none;
+}
 
-        .notification-settings-container .collapsible-section.active {
-            display: block;
-        }
+.notification-settings-container .collapsible-section.active {
+    display: block;
+}
 
-    .notification-settings-container .tooltip-container {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
+.notification-settings-container .tooltip-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
 
-    .notification-settings-container .tooltip-icon {
-        cursor: pointer;
-        font-weight: bold;
-        color: #ccc;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background-color: #444;
-        text-align: center;
-    }
+.notification-settings-container .tooltip-icon {
+    cursor: pointer;
+    font-weight: bold;
+    color: #ccc;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #444;
+    text-align: center;
+}
 
-    .notification-settings-container .tooltip-text {
-        display: none;
-        position: absolute;
-        background-color: #333;
-        color: white;
-        padding: 5px;
-        border-radius: 5px;
-    }
+.notification-settings-container .tooltip-text {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+}
 
-    .notification-settings-container .tooltip-icon:hover + .tooltip-text {
-        display: block;
-        white-space: nowrap;
-    }
+.notification-settings-container .tooltip-icon:hover + .tooltip-text {
+    display: block;
+    white-space: nowrap;
+}
 
-    .notification-settings-container .button-container {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-    }
+.notification-settings-container .button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
 
-    .notification-settings-container .buttons {
-        background-color: #444;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 20px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
+.notification-settings-container .buttons {
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
-        .notification-settings-container .buttons:hover {
-            background-color: #666;
-        }
+.notification-settings-container .buttons:hover {
+    background-color: #666;
+}
 
 @media (max-width: 600px) {
     .notification-settings-container {
         padding: 10px;
     }
 
-        .notification-settings-container h2 {
-            font-size: 20px;
-        }
+    .notification-settings-container h2 {
+        font-size: 20px;
+    }
 
-        .notification-settings-container .notification-form {
-            max-width: 100%;
-        }
+    .notification-settings-container .notification-form {
+        max-width: 100%;
+    }
 
-        .notification-settings-container .form-group {
-            margin-bottom: 10px;
-        }
+    .notification-settings-container .form-group {
+        margin-bottom: 10px;
+    }
 
-        .notification-settings-container .dropdown,
-        .notification-settings-container .input-field {
-            width: 100%;
-        }
+    .notification-settings-container .dropdown,
+    .notification-settings-container .input-field {
+        width: 100%;
+    }
 
-        .notification-settings-container .buttons {
-            font-size: 14px;
-            padding: 8px 16px;
-        }
+    .notification-settings-container .buttons {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
 }
