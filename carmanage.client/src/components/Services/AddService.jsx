@@ -50,6 +50,10 @@ const AddService = () => {
         }
     };
 
+    const formatServiceType = (serviceType) => {
+        return serviceType.replace(/([a-z])([A-Z])/g, '$1 $2');
+    };
+
     const handleInputChange = (e) => {
         const { id, value } = e.target;
         setServiceData((prevState) => ({
