@@ -95,7 +95,6 @@ const EditNotificationSettings = () => {
                         },
                     }
                 );
-                console.log("Fetched Notification for Edit:", response.data);
 
                 setNotificationData({
                     oilChangeNotification: response.data.oilChangeNotification,

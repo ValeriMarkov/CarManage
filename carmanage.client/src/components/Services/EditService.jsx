@@ -94,7 +94,6 @@ const EditService = () => {
                 console.error('Error updating service details:', response);
             }
         } catch (err) {
-            console.log(err.response.data);
             setError(err.message);
         }
     };

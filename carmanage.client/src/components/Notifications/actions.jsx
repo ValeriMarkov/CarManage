@@ -20,7 +20,6 @@ const getToken = async () => {
 export const updateNotificationSettings = (carId, notificationSettingsData) => {
     return async (dispatch) => {
         try {
-            console.log("Attempting to update notification settings...");
 
             const token = await getToken();
             if (!token) {
@@ -34,8 +33,6 @@ export const updateNotificationSettings = (carId, notificationSettingsData) => {
                 UserId: auth.currentUser ? auth.currentUser.uid : null,
             };
 
-            console.log("Sending Notification Settings Payload:", updatedData);
-
             const response = await axios.put(
                 `https://localhost:7025/api/notificationsettings/${carId}`,
                 updatedData,
@@ -46,8 +43,6 @@ export const updateNotificationSettings = (carId, notificationSettingsData) => {
                     },
                 }
             );
-
-            console.log("Successfully updated notification settings. Server response:", response.data);
 
             dispatch({
                 type: 'UPDATE_NOTIFICATION_SETTINGS',

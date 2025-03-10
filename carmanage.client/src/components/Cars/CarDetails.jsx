@@ -135,6 +135,7 @@ const CarDetails = () => {
                 <button className="buttons" onClick={() => navigate('/')}>Back to Home</button>
                 <button className="buttons" onClick={onRemoveClick}>Remove</button>
                 <button className="buttons" onClick={() => navigate(`/cars/${carId}/notifications`)}>Manage Notifications</button>
+                <button className="buttons" onClick={() => navigate(`/cars/${carId}/export`)}>Export as Document</button>
             </div>
 
             <h2>Service History</h2>

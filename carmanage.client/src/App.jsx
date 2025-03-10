@@ -15,6 +15,7 @@ import NotificationSettings from "./components/Notifications/NotificationSetting
 import store from './components/Notifications/store';
 import Notifications from "./components/Notifications/Notifications";
 import EditNotificationSettings from "./components/Notifications/EditNotificationSettings";
+import Export from "./components/Exports/Export";
 import { Provider } from 'react-redux';
 
 const App = () => {
@@ -59,6 +60,7 @@ const App = () => {
                         <Route path="/cars/:carId/notifications" element={<ProtectedRoute> {<Notifications />} </ProtectedRoute>} />
                         <Route path="/cars/:carId/notifications/notification-settings" element={<ProtectedRoute> {<NotificationSettings />} </ProtectedRoute>} />
                         <Route path="/cars/:carId/notifications/notification-settings/edit/:notificationId" element={<ProtectedRoute> {<EditNotificationSettings />} </ProtectedRoute>} />
+                        <Route path="/cars/:carId/export" element={<ProtectedRoute> {<Export />} </ProtectedRoute>} />
                     </Routes>
                 </div>
             </Router>

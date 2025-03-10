@@ -48,7 +48,6 @@ public class DailyNotificationService : BackgroundService
         foreach (var car in cars)
         {
             var settings = car.NotificationSettings.FirstOrDefault();
-
             if (settings == null) continue;
 
             if (settings.IsAutomaticMileageTracking)
@@ -56,30 +55,45 @@ public class DailyNotificationService : BackgroundService
                 settings.CurrentOdometer += settings.AverageWeeklyMileage / 7;
             }
 
-            if (settings.OilChangeNotification &&
-                settings.CurrentOdometer >= settings.LastOilChangeMileage + settings.OilChangeInterval)
-            {
-                await notificationService.SendNotificationAsync(
-                    settings.Email,
-                    "Oil Change Reminder",
-                    $"Your car (ID: {car.Id}) is due for an oil change. Current mileage: {settings.CurrentOdometer}."
-                );
-            }
-
-            if (settings.FilterChangeNotification &&
-                settings.CurrentOdometer >= settings.LastOilChangeMileage + (settings.OilChangeInterval * 2))
-            {
-                await notificationService.SendNotificationAsync(
-                    settings.Email,
-                    "Filter Change Reminder",
-                    $"Your car (ID: {car.Id}) is due for a filter change. Current mileage: {settings.CurrentOdometer}."
-                );
-            }
+            await CheckAndSendNotification(notificationService, settings, settings.OilChangeNotification, settings.LastOilChangeMileage, settings.OilChangeInterval, car, "Oil Change");
+            await CheckAndSendNotification(notificationService, settings, settings.FilterChangeNotification, settings.LastOilChangeMileage, settings.OilChangeInterval * 2, car, "Filter Change");
+            await CheckAndSendNotification(notificationService, settings, settings.BrakePadsNotification, settings.LastBrakePadsChangeMileage, settings.BrakePadsChangeInterval, car, "Brake Pads Change");
+            await CheckAndSendNotification(notificationService, settings, settings.TireRotationNotification, settings.LastTireRotationMileage, settings.TireRotationInterval, car, "Tire Rotation");
+            await CheckAndSendNotification(notificationService, settings, settings.BatteryCheckNotification, settings.LastBatteryCheckMileage, settings.BatteryCheckInterval, car, "Battery Check");
+            await CheckAndSendNotification(notificationService, settings, settings.TransmissionFluidChangeNotification, settings.LastTransmissionFluidChangeMileage, settings.TransmissionFluidChangeInterval, car, "Transmission Fluid Change");
+            await CheckAndSendNotification(notificationService, settings, settings.EngineFlushNotification, settings.LastEngineFlushMileage, settings.EngineFlushInterval, car, "Engine Flush");
+            await CheckAndSendNotification(notificationService, settings, settings.CoolantFlushNotification, settings.LastCoolantFlushMileage, settings.CoolantFlushInterval, car, "Coolant Flush");
+            await CheckAndSendNotification(notificationService, settings, settings.SparkPlugChangeNotification, settings.LastSparkPlugChangeMileage, settings.SparkPlugChangeInterval, car, "Spark Plug Change");
+            await CheckAndSendNotification(notificationService, settings, settings.TimingBeltNotification, settings.LastTimingBeltChangeMileage, settings.TimingBeltChangeInterval, car, "Timing Belt Replacement");
+            await CheckAndSendNotification(notificationService, settings, settings.FuelInjectionCleaningNotification, settings.LastFuelInjectionCleaningMileage, settings.FuelInjectionCleaningInterval, car, "Fuel Injection Cleaning");
+            await CheckAndSendNotification(notificationService, settings, settings.AlignmentNotification, settings.LastAlignmentMileage, settings.AlignmentInterval, car, "Wheel Alignment");
+            await CheckAndSendNotification(notificationService, settings, settings.SuspensionNotification, settings.LastSuspensionCheckMileage, settings.SuspensionCheckInterval, car, "Suspension Check");
+            await CheckAndSendNotification(notificationService, settings, settings.AcRechargeNotification, settings.LastAcRechargeMileage, settings.AcRechargeInterval, car, "A/C Recharge");
+            await CheckAndSendNotification(notificationService, settings, settings.DifferentialFluidChangeNotification, settings.LastDifferentialFluidChangeMileage, settings.DifferentialFluidChangeInterval, car, "Differential Fluid Change");
+            await CheckAndSendNotification(notificationService, settings, settings.TimingChainChangeNotification, settings.LastTimingChainChangeMileage, settings.TimingChainChangeInterval, car, "Timing Chain Change");
+            await CheckAndSendNotification(notificationService, settings, settings.ClutchReplacementNotification, settings.LastClutchReplacementMileage, settings.ClutchReplacementInterval, car, "Clutch Replacement");
 
             dbContext.Update(settings);
         }
 
         await dbContext.SaveChangesAsync();
         _logger.LogInformation("Daily notifications sent successfully.");
+    }
+
+    private async Task CheckAndSendNotification(INotificationService notificationService, NotificationSettings settings, bool isEnabled, int lastServiceMileage, int interval, Car car, string serviceName)
+    {
+        if (!isEnabled) return;
+
+        int nextServiceMileage = lastServiceMileage + interval;
+        int remainingKm = nextServiceMileage - settings.CurrentOdometer;
+
+        if (remainingKm == 1000 || remainingKm <= 0)
+        {
+            await notificationService.SendNotificationAsync(
+                settings.Email,
+                $"{serviceName} Reminder",
+                $"Your car ({car.Brand} {car.Model}, {car.Year}, {car.Color}) is due for {serviceName} in {remainingKm} km. Calculated current odometer: {settings.CurrentOdometer} km. Please update odometer manually, if actual odometer is less/more."
+            );
+        }
     }
 }
