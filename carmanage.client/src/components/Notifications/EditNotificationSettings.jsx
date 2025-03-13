@@ -19,57 +19,43 @@ const EditNotificationSettings = () => {
     const [notificationData, setNotificationData] = useState({
         oilChangeNotification: false,
         filterChangeNotification: false,
+
         averageWeeklyMileage: 0,
         currentOdometer: 0,
+
         lastOilChangeMileage: 0,
         oilChangeInterval: 0,
+
         isAutomaticMileageTracking: false,
         email: email,
+
         brakePadsNotification: false,
         lastBrakePadsChangeMileage: 0,
         brakePadsChangeInterval: 0,
+
         tireRotationNotification: false,
         lastTireRotationMileage: 0,
         tireRotationInterval: 0,
-        batteryCheckNotification: false,
-        lastBatteryCheckMileage: 0,
-        batteryCheckInterval: 0,
+
         transmissionFluidChangeNotification: false,
         lastTransmissionFluidChangeMileage: 0,
         transmissionFluidChangeInterval: 0,
-        engineFlushNotification: false,
-        lastEngineFlushMileage: 0,
-        engineFlushInterval: 0,
-        coolantFlushNotification: false,
-        lastCoolantFlushMileage: 0,
-        coolantFlushInterval: 0,
+
         sparkPlugChangeNotification: false,
         lastSparkPlugChangeMileage: 0,
         sparkPlugChangeInterval: 0,
+
         timingBeltNotification: false,
         lastTimingBeltChangeMileage: 0,
         timingBeltChangeInterval: 0,
-        fuelInjectionCleaningNotification: false,
-        lastFuelInjectionCleaningMileage: 0,
-        fuelInjectionCleaningInterval: 0,
-        alignmentNotification: false,
-        lastAlignmentMileage: 0,
-        alignmentInterval: 0,
-        suspensionNotification: false,
-        lastSuspensionCheckMileage: 0,
-        suspensionCheckInterval: 0,
-        acRechargeNotification: false,
-        lastAcRechargeMileage: 0,
-        acRechargeInterval: 0,
-        differentialFluidChangeNotification: false,
-        lastDifferentialFluidChangeMileage: 0,
-        differentialFluidChangeInterval: 0,
+
         timingChainChangeNotification: false,
         lastTimingChainChangeMileage: 0,
         timingChainChangeInterval: 0,
-        clutchReplacementNotification: false,
-        lastClutchReplacementMileage: 0,
-        clutchReplacementInterval: 0,
+
+        waterPumpReplacementNotification: false,
+        lastWaterPumpReplacementMileage: 0,
+        waterPumpReplacementInterval: 0,
     });
 
     const [isOilFilterExpanded, setIsOilFilterExpanded] = useState(false);
@@ -99,57 +85,43 @@ const EditNotificationSettings = () => {
                 setNotificationData({
                     oilChangeNotification: response.data.oilChangeNotification,
                     filterChangeNotification: response.data.filterChangeNotification,
+
                     averageWeeklyMileage: response.data.averageWeeklyMileage ?? 0,
                     currentOdometer: response.data.currentOdometer ?? 0,
+
                     lastOilChangeMileage: response.data.lastOilChangeMileage ?? 0,
                     oilChangeInterval: response.data.oilChangeInterval ?? 0,
+
                     isAutomaticMileageTracking: response.data.isAutomaticMileageTracking,
                     email: response.data.email || email,
+
                     brakePadsNotification: response.data.brakePadsNotification,
                     lastBrakePadsChangeMileage: response.data.lastBrakePadsChangeMileage ?? 0,
                     brakePadsChangeInterval: response.data.brakePadsChangeInterval ?? 0,
+
                     tireRotationNotification: response.data.tireRotationNotification,
                     lastTireRotationMileage: response.data.lastTireRotationMileage ?? 0,
                     tireRotationInterval: response.data.tireRotationInterval ?? 0,
-                    batteryCheckNotification: response.data.batteryCheckNotification,
-                    lastBatteryCheckMileage: response.data.lastBatteryCheckMileage ?? 0,
-                    batteryCheckInterval: response.data.batteryCheckInterval ?? 0,
+
                     transmissionFluidChangeNotification: response.data.transmissionFluidChangeNotification,
                     lastTransmissionFluidChangeMileage: response.data.lastTransmissionFluidChangeMileage ?? 0,
                     transmissionFluidChangeInterval: response.data.transmissionFluidChangeInterval ?? 0,
-                    engineFlushNotification: response.data.engineFlushNotification,
-                    lastEngineFlushMileage: response.data.lastEngineFlushMileage ?? 0,
-                    engineFlushInterval: response.data.engineFlushInterval ?? 0,
-                    coolantFlushNotification: response.data.coolantFlushNotification,
-                    lastCoolantFlushMileage: response.data.lastCoolantFlushMileage ?? 0,
-                    coolantFlushInterval: response.data.coolantFlushInterval ?? 0,
+
                     sparkPlugChangeNotification: response.data.sparkPlugChangeNotification,
                     lastSparkPlugChangeMileage: response.data.lastSparkPlugChangeMileage ?? 0,
                     sparkPlugChangeInterval: response.data.sparkPlugChangeInterval ?? 0,
+
                     timingBeltNotification: response.data.timingBeltNotification,
                     lastTimingBeltChangeMileage: response.data.lastTimingBeltChangeMileage ?? 0,
                     timingBeltChangeInterval: response.data.timingBeltChangeInterval ?? 0,
-                    fuelInjectionCleaningNotification: response.data.fuelInjectionCleaningNotification,
-                    lastFuelInjectionCleaningMileage: response.data.lastFuelInjectionCleaningMileage ?? 0,
-                    fuelInjectionCleaningInterval: response.data.fuelInjectionCleaningInterval ?? 0,
-                    alignmentNotification: response.data.alignmentNotification,
-                    lastAlignmentMileage: response.data.lastAlignmentMileage ?? 0,
-                    alignmentInterval: response.data.alignmentInterval ?? 0,
-                    suspensionNotification: response.data.suspensionNotification,
-                    lastSuspensionCheckMileage: response.data.lastSuspensionCheckMileage ?? 0,
-                    suspensionCheckInterval: response.data.suspensionCheckInterval ?? 0,
-                    acRechargeNotification: response.data.acRechargeNotification,
-                    lastAcRechargeMileage: response.data.lastAcRechargeMileage ?? 0,
-                    acRechargeInterval: response.data.acRechargeInterval ?? 0,
-                    differentialFluidChangeNotification: response.data.differentialFluidChangeNotification,
-                    lastDifferentialFluidChangeMileage: response.data.lastDifferentialFluidChangeMileage ?? 0,
-                    differentialFluidChangeInterval: response.data.differentialFluidChangeInterval ?? 0,
+
                     timingChainChangeNotification: response.data.timingChainChangeNotification,
                     lastTimingChainChangeMileage: response.data.lastTimingChainChangeMileage ?? 0,
                     timingChainChangeInterval: response.data.timingChainChangeInterval ?? 0,
-                    clutchReplacementNotification: response.data.clutchReplacementNotification,
-                    lastClutchReplacementMileage: response.data.lastClutchReplacementMileage ?? 0,
-                    clutchReplacementInterval: response.data.clutchReplacementInterval ?? 0,
+
+                    waterPumpReplacementNotification: response.data.waterPumpReplacementNotification,
+                    lastWaterPumpReplacementMileage: response.data.lastWaterPumpReplacementMileage ?? 0,
+                    waterPumpReplacementInterval: response.data.waterPumpReplacementInterval ?? 0,
                 });
             } catch (error) {
                 console.error('Error fetching notification details:', error);
@@ -187,55 +159,33 @@ const EditNotificationSettings = () => {
                 ? Number(notificationData.averageWeeklyMileage)
                 : 0,
             currentOdometer: Number(notificationData.currentOdometer) || 0,
+
             lastOilChangeMileage: Number(notificationData.lastOilChangeMileage) || 0,
             oilChangeInterval: Number(notificationData.oilChangeInterval) || 0,
+
             isAutomaticMileageTracking: notificationData.isAutomaticMileageTracking,
             email: notificationData.email,
-            brakePadsNotification: notificationData.brakePadsNotification,
-            lastBrakePadsChangeMileage: Number(notificationData.lastBrakePadsChangeMileage) || 0,
-            brakePadsChangeInterval: Number(notificationData.brakePadsChangeInterval) || 0,
-            tireRotationNotification: notificationData.tireRotationNotification,
-            lastTireRotationMileage: Number(notificationData.lastTireRotationMileage) || 0,
-            tireRotationInterval: Number(notificationData.tireRotationInterval) || 0,
-            batteryCheckNotification: notificationData.batteryCheckNotification,
-            lastBatteryCheckMileage: Number(notificationData.lastBatteryCheckMileage) || 0,
-            batteryCheckInterval: Number(notificationData.batteryCheckInterval) || 0,
-            transmissionFluidChangeNotification: notificationData.transmissionFluidChangeNotification,
-            lastTransmissionFluidChangeMileage: Number(notificationData.lastTransmissionFluidChangeMileage) || 0,
-            transmissionFluidChangeInterval: Number(notificationData.transmissionFluidChangeInterval) || 0,
-            engineFlushNotification: notificationData.engineFlushNotification,
-            lastEngineFlushMileage: Number(notificationData.lastEngineFlushMileage) || 0,
-            engineFlushInterval: Number(notificationData.engineFlushInterval) || 0,
-            coolantFlushNotification: notificationData.coolantFlushNotification,
-            lastCoolantFlushMileage: Number(notificationData.lastCoolantFlushMileage) || 0,
-            coolantFlushInterval: Number(notificationData.coolantFlushInterval) || 0,
-            sparkPlugChangeNotification: notificationData.sparkPlugChangeNotification,
-            lastSparkPlugChangeMileage: Number(notificationData.lastSparkPlugChangeMileage) || 0,
-            sparkPlugChangeInterval: Number(notificationData.sparkPlugChangeInterval) || 0,
-            timingBeltNotification: notificationData.timingBeltNotification,
-            lastTimingBeltChangeMileage: Number(notificationData.lastTimingBeltChangeMileage) || 0,
-            timingBeltChangeInterval: Number(notificationData.timingBeltChangeInterval) || 0,
-            fuelInjectionCleaningNotification: notificationData.fuelInjectionCleaningNotification,
-            lastFuelInjectionCleaningMileage: Number(notificationData.lastFuelInjectionCleaningMileage) || 0,
-            fuelInjectionCleaningInterval: Number(notificationData.fuelInjectionCleaningInterval) || 0,
-            alignmentNotification: notificationData.alignmentNotification,
-            lastAlignmentMileage: Number(notificationData.lastAlignmentMileage) || 0,
-            alignmentInterval: Number(notificationData.alignmentInterval) || 0,
-            suspensionNotification: notificationData.suspensionNotification,
-            lastSuspensionCheckMileage: Number(notificationData.lastSuspensionCheckMileage) || 0,
-            suspensionCheckInterval: Number(notificationData.suspensionCheckInterval) || 0,
-            acRechargeNotification: notificationData.acRechargeNotification,
-            lastAcRechargeMileage: Number(notificationData.lastAcRechargeMileage) || 0,
-            acRechargeInterval: Number(notificationData.acRechargeInterval) || 0,
-            differentialFluidChangeNotification: notificationData.differentialFluidChangeNotification,
-            lastDifferentialFluidChangeMileage: Number(notificationData.lastDifferentialFluidChangeMileage) || 0,
-            differentialFluidChangeInterval: Number(notificationData.differentialFluidChangeInterval) || 0,
-            timingChainChangeNotification: notificationData.timingChainChangeNotification,
-            lastTimingChainChangeMileage: Number(notificationData.lastTimingChainChangeMileage) || 0,
-            timingChainChangeInterval: Number(notificationData.timingChainChangeInterval) || 0,
-            clutchReplacementNotification: notificationData.clutchReplacementNotification,
-            lastClutchReplacementMileage: Number(notificationData.lastClutchReplacementMileage) || 0,
-            clutchReplacementInterval: Number(notificationData.clutchReplacementInterval) || 0,
+
+            lastBrakePadsChangeMileage: Number(notificationSettingsData.lastBrakePadsChangeMileage) || 0,
+            brakePadsChangeInterval: Number(notificationSettingsData.brakePadsChangeInterval) || 0,
+
+            lastTireRotationMileage: Number(notificationSettingsData.lastTireRotationMileage) || 0,
+            tireRotationInterval: Number(notificationSettingsData.tireRotationInterval) || 0,
+
+            lastTransmissionFluidChangeMileage: Number(notificationSettingsData.lastTransmissionFluidChangeMileage) || 0,
+            transmissionFluidChangeInterval: Number(notificationSettingsData.transmissionFluidChangeInterval) || 0,
+
+            sparkPlugChangeNotification: notificationSettingsData.sparkPlugChangeNotification,
+            lastSparkPlugChangeMileage: Number(notificationSettingsData.lastSparkPlugChangeMileage) || 0,
+
+            lastTimingBeltChangeMileage: Number(notificationSettingsData.lastTimingBeltChangeMileage) || 0,
+            timingBeltChangeInterval: Number(notificationSettingsData.timingBeltChangeInterval) || 0,
+
+            lastTimingChainChangeMileage: Number(notificationSettingsData.lastTimingChainChangeMileage) || 0,
+            timingChainChangeInterval: Number(notificationSettingsData.timingChainChangeInterval) || 0,
+
+            lastWaterPumpReplacementMileage: Number(notificationSettingsData.lastWaterPumpReplacementMileage) || 0,
+            waterPumpReplacementInterval: Number(notificationSettingsData.waterPumpReplacementInterval) || 0, 
         };
 
         try {
@@ -268,41 +218,29 @@ const EditNotificationSettings = () => {
             title: 'Brakes & Tires',
             fields: [
                 { name: 'brakePadsNotification', label: 'Brake Pads Notification', subFields: ['lastBrakePadsChangeMileage', 'brakePadsChangeInterval'] },
-                { name: 'tireRotationNotification', label: 'Tire Rotation Notification', subFields: ['lastTireRotationMileage', 'tireRotationInterval'] },
+                { name: 'tireRotationNotification', label: 'Tire Rotation Notification', subFields: ['lastTireRotationMileage', 'tireRotationInterval'] }
             ]
         },
         {
-            title: 'Battery & Fluids',
+            title: 'Fluids',
             fields: [
-                { name: 'batteryCheckNotification', label: 'Battery Check Notification', subFields: ['lastBatteryCheckMileage', 'batteryCheckInterval'] },
-                { name: 'transmissionFluidChangeNotification', label: 'Transmission Fluild Change Notification', subFields: ['lastTransmissionFluidChangeMileage', 'transmissionFluidChangeInterval'] },
-                { name: 'coolantFlushNotification', label: 'Coolant Flush Notification', subFields: ['lastCoolantFlushMileage', 'coolantFlushInterval'] },
-                { name: 'differentialFluidChangeNotification', label: 'Differential Fluid Change Notification', subFields: ['lastDifferentialFluidChangeMileage', 'differentialFluidChangeInterval'] }
+                { name: 'transmissionFluidChangeNotification', label: 'Transmission Fluid Change Notification', subFields: ['lastTransmissionFluidChangeMileage', 'transmissionFluidChangeInterval'] }
             ]
         },
         {
             title: 'Engine & Timing',
             fields: [
-                { name: 'engineFlushNotification', label: 'Engine Flush Notification', subFields: ['lastEngineFlushMileage', 'engineFlushInterval'] },
                 { name: 'sparkPlugChangeNotification', label: 'Spark Plug Change Notification', subFields: ['lastSparkPlugChangeMileage', 'sparkPlugChangeInterval'] },
                 { name: 'timingBeltNotification', label: 'Timing Belt Notification', subFields: ['lastTimingBeltChangeMileage', 'timingBeltChangeInterval'] },
-                { name: 'timingChainChangeNotification', label: 'Timing Chain Change Notification', subFields: ['lastTimingChainChangeMileage', 'timingChainChangeInterval'] }
-            ]
-        },
-        {
-            title: 'Other Services',
-            fields: [
-                { name: 'fuelInjectionCleaningNotification', label: 'Fuel Injection Cleaning Notification', subFields: ['lastFuelInjectionCleaningMileage', 'fuelInjectionCleaningInterval'] },
-                { name: 'alignmentNotification', label: 'Alignment Notification', subFields: ['lastAlignmentMileage', 'alignmentInterval'] },
-                { name: 'suspensionNotification', label: 'Suspension Notification', subFields: ['lastSuspensionCheckMileage', 'suspensionCheckInterval'] },
-                { name: 'acRechargeNotification', label: 'AC Recharge Notification', subFields: ['lastAcRechargeMileage', 'acRechargeInterval'] },
-                { name: 'clutchReplacementNotification', label: 'Clutch Replacement Notification', subFields: ['lastClutchReplacementMileage', 'clutchReplacementInterval'] }
+                { name: 'timingChainChangeNotification', label: 'Timing Chain Change Notification', subFields: ['lastTimingChainChangeMileage', 'timingChainChangeInterval'] },
+                { name: 'waterPumpReplacementNotification', label: 'Water Pump Replacement Notification', subFields: ['lastWaterPumpReplacementMileage', 'waterPumpReplacementInterval'] }
             ]
         }
     ];
 
     const formatServiceType = (serviceType) => {
-        return serviceType.replace(/([a-z])([A-Z])/g, '$1 $2');
+        return serviceType.replace(/([a-z])([A-Z])/g, '$1 $2')
+               .replace(/^(.)/, (match) => match.toUpperCase());
     };
 
     const handleBack = () => {
@@ -440,7 +378,6 @@ const EditNotificationSettings = () => {
                         )}
                     </div>
                 ))}
-
 
                 <div className="button-container">
                     <button type="submit" className="buttons">Save Changes</button>

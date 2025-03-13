@@ -63,7 +63,6 @@ namespace CarManage.Server.Controllers
                 var document = new Document(pdfDocument);
                 var boldFont = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA_BOLD);
 
-                // Title
                 document.Add(new Paragraph("CarManage - Service History Report")
                     .SetFont(boldFont)
                     .SetTextAlignment(TextAlignment.CENTER)
@@ -73,7 +72,6 @@ namespace CarManage.Server.Controllers
 
                 foreach (var car in cars)
                 {
-                    // Car Details
                     document.Add(new Paragraph($"Car: {car.Brand} {car.Model} ({car.Year})")
                         .SetFont(boldFont)
                         .SetFontSize(14)
@@ -84,7 +82,6 @@ namespace CarManage.Server.Controllers
                         .SetFontSize(12));
                     document.Add(new Paragraph("\n"));
 
-                    // Service History Table
                     Table table = new Table(4).UseAllAvailableWidth();
                     table.AddHeaderCell(new Cell().Add(new Paragraph("Service Date").SetFont(boldFont)));
                     table.AddHeaderCell(new Cell().Add(new Paragraph("Odometer (km)").SetFont(boldFont)));

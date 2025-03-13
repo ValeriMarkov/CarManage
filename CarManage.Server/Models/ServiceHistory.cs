@@ -11,7 +11,7 @@ public class ServiceHistory
     [JsonIgnore]
     public Car Car { get; set; }
 
-    public int Services { get; set; }
+    public long Services { get; set; }
 
     [Required]
     public DateTime ServiceDate { get; set; }
@@ -30,7 +30,7 @@ public class ServiceHistory
             var selectedServices = new List<ServiceType>();
             foreach (ServiceType service in Enum.GetValues(typeof(ServiceType)))
             {
-                if ((Services & (int)service) != 0)
+                if ((Services & (long)service) != 0)
                 {
                     selectedServices.Add(service);
                 }

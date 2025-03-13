@@ -59,19 +59,11 @@ public class DailyNotificationService : BackgroundService
             await CheckAndSendNotification(notificationService, settings, settings.FilterChangeNotification, settings.LastOilChangeMileage, settings.OilChangeInterval * 2, car, "Filter Change");
             await CheckAndSendNotification(notificationService, settings, settings.BrakePadsNotification, settings.LastBrakePadsChangeMileage, settings.BrakePadsChangeInterval, car, "Brake Pads Change");
             await CheckAndSendNotification(notificationService, settings, settings.TireRotationNotification, settings.LastTireRotationMileage, settings.TireRotationInterval, car, "Tire Rotation");
-            await CheckAndSendNotification(notificationService, settings, settings.BatteryCheckNotification, settings.LastBatteryCheckMileage, settings.BatteryCheckInterval, car, "Battery Check");
             await CheckAndSendNotification(notificationService, settings, settings.TransmissionFluidChangeNotification, settings.LastTransmissionFluidChangeMileage, settings.TransmissionFluidChangeInterval, car, "Transmission Fluid Change");
-            await CheckAndSendNotification(notificationService, settings, settings.EngineFlushNotification, settings.LastEngineFlushMileage, settings.EngineFlushInterval, car, "Engine Flush");
-            await CheckAndSendNotification(notificationService, settings, settings.CoolantFlushNotification, settings.LastCoolantFlushMileage, settings.CoolantFlushInterval, car, "Coolant Flush");
             await CheckAndSendNotification(notificationService, settings, settings.SparkPlugChangeNotification, settings.LastSparkPlugChangeMileage, settings.SparkPlugChangeInterval, car, "Spark Plug Change");
             await CheckAndSendNotification(notificationService, settings, settings.TimingBeltNotification, settings.LastTimingBeltChangeMileage, settings.TimingBeltChangeInterval, car, "Timing Belt Replacement");
-            await CheckAndSendNotification(notificationService, settings, settings.FuelInjectionCleaningNotification, settings.LastFuelInjectionCleaningMileage, settings.FuelInjectionCleaningInterval, car, "Fuel Injection Cleaning");
-            await CheckAndSendNotification(notificationService, settings, settings.AlignmentNotification, settings.LastAlignmentMileage, settings.AlignmentInterval, car, "Wheel Alignment");
-            await CheckAndSendNotification(notificationService, settings, settings.SuspensionNotification, settings.LastSuspensionCheckMileage, settings.SuspensionCheckInterval, car, "Suspension Check");
-            await CheckAndSendNotification(notificationService, settings, settings.AcRechargeNotification, settings.LastAcRechargeMileage, settings.AcRechargeInterval, car, "A/C Recharge");
-            await CheckAndSendNotification(notificationService, settings, settings.DifferentialFluidChangeNotification, settings.LastDifferentialFluidChangeMileage, settings.DifferentialFluidChangeInterval, car, "Differential Fluid Change");
             await CheckAndSendNotification(notificationService, settings, settings.TimingChainChangeNotification, settings.LastTimingChainChangeMileage, settings.TimingChainChangeInterval, car, "Timing Chain Change");
-            await CheckAndSendNotification(notificationService, settings, settings.ClutchReplacementNotification, settings.LastClutchReplacementMileage, settings.ClutchReplacementInterval, car, "Clutch Replacement");
+            await CheckAndSendNotification(notificationService, settings, settings.WaterPumpReplacementNotification, settings.LastWaterPumpReplacementMileage, settings.WaterPumpReplacementInterval, car, "Water pump Change");
 
             dbContext.Update(settings);
         }

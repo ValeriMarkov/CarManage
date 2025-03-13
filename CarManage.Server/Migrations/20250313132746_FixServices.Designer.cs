@@ -4,6 +4,7 @@ using CarManage.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarManage.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250313132746_FixServices")]
+    partial class FixServices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,8 +78,26 @@ namespace CarManage.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AcRechargeInterval")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("AcRechargeNotification")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("AlignmentInterval")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("AlignmentNotification")
+                        .HasColumnType("bit");
+
                     b.Property<int>("AverageWeeklyMileage")
                         .HasColumnType("int");
+
+                    b.Property<int>("BatteryCheckInterval")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("BatteryCheckNotification")
+                        .HasColumnType("bit");
 
                     b.Property<int>("BrakePadsChangeInterval")
                         .HasColumnType("int");
@@ -87,26 +108,83 @@ namespace CarManage.Server.Migrations
                     b.Property<int?>("CarId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ClutchReplacementInterval")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ClutchReplacementNotification")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("CoolantFlushInterval")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("CoolantFlushNotification")
+                        .HasColumnType("bit");
+
                     b.Property<int>("CurrentOdometer")
                         .HasColumnType("int");
+
+                    b.Property<int>("DifferentialFluidChangeInterval")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("DifferentialFluidChangeNotification")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("EngineFlushInterval")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("EngineFlushNotification")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("FilterChangeNotification")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("FuelInjectionCleaningInterval")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("FuelInjectionCleaningNotification")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsAutomaticMileageTracking")
                         .HasColumnType("bit");
 
+                    b.Property<int>("LastAcRechargeMileage")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LastAlignmentMileage")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LastBatteryCheckMileage")
+                        .HasColumnType("int");
+
                     b.Property<int>("LastBrakePadsChangeMileage")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LastClutchReplacementMileage")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LastCoolantFlushMileage")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LastDifferentialFluidChangeMileage")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LastEngineFlushMileage")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LastFuelInjectionCleaningMileage")
                         .HasColumnType("int");
 
                     b.Property<int>("LastOilChangeMileage")
                         .HasColumnType("int");
 
                     b.Property<int>("LastSparkPlugChangeMileage")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LastSuspensionCheckMileage")
                         .HasColumnType("int");
 
                     b.Property<int>("LastTimingBeltChangeMileage")
@@ -119,9 +197,6 @@ namespace CarManage.Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("LastTransmissionFluidChangeMileage")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LastWaterPumpReplacementMileage")
                         .HasColumnType("int");
 
                     b.Property<int>("ManualOdometerEntry")
@@ -137,6 +212,12 @@ namespace CarManage.Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("SparkPlugChangeNotification")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SuspensionCheckInterval")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("SuspensionNotification")
                         .HasColumnType("bit");
 
                     b.Property<int>("TimingBeltChangeInterval")
@@ -166,12 +247,6 @@ namespace CarManage.Server.Migrations
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("WaterPumpReplacementInterval")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("WaterPumpReplacementNotification")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

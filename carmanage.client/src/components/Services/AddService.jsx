@@ -33,6 +33,25 @@ const AddService = () => {
         { id: 16384, label: 'Differential Fluid Change' },
         { id: 32768, label: 'Timing Chain Replacement' },
         { id: 65536, label: 'Clutch Replacement' },
+        { id: 131072, label: 'Coolant Hose Replacement' },
+        { id: 262144, label: 'Turbocharger Replacement' },
+        { id: 524288, label: 'Alternator Replacement' },
+        { id: 1048576, label: 'Alternator Element Replacement' },
+        { id: 2097152, label: 'Water Pump Replacement' },
+        { id: 4194304, label: 'Starter Motor Replacement' },
+        { id: 8388608, label: 'Drive Shaft Replacement' },
+        { id: 16777216, label: 'Control Arm Replacement' },
+        { id: 33554432, label: 'Control Arm Bushing Replacement' },
+        { id: 67108864, label: 'Shock Absorber Replacement' },
+        { id: 134217728, label: 'Engine Mount Replacement' },
+        { id: 268435456, label: 'Cylinder Head Gasket Replacement' },
+        { id: 536870912, label: 'Intake Manifold Gasket Replacement' },
+        { id: 1073741824, label: 'Exhaust Manifold Gasket Replacement' },
+        { id: 2147483648, label: 'Valve Cover Gasket Replacement' },
+        { id: 4294967296, label: 'EGR Valve Replacement' },
+        { id: 8589934592, label: 'Axle Replacement' },
+        { id: 17179869184, label: 'Camshaft Replacement' },
+        { id: 34359738368, label: 'Piston Ring Replacement' },
     ];
 
     const handleServiceSelection = (serviceId) => {
@@ -48,10 +67,6 @@ const AddService = () => {
                 selectedServices: [...prevState.selectedServices, serviceId],
             }));
         }
-    };
-
-    const formatServiceType = (serviceType) => {
-        return serviceType.replace(/([a-z])([A-Z])/g, '$1 $2');
     };
 
     const handleInputChange = (e) => {

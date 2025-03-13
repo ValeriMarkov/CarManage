@@ -114,6 +114,10 @@ const CarDetails = () => {
         });
     };
 
+    const formatServiceType = (serviceType) => {
+        return serviceType.replace(/([a-z])([A-Z])/g, '$1 $2');
+    };
+
     if (loading) return <p>Loading car details...</p>;
     if (error) return <p className="error">{error}</p>;
 
@@ -154,7 +158,7 @@ const CarDetails = () => {
                                     <p><strong>Service Date:</strong> {new Date(service.serviceDate).toLocaleDateString()}</p>
                                     <p><strong>Odometer at Service:</strong> {service.odometerAtService} km</p>
                                     <p><strong>Notes:</strong> {service.notes}</p>
-                                    <p><strong>Services:</strong> {service.selectedServices?.join(", ")}</p>
+                                    <p><strong>Services:</strong> {service.selectedServices?.map(serviceType => formatServiceType(serviceType)).join(", ")}</p>
                                     <div className="button-group">
                                         <button className="buttons" onClick={() => onRemoveServiceHistory(service.id)}>Delete</button>
                                         <button className="buttons" onClick={() => onEditService(service.id)}>Edit</button>

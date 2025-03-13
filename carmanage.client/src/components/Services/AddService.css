@@ -8,18 +8,21 @@
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
+
 .add-service-form-container {
     background-color: #333;
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
+
 .add-service-container h2 {
     font-size: 28px;
     font-weight: 600;
     margin-bottom: 20px;
     color: #ffffff;
 }
+
 .add-service-container input,
 .add-service-container textarea,
 .add-service-container input[type="date"] {
@@ -36,14 +39,17 @@
     min-width: 0;
     height: 50px;
 }
+
 .add-service-container textarea {
     resize: none;
 }
+
 .add-service-container .error {
     color: red;
     margin-top: 10px;
     font-size: 14px;
 }
+
 .add-service-container .buttons {
     width: 100%;
     padding: 14px;
@@ -55,23 +61,28 @@
     margin-top: 20px;
     transition: background-color 0.3s ease;
 }
+
 .add-service-container .buttons.back-button {
     margin-top: 20px;
 }
+
 .add-service-container .buttons.back-button:hover {
     background-color: #5a6268;
 }
+
 .add-service-container form {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 20px;
 }
+
 .add-service-container form input,
 .add-service-container form textarea {
     margin-bottom: 20px;
     width: 100% !important;
 }
+
 .add-service-container .checkboxes {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -79,6 +90,7 @@
     margin-top: 20px;
     text-align: left;
 }
+
 .add-service-container .checkbox-item {
     display: flex;
     align-items: center;
@@ -91,6 +103,7 @@
     height: 80px;
     width: 100%;
 }
+
 .add-service-container .checkbox-item label {
     font-size: 16px;
     color: #fff;
@@ -99,12 +112,14 @@
     text-align: left;
     margin-right: 10px;
 }
+
 .add-service-container .checkbox-item input {
     margin-left: auto;
     width: 18px !important;
     height: 18px !important;
     margin-right: 10px;
 }
+
 @media screen and (max-width: 768px) {
     .add-service-container {
         padding: 15px;

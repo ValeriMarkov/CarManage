@@ -60,7 +60,7 @@ namespace CarManage.Server.Controllers
                 sh.Notes,
                 selectedServices = Enum.GetValues(typeof(ServiceType))
                     .Cast<ServiceType>()
-                    .Where(st => (sh.Services & (int)st) != 0)
+                    .Where(st => (sh.Services & (long)st) != 0)
                     .Select(st => st.ToString())
                     .ToList()
             }));
@@ -161,7 +161,7 @@ namespace CarManage.Server.Controllers
                 {
                     if (serviceHistoryInput.SelectedServices.Contains((ServiceType)serviceType))
                     {
-                        serviceHistory.Services |= (int)serviceType;
+                        serviceHistory.Services |= (long)serviceType;
                     }
                 }
 
