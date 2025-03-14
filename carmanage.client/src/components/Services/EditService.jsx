@@ -13,6 +13,7 @@ const EditService = () => {
         selectedServices: [],
     });
     const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
@@ -62,13 +63,14 @@ const EditService = () => {
         } else {
             setServiceData((prevState) => ({
                 ...prevState,
-                selectedServices: prevState.selectedServices.filter((service) => service !== serviceType),
+                selectedServices: prevState.selectedServices.filter((service) => service.Id !== serviceType.Id),
             }));
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSubmitting(true);
         const idToken = await getIdToken();
         const serviceHistoryUpdateInput = {
             ServiceDate: new Date(serviceData.serviceDate).toLocaleDateString('en-CA'),
@@ -95,6 +97,8 @@ const EditService = () => {
             }
         } catch (err) {
             setError(err.message);
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -192,7 +196,9 @@ const EditService = () => {
                             </div>
                         ))}
                     </div>
-                    <button className="buttons" type="submit">Update Service</button>
+                    <button className="buttons" type="submit" disabled={submitting}>
+                        {submitting ? <div className="spinner"></div> : 'Update Service'}
+                    </button>
                 </form>
                 <button className="buttons back-button" onClick={handleBack}>Back</button>
             </div>

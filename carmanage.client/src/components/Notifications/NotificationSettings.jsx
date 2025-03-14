@@ -110,7 +110,7 @@ const NotificationSettings = () => {
             timingChainChangeInterval: Number(notificationSettingsData.timingChainChangeInterval) || 0,
 
             lastWaterPumpReplacementMileage: Number(notificationSettingsData.lastWaterPumpReplacementMileage) || 0,
-            waterPumpReplacementInterval: Number(notificationSettingsData.waterPumpReplacementInterval) || 0, 
+            waterPumpReplacementInterval: Number(notificationSettingsData.waterPumpReplacementInterval) || 0,
         };
 
         try {
@@ -161,7 +161,7 @@ const NotificationSettings = () => {
 
     const formatServiceType = (serviceType) => {
         return serviceType.replace(/([a-z])([A-Z])/g, '$1 $2')
-               .replace(/^(.)/, (match) => match.toUpperCase());
+            .replace(/^(.)/, (match) => match.toUpperCase());
     };
 
     const handleBack = () => {

@@ -13,6 +13,7 @@ const AddService = () => {
         selectedServices: [],
     });
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const services = [
@@ -80,9 +81,11 @@ const AddService = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
+        setLoading(true);
 
         if (serviceData.selectedServices.length === 0) {
             setError('Please select at least one service.');
+            setLoading(false);
             return;
         }
 
@@ -118,6 +121,8 @@ const AddService = () => {
         } catch (error) {
             console.error('An error occurred:', error);
             setError('Failed to add service. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -182,9 +187,17 @@ const AddService = () => {
 
                     {error && <p className="error">{error}</p>}
 
-                    <button className="buttons" type="submit">Submit</button>
+                    <button className="buttons" type="submit" disabled={loading}>
+                        {loading ? 'Submitting...' : 'Submit'}
+                    </button>
                 </form>
                 <button className="buttons" onClick={handleBack}>Back</button>
+
+                {loading && (
+                    <div className="spinner-container">
+                        <div className="spinner"></div>
+                    </div>
+                )}
             </div>
         </div>
     );

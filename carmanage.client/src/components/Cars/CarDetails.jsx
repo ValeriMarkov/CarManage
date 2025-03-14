@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import carService from '../../services/carService';
 import './CarDetails.css';
 
 const CarDetails = () => {
@@ -17,18 +18,7 @@ const CarDetails = () => {
     useEffect(() => {
         const fetchCarDetails = async () => {
             try {
-                const response = await fetch(`https://localhost:7025/api/cars/${carId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${user ? await user.getIdToken(true) : ''}`,
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch car details');
-                }
-
-                const data = await response.json();
+                const data = await carService.fetchCarDetails(user, carId);
                 setCar(data);
             } catch (err) {
                 setError(err.message);
@@ -39,18 +29,7 @@ const CarDetails = () => {
 
         const fetchServiceHistory = async () => {
             try {
-                const response = await fetch(`https://localhost:7025/api/cars/${carId}/services`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${user ? await user.getIdToken(true) : ''}`,
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch service history');
-                }
-
-                const data = await response.json();
+                const data = await carService.fetchServiceHistory(user, carId);
                 setServices(data);
             } catch (err) {
                 setError(err.message);
@@ -87,17 +66,7 @@ const CarDetails = () => {
     const onRemoveServiceHistory = async (serviceHistoryId) => {
         if (window.confirm("Are you sure you want to delete this service history?")) {
             try {
-                const response = await fetch(`https://localhost:7025/api/cars/${carId}/services/${serviceHistoryId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${user ? await user.getIdToken(true) : ''}`,
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to remove service history');
-                }
-
+                await carService.removeServiceHistory(user, carId, serviceHistoryId);
                 setServices(services.filter((service) => service.id !== serviceHistoryId));
                 setSuccessMessage("Service history removed successfully!");
                 setError(null);

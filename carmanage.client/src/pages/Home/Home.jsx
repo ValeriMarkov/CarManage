@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
+import carService from "../../services/carService";
 
 const Home = () => {
     const { user, handleRemoveCar } = useAuth();
@@ -36,34 +37,12 @@ const Home = () => {
     };
 
     useEffect(() => {
-        const fetchCars = async () => {
-            try {
-                const idToken = await user.getIdToken(true);
-                const response = await fetch("https://localhost:7025/api/cars", {
-                    method: "GET",
-                    headers: {
-                        "Authorization": `Bearer ${idToken}`,
-                    },
-                });
+        if (!user) return setLoading(false);
 
-                if (!response.ok) {
-                    throw new Error("Failed to fetch cars");
-                }
-
-                const data = await response.json();
-                setCars(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (user) {
-            fetchCars();
-        } else {
-            setLoading(false);
-        }
+        carService.fetchCars(user)
+            .then(setCars)
+            .catch((err) => setError(err.message))
+            .finally(() => setLoading(false));
     }, [user]);
 
     return (
@@ -78,24 +57,22 @@ const Home = () => {
                         <p>Loading cars...</p>
                     ) : error ? (
                         <p className="error">{error}</p>
+                    ) : cars.length === 0 ? (
+                        <p>No cars added yet.</p>
                     ) : (
                         <ul>
-                            {cars.length === 0 ? (
-                                <li>No cars added yet.</li>
-                            ) : (
-                                cars.map((car) => (
-                                    <li key={car.id}>
-                                        <a href="#" onClick={() => goToCarDetailsPage(car.id)}>
-                                            {car.brand} {car.model} - {car.year} ({car.color})
-                                        </a>
-                                        <div className="button-container">
-                                            <button className="buttons" onClick={() => goToCarDetailsPage(car.id)}>Details</button>
-                                            <button className="buttons" onClick={() => handleEditCar(car.id)}>Edit</button>
-                                            <button className="buttons" onClick={() => onRemoveCar(car.id)}>Remove</button>
-                                        </div>
-                                    </li>
-                                ))
-                            )}
+                            {cars.map((car) => (
+                                <li key={car.id}>
+                                    <a href="#" onClick={() => goToCarDetailsPage(car.id)}>
+                                        {car.brand} {car.model} - {car.year} ({car.color})
+                                    </a>
+                                    <div className="button-container">
+                                        <button className="buttons" onClick={() => goToCarDetailsPage(car.id)}>Details</button>
+                                        <button className="buttons" onClick={() => handleEditCar(car.id)}>Edit</button>
+                                        <button className="buttons" onClick={() => onRemoveCar(car.id)}>Remove</button>
+                                    </div>
+                                </li>
+                            ))}
                         </ul>
                     )}
                 </div>

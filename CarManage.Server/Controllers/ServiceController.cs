@@ -249,7 +249,7 @@ namespace CarManage.Server.Controllers
                 {
                     if (serviceHistoryInput.SelectedServices.Contains((ServiceType)serviceType))
                     {
-                        existingService.Services |= (int)serviceType;
+                        existingService.Services |= (long)serviceType;
                     }
                 }
 
