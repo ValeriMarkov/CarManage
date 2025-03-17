@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useNavigation } from '../../utils';
 import './AddService.css';
 
 const AddService = () => {
@@ -14,7 +15,7 @@ const AddService = () => {
     });
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+    const { goToCarDetails } = useNavigation();
 
     const services = [
         { id: 1, label: 'Oil Change' },
@@ -117,17 +118,13 @@ const AddService = () => {
 
             const data = await response.json();
 
-            navigate(`/cars/${carId}`);
+            goToCarDetails(carId);
         } catch (error) {
             console.error('An error occurred:', error);
             setError('Failed to add service. Please try again.');
         } finally {
             setLoading(false);
         }
-    };
-
-    const handleBack = () => {
-        navigate(-1);
     };
 
     return (
@@ -191,7 +188,7 @@ const AddService = () => {
                         {loading ? 'Submitting...' : 'Submit'}
                     </button>
                 </form>
-                <button className="buttons" onClick={handleBack}>Back</button>
+                <button className="buttons" onClick={() => goToCarDetails(carId)}>Back</button>
 
                 {loading && (
                     <div className="spinner-container">

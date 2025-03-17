@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import carService from '../../services/carService';
+import { useNavigation } from '../../utils';
+import formatServiceType from '../../services/carService';
 import './CarDetails.css';
 
 const CarDetails = () => {
@@ -14,6 +16,7 @@ const CarDetails = () => {
     const [loadingServices, setLoadingServices] = useState(true);
     const [successMessage, setSuccessMessage] = useState(null);
     const navigate = useNavigate();
+    const { goToHome, goToNotifications, goToExport, goToAddService } = useNavigation();
 
     useEffect(() => {
         const fetchCarDetails = async () => {
@@ -52,15 +55,11 @@ const CarDetails = () => {
         if (window.confirm('Are you sure you want to remove this car?')) {
             try {
                 await handleRemoveCar(carId);
-                navigate('/');
+                goToHome();
             } catch (err) {
                 alert('Failed to remove car: ' + err.message);
             }
         }
-    };
-
-    const goToAddServicePage = () => {
-        navigate(`/cars/${carId}/add-service`);
     };
 
     const onRemoveServiceHistory = async (serviceHistoryId) => {
@@ -83,10 +82,6 @@ const CarDetails = () => {
         });
     };
 
-    const formatServiceType = (serviceType) => {
-        return serviceType.replace(/([a-z])([A-Z])/g, '$1 $2');
-    };
-
     if (loading) return <p>Loading car details...</p>;
     if (error) return <p className="error">{error}</p>;
 
@@ -105,14 +100,14 @@ const CarDetails = () => {
             </div>
 
             <div className="button-group">
-                <button className="buttons" onClick={() => navigate('/')}>Back to Home</button>
+                <button className="buttons" onClick={() => goToHome()}>Back to Home</button>
                 <button className="buttons" onClick={onRemoveClick}>Remove</button>
-                <button className="buttons" onClick={() => navigate(`/cars/${carId}/notifications`)}>Manage Notifications</button>
-                <button className="buttons" onClick={() => navigate(`/cars/${carId}/export`)}>Export as Document</button>
+                <button className="buttons" onClick={() => goToNotifications(carId)}>Manage Notifications</button>
+                <button className="buttons" onClick={() => goToExport(carId)}>Export as Document</button>
             </div>
 
             <h2>Service History</h2>
-            <button className="buttons add-service-btn" onClick={goToAddServicePage}>Add Service</button>
+            <button className="buttons add-service-btn" onClick={() => goToAddService(carId)}>Add Service</button>
 
             <div className="service-history">
                 {loadingServices ? (
@@ -127,7 +122,7 @@ const CarDetails = () => {
                                     <p><strong>Service Date:</strong> {new Date(service.serviceDate).toLocaleDateString()}</p>
                                     <p><strong>Odometer at Service:</strong> {service.odometerAtService} km</p>
                                     <p><strong>Notes:</strong> {service.notes}</p>
-                                    <p><strong>Services:</strong> {service.selectedServices?.map(serviceType => formatServiceType(serviceType)).join(", ")}</p>
+                                    <p><strong>Services:</strong> {service.selectedServices?.map(serviceType => carService.formatServiceType(serviceType)).join(", ")}</p>
                                     <div className="button-group">
                                         <button className="buttons" onClick={() => onRemoveServiceHistory(service.id)}>Delete</button>
                                         <button className="buttons" onClick={() => onEditService(service.id)}>Edit</button>

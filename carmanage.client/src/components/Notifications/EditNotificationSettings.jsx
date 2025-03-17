@@ -6,11 +6,13 @@ import { useDispatch } from 'react-redux';
 import { updateNotificationSettings } from './actions';
 import { Tooltip } from 'react-tooltip';
 import { sendNotification } from '../../services/notificationService';
+import carService from '../../services/carService';
+import { useNavigation } from '../../utils';
 import './EditNotificationSettings.css';
 
 const EditNotificationSettings = () => {
     const { carId, notificationId } = useParams();
-    const navigate = useNavigate();
+    const { goToNotifications } = useNavigation();
     const dispatch = useDispatch();
     const auth = getAuth();
     const user = auth.currentUser;
@@ -166,26 +168,26 @@ const EditNotificationSettings = () => {
             isAutomaticMileageTracking: notificationData.isAutomaticMileageTracking,
             email: notificationData.email,
 
-            lastBrakePadsChangeMileage: Number(notificationSettingsData.lastBrakePadsChangeMileage) || 0,
-            brakePadsChangeInterval: Number(notificationSettingsData.brakePadsChangeInterval) || 0,
+            lastBrakePadsChangeMileage: Number(notificationData.lastBrakePadsChangeMileage) || 0,
+            brakePadsChangeInterval: Number(notificationData.brakePadsChangeInterval) || 0,
 
-            lastTireRotationMileage: Number(notificationSettingsData.lastTireRotationMileage) || 0,
-            tireRotationInterval: Number(notificationSettingsData.tireRotationInterval) || 0,
+            lastTireRotationMileage: Number(notificationData.lastTireRotationMileage) || 0,
+            tireRotationInterval: Number(notificationData.tireRotationInterval) || 0,
 
-            lastTransmissionFluidChangeMileage: Number(notificationSettingsData.lastTransmissionFluidChangeMileage) || 0,
-            transmissionFluidChangeInterval: Number(notificationSettingsData.transmissionFluidChangeInterval) || 0,
+            lastTransmissionFluidChangeMileage: Number(notificationData.lastTransmissionFluidChangeMileage) || 0,
+            transmissionFluidChangeInterval: Number(notificationData.transmissionFluidChangeInterval) || 0,
 
-            sparkPlugChangeNotification: notificationSettingsData.sparkPlugChangeNotification,
-            lastSparkPlugChangeMileage: Number(notificationSettingsData.lastSparkPlugChangeMileage) || 0,
+            sparkPlugChangeNotification: notificationData.sparkPlugChangeNotification,
+            lastSparkPlugChangeMileage: Number(notificationData.lastSparkPlugChangeMileage) || 0,
 
-            lastTimingBeltChangeMileage: Number(notificationSettingsData.lastTimingBeltChangeMileage) || 0,
-            timingBeltChangeInterval: Number(notificationSettingsData.timingBeltChangeInterval) || 0,
+            lastTimingBeltChangeMileage: Number(notificationData.lastTimingBeltChangeMileage) || 0,
+            timingBeltChangeInterval: Number(notificationData.timingBeltChangeInterval) || 0,
 
-            lastTimingChainChangeMileage: Number(notificationSettingsData.lastTimingChainChangeMileage) || 0,
-            timingChainChangeInterval: Number(notificationSettingsData.timingChainChangeInterval) || 0,
+            lastTimingChainChangeMileage: Number(notificationData.lastTimingChainChangeMileage) || 0,
+            timingChainChangeInterval: Number(notificationData.timingChainChangeInterval) || 0,
 
-            lastWaterPumpReplacementMileage: Number(notificationSettingsData.lastWaterPumpReplacementMileage) || 0,
-            waterPumpReplacementInterval: Number(notificationSettingsData.waterPumpReplacementInterval) || 0, 
+            lastWaterPumpReplacementMileage: Number(notificationData.lastWaterPumpReplacementMileage) || 0,
+            waterPumpReplacementInterval: Number(notificationData.waterPumpReplacementInterval) || 0,
         };
 
         try {
@@ -195,7 +197,7 @@ const EditNotificationSettings = () => {
                 'Notification Settings Updated',
                 `Notification settings for car ${carId} have been updated.`
             );
-            navigate(`/cars/${carId}/notifications`);
+            goToNotifications(carId);
         } catch (error) {
             console.error('Error updating notification settings:', error);
         }
@@ -237,15 +239,6 @@ const EditNotificationSettings = () => {
             ]
         }
     ];
-
-    const formatServiceType = (serviceType) => {
-        return serviceType.replace(/([a-z])([A-Z])/g, '$1 $2')
-               .replace(/^(.)/, (match) => match.toUpperCase());
-    };
-
-    const handleBack = () => {
-        navigate(-1);
-    };
 
     const toggleOilFilterSection = () => {
         setIsOilFilterExpanded((prev) => !prev);
@@ -322,7 +315,7 @@ const EditNotificationSettings = () => {
                                         <div key={idx} className="sub-section-box">
                                             {(section.title === "Oil and Filters" || !field.notifications) && (
                                                 <div className="sub-section-header">
-                                                    {field.label || (field.name && formatServiceType(field.name))}
+                                                    {field.label || (field.name && carService.formatServiceType(field.name))}
                                                 </div>
                                             )}
 
@@ -359,7 +352,7 @@ const EditNotificationSettings = () => {
                                                 field.subFields.map((subField, subIdx) => (
                                                     <div key={subIdx} className="form-group">
                                                         <label>
-                                                            {formatServiceType(subField)}:
+                                                            {carService.formatServiceType(subField)}:
                                                             <input
                                                                 type="number"
                                                                 name={subField}
@@ -381,7 +374,7 @@ const EditNotificationSettings = () => {
 
                 <div className="button-container">
                     <button type="submit" className="buttons">Save Changes</button>
-                    <button type="button" onClick={handleBack} className="buttons">Back</button>
+                    <button className="buttons" onClick={() => goToNotifications(carId)}>Back</button>
                 </div>
             </form>
         </div>

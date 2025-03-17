@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import carService from '../../services/carService';
+import { useNavigation } from '../../utils';
 import './EditCar.css';
 
 const EditCar = () => {
@@ -19,7 +20,7 @@ const EditCar = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [formErrors, setFormErrors] = useState({});
-    const navigate = useNavigate();
+    const { goBack } = useNavigation();
 
     useEffect(() => {
         const fetchCarDetails = async () => {
@@ -100,7 +101,7 @@ const EditCar = () => {
 
                 const data = await response.json();
                 alert('Car details updated successfully');
-                navigate("/");
+                goBack();
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -110,10 +111,6 @@ const EditCar = () => {
             setError('User is not authenticated');
             setLoading(false);
         }
-    };
-
-    const handleBack = () => {
-        navigate(-1);
     };
 
     if (loading) {
@@ -223,7 +220,7 @@ const EditCar = () => {
                     {loading ? 'Updating Car...' : 'Update Car'}
                 </button>
             </form>
-            <button className="buttons back-button" onClick={handleBack} disabled={loading}>Back</button>
+            <button className="buttons" onClick={() => goBack()} disabled={loading}>Back</button>
         </div>
     );
 };

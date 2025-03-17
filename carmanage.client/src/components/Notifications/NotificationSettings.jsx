@@ -5,12 +5,14 @@ import { updateNotificationSettings } from './actions';
 import { Tooltip } from 'react-tooltip';
 import { sendNotification } from '../../services/notificationService';
 import { getAuth } from 'firebase/auth';
+import carService from '../../services/carService';
+import { useNavigation } from '../../utils';
 import './NotificationSettings.css';
 
 const NotificationSettings = () => {
     const { carId } = useParams();
     const dispatch = useDispatch();
-    const navigate = useNavigate();
+    const { goToCarDetails } = useNavigation();
     const notificationSettings = useSelector((state) => state.notificationSettings);
     const auth = getAuth();
     const user = auth.currentUser;
@@ -116,7 +118,7 @@ const NotificationSettings = () => {
         try {
             await dispatch(updateNotificationSettings(carId, payload));
             await sendNotification(email, 'Notification Settings Updated', `Notification settings for car ${carId} have been updated.`);
-            navigate(`/cars/${carId}/notifications`);
+            goToCarDetails(carId);
         } catch (error) {
             console.error('Error updating notification settings:', error);
         }
@@ -158,15 +160,6 @@ const NotificationSettings = () => {
             ]
         }
     ];
-
-    const formatServiceType = (serviceType) => {
-        return serviceType.replace(/([a-z])([A-Z])/g, '$1 $2')
-            .replace(/^(.)/, (match) => match.toUpperCase());
-    };
-
-    const handleBack = () => {
-        navigate(-1);
-    };
 
     const toggleOilFilterSection = () => {
         setIsOilFilterExpanded(!isOilFilterExpanded);
@@ -272,7 +265,7 @@ const NotificationSettings = () => {
                                                 {field.subFields && field.subFields.map((subField, subIdx) => (
                                                     <div key={subIdx} className="form-group">
                                                         <label>
-                                                            {formatServiceType(subField)}:
+                                                            {carService.formatServiceType(subField)}:
                                                             <input
                                                                 type="number"
                                                                 name={subField}
@@ -290,7 +283,7 @@ const NotificationSettings = () => {
                                     return (
                                         <div key={idx} className="form-group">
                                             <label>
-                                                {formatServiceType(field)} Notification:
+                                                {carService.formatServiceType(field)} Notification:
                                                 <input
                                                     type="checkbox"
                                                     name={field}
@@ -309,7 +302,7 @@ const NotificationSettings = () => {
 
                 <div className="button-container">
                     <button type="submit" className="buttons">Save</button>
-                    <button type="button" onClick={handleBack} className="buttons">Back</button>
+                    <button type="button" onClick={goToCarDetails} className="buttons">Back</button>
                 </div>
             </form>
         </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getAuth } from 'firebase/auth';
+import { useNavigation } from '../../utils';
 import './Notifications.css';
 
 const Notifications = () => {
@@ -11,6 +12,7 @@ const Notifications = () => {
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { goToNotificationSettings, goToCarDetails, goToEditNotificationSettings } = useNavigation();
 
     useEffect(() => {
         const fetchNotifications = async () => {
@@ -43,14 +45,6 @@ const Notifications = () => {
 
         fetchNotifications();
     }, [carId]);
-
-    const handleAddNotification = () => {
-        navigate(`/cars/${carId}/notifications/notification-settings`);
-    };
-
-    const handleEditNotification = (notificationId) => {
-        navigate(`/cars/${carId}/notifications/notification-settings/edit/${notificationId}`);
-    };
 
     const handleRemoveNotification = async (notificationId) => {
         try {
@@ -87,10 +81,6 @@ const Notifications = () => {
         }
     };
 
-    const handleBack = () => {
-        navigate(-1);
-    };
-
     const LoadingSpinner = () => (
         <div className="spinner">
             <div className="spin"></div>
@@ -102,8 +92,8 @@ const Notifications = () => {
             <h2>Notifications for Car {carId}</h2>
 
             <div className="button-container">
-                <button className="buttons" onClick={handleAddNotification}>Add New Notification</button>
-                <button className="buttons" onClick={handleBack}>Back</button>
+                <button className="buttons" onClick={() => goToNotificationSettings(carId)}>Add New Notification</button>
+                <button className="buttons" onClick={() => goToCarDetails(carId)}>Back</button>
             </div>
 
             {loading ? (
@@ -138,7 +128,7 @@ const Notifications = () => {
                                             <div>
                                                 <span>{serviceType}</span> - Change in: {changeInKm} km
                                                 <div className="button-container">
-                                                    <button className="buttons" onClick={() => handleEditNotification(notification.id)}>Edit</button>
+                                                    <button className="buttons" onClick={() => goToEditNotificationSettings(carId, notification.id)}>Edit</button>
                                                     <button className="buttons" onClick={() => handleRemoveNotification(notification.id)}>Remove</button>
                                                 </div>
                                             </div>

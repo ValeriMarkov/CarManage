@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { getAuth } from 'firebase/auth';
 import { initializeApp, getApps } from 'firebase/app';
 import { firebaseConfig } from '../../firebase';
-import { useNavigate } from 'react-router-dom';
+import { useNavigation } from '../../utils';
 import './AddCar.css';
 
 if (!getApps().length) {
@@ -24,7 +24,7 @@ const CarForm = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [formErrors, setFormErrors] = useState({});
-    const navigate = useNavigate();
+    const { goToHome } = useNavigation();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -102,7 +102,7 @@ const CarForm = () => {
                             horsepower: '',
                             odometer: ''
                         });
-                        navigate('/');
+                        goToHome();
                     })
                     .catch((error) => {
                         setError(error.message);
@@ -113,10 +113,6 @@ const CarForm = () => {
             setLoading(false);
             setError('User is not authenticated. Please log in.');
         }
-    };
-
-    const handleBack = () => {
-        navigate(-1);
     };
 
     return (
@@ -226,7 +222,7 @@ const CarForm = () => {
                 </button>
                 {error && <p className="error-message">{error}</p>}
             </form>
-            <button className="buttons" onClick={handleBack} disabled={loading}>Back</button>
+            <button className="buttons" onClick={goToHome} disabled={loading}>Back</button>
         </div>
     );
 };

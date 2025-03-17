@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useNavigation } from '../../utils';
 import './Export.css';
 
 const Export = () => {
@@ -15,7 +16,7 @@ const Export = () => {
     const [endDate, setEndDate] = useState('');
     const [allTime, setAllTime] = useState(true);
     const [pdfPreviewUrl, setPdfPreviewUrl] = useState(null);
-    const navigate = useNavigate();
+    const { goToCarDetails, goToExport } = useNavigation();
 
     const fetchCars = async () => {
         try {
@@ -80,7 +81,7 @@ const Export = () => {
         const updatedCars = [...selectedCars];
         updatedCars[index] = newCarId;
         setSelectedCars(updatedCars);
-        if (index === 0) navigate(`/cars/${newCarId}/export`);
+        if (index === 0) goToExport(newCarId);
     };
 
     const addCarDropdown = () => {
@@ -144,6 +145,7 @@ const Export = () => {
     return (
         <div className="export-container">
             <h2>Export Car Details and Service History</h2>
+            <button className="buttons" onClick={() => goToCarDetails(carId)} disabled={loading}>Back</button><br></br>
             <div className="export-options">
                 <div className="all-time-container">
                     <label htmlFor="all-time-checkbox" className="all-time-label">All Time</label>

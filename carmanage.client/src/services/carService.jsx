@@ -47,6 +47,11 @@ const carService = {
         });
         if (!response.ok) throw new Error("Failed to remove service history");
     },
+
+    formatServiceType: (serviceType) => {
+        return serviceType.replace(/([a-z])([A-Z])/g, '$1 $2')
+            .replace(/^(.)/, (match) => match.toUpperCase());
+    },
 };
 
 export default carService;
