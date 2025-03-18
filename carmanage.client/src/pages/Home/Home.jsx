@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 import carService from "../../services/carService";
 import { useNavigation } from '../../utils';
 import "./Home.css";
 
 const Home = () => {
     const { user, handleRemoveCar } = useAuth();
-    const navigate = useNavigate();
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

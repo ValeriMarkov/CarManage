@@ -51,14 +51,15 @@ ul {
 
 .logoutButton {
     float: right;
-    margin-right: 15px;
+    margin-right: 12.8%;
+    margin-top: 1.2%;
 }
 
 nav {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 90%;
     padding: 1rem;
     text-align: center;
 }

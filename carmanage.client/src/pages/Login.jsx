@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useNavigation } from "../utils";
 
 const Login = () => {
     const { login } = useAuth();
@@ -8,19 +9,16 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const { goToHome } = useNavigation();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             await login(email, password);
-            navigate("/");
+            goToHome();
         } catch (err) {
             setError("Invalid email or password");
         }
-    };
-
-    const handleBack = () => {
-        navigate(-1);
     };
 
     return (
@@ -42,7 +40,7 @@ const Login = () => {
                 />
                 <button className ="buttons" type="submit">Login</button>
             </form>
-            <button className="buttons" onClick={handleBack}>Back</button>
+            <button className="buttons" onClick={() => goToHome()}>Back</button>
         </div>
     );
 };

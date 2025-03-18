@@ -17,6 +17,7 @@ const EditNotificationSettings = () => {
     const auth = getAuth();
     const user = auth.currentUser;
     const email = user?.email;
+    const [isChanged, setIsChanged] = useState(false);
 
     const [notificationData, setNotificationData] = useState({
         oilChangeNotification: false,
@@ -150,6 +151,7 @@ const EditNotificationSettings = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        if (!isChanged) return;
 
         const payload = {
             id: parseInt(notificationId, 10),

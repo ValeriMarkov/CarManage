@@ -12,7 +12,7 @@ import './NotificationSettings.css';
 const NotificationSettings = () => {
     const { carId } = useParams();
     const dispatch = useDispatch();
-    const { goToCarDetails } = useNavigation();
+    const { goToNotifications } = useNavigation();
     const notificationSettings = useSelector((state) => state.notificationSettings);
     const auth = getAuth();
     const user = auth.currentUser;
@@ -85,6 +85,14 @@ const NotificationSettings = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        const hasNotification = Object.keys(notificationSettingsData).some(
+            (key) => key.includes('Notification') && notificationSettingsData[key]
+        );
+
+        if (!hasNotification) {
+            return;
+        }
+
         const payload = {
             ...notificationSettingsData,
             averageWeeklyMileage: Number(notificationSettingsData.averageWeeklyMileage) || 0,
@@ -118,7 +126,7 @@ const NotificationSettings = () => {
         try {
             await dispatch(updateNotificationSettings(carId, payload));
             await sendNotification(email, 'Notification Settings Updated', `Notification settings for car ${carId} have been updated.`);
-            goToCarDetails(carId);
+            goToNotifications(carId);
         } catch (error) {
             console.error('Error updating notification settings:', error);
         }
@@ -302,7 +310,7 @@ const NotificationSettings = () => {
 
                 <div className="button-container">
                     <button type="submit" className="buttons">Save</button>
-                    <button type="button" onClick={goToCarDetails} className="buttons">Back</button>
+                    <button className="buttons" onClick={() => goToNotifications(carId)}>Back</button>
                 </div>
             </form>
         </div>

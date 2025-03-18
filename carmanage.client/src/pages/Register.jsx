@@ -1,27 +1,23 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useNavigation } from "../utils";
 
 const Register = () => {
     const { signup } = useAuth();
-    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const { goToHome } = useNavigation();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
             await signup(email, password);
-            navigate("/");
+            goToHome();
         } catch (err) {
             setError(err.message);
         }
-    };
-
-    const handleBack = () => {
-        navigate(-1);
     };
 
     return (
@@ -45,7 +41,7 @@ const Register = () => {
                 />
                 <button className="buttons" type="submit">Register</button>
             </form>
-            <button className="buttons" onClick={handleBack}>Back</button>
+            <button className="buttons" onClick={() => goToHome()}>Back</button>
         </div>
     );
 };
