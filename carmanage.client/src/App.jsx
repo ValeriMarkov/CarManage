@@ -17,6 +17,7 @@ import Notifications from "./components/Notifications/Notifications";
 import EditNotificationSettings from "./components/Notifications/EditNotificationSettings";
 import Export from "./components/Exports/Export";
 import { Provider } from 'react-redux';
+import '/src/styles/global.css';
 
 const App = () => {
     const { user, logout } = useAuth();
@@ -28,10 +29,12 @@ const App = () => {
                     <ul>
                         {!user ? (
                             <>
-                                <li>
+                                <li className="mavbarButtons" role="button">
                                     <Link to="/register">
                                         <button className="buttons" role="button">Register</button>
                                     </Link>
+                                </li>
+                                <li className="mavbarButtons" role="button">
                                     <Link to="/login">
                                         <button className="buttons" role="button">Login</button>
                                     </Link>
@@ -39,7 +42,7 @@ const App = () => {
                             </>
                         ) : (
                             <>
-                                <li className="logoutButton" role="button">
+                                    <li className="mavbarButtons" role="button">
                                     <button className="buttons" onClick={logout}>Logout</button>
                                 </li>
                             </>

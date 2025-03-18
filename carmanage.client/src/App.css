@@ -49,17 +49,18 @@ ul {
     margin: 0;
 }
 
-.logoutButton {
-    float: right;
-    margin-right: 12.8%;
-    margin-top: 1.2%;
+.mavbarButtons {
+    position: relative;
+    left: 43.2%;
+    margin-top: 1.4%;
+    display: inline-block;
+    vertical-align: top;
+    flex: 1;
 }
 
-nav {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 90%;
-    padding: 1rem;
-    text-align: center;
+@media (max-width: 600px) {
+    .logoutButton {
+        padding-top: 18px;
+        left: calc(20% + 55px);
+    }
 }

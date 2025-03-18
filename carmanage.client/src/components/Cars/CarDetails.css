@@ -1,85 +1,9 @@
-.car-details-container {
-    background-color: #2c2c2c;
-    color: white;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 800px;
-    margin: 20px auto;
-    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
-    font-family: Arial, sans-serif;
-}
-
-.car-details-container h2 {
-    text-align: center;
-    color: #ddd;
-    font-size: 24px;
-}
-
-.car-details-container p {
-    font-size: 16px;
-    margin: 5px 0;
-}
-
 .button-group {
     display: flex;
     gap: 10px;
     justify-content: center;
     margin-top: 10px;
     flex-wrap: wrap;
-}
-
-.buttons {
-    background-color: #444;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.buttons:hover {
-    background-color: #666;
-}
-
-.add-service-btn {
-    margin-top: 15px;
-    font-size: 16px;
-    display: block;
-    width: 100%;
-    max-width: 200px;
-    margin: 15px auto;
-}
-
-.service-history {
-    padding: 15px;
-    border-radius: 8px;
-    margin-top: 20px;
-}
-
-.service-history h2 {
-    text-align: center;
-    color: #004C99;
-}
-
-.service-history ul {
-    list-style: none;
-    padding: 0;
-}
-
-.service-history li {
-    background-color: #444;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.service-history .buttons {
-    font-size: 14px;
 }
 
 @media (max-width: 768px) {

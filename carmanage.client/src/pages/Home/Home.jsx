@@ -34,8 +34,8 @@ const Home = () => {
     }, [user]);
 
     return (
-        <div className="home-container">
-            <h2>Welcome to the Home Page</h2>
+        <div className="container">
+            <h2>Cars dashboard</h2>
             {user ? (
                 <div>
                     <p>Welcome, {user.email}!</p>
@@ -50,16 +50,18 @@ const Home = () => {
                     ) : (
                         <ul>
                             {cars.map((car) => (
-                                <li key={car.id}>
-                                    <a href="#" onClick={() => goToCarDetails(car.id)}>
-                                        {car.brand} {car.model} - {car.year} ({car.color})
-                                    </a>
-                                    <div className="button-container">
-                                        <button className="buttons" onClick={() => goToCarDetails(car.id)}>Details</button>
-                                        <button className="buttons" onClick={() => goToEditCar(car.id)}>Edit</button>
-                                        <button className="buttons" onClick={() => onRemoveCar(car.id)}>Remove</button>
-                                    </div>
-                                </li>
+                                <div className="car-info">
+                                    <li key={car.id}>
+                                        <a href="#" onClick={() => goToCarDetails(car.id)}>
+                                            {car.brand} {car.model} - {car.year} ({car.color})
+                                        </a>
+                                        <div className="button-container">
+                                            <button className="buttons" onClick={() => goToCarDetails(car.id)}>Details</button>
+                                            <button className="buttons" onClick={() => goToEditCar(car.id)}>Edit</button>
+                                            <button className="buttons" onClick={() => onRemoveCar(car.id)}>Remove</button>
+                                        </div>
+                                    </li>
+                                </div>
                             ))}
                         </ul>
                     )}

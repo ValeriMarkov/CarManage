@@ -116,114 +116,116 @@ const CarForm = () => {
     };
 
     return (
-        <div className="car-form-container">
-            <h2>Add a new car</h2>
-            <form onSubmit={handleSubmit}>
-                <div className="input-container">
-                    <input
-                        type="text"
-                        name="brand"
-                        value={carData.brand}
-                        onChange={handleInputChange}
-                        placeholder="Brand"
-                        required
-                    />
-                    {formErrors.brand && <p className="error-message">{formErrors.brand}</p>}
-                </div>
+        <div className="container">
+            <div className="car-info">
+                <h2>Add a new car</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="input-container">
+                        <input
+                            type="text"
+                            name="brand"
+                            value={carData.brand}
+                            onChange={handleInputChange}
+                            placeholder="Brand"
+                            required
+                        />
+                        {formErrors.brand && <p className="error-message">{formErrors.brand}</p>}
+                    </div>
 
-                <div className="input-container">
-                    <input
-                        type="text"
-                        name="model"
-                        value={carData.model}
-                        onChange={handleInputChange}
-                        placeholder="Model"
-                        required
-                    />
-                    {formErrors.model && <p className="error-message">{formErrors.model}</p>}
-                </div>
+                    <div className="input-container">
+                        <input
+                            type="text"
+                            name="model"
+                            value={carData.model}
+                            onChange={handleInputChange}
+                            placeholder="Model"
+                            required
+                        />
+                        {formErrors.model && <p className="error-message">{formErrors.model}</p>}
+                    </div>
 
-                <div className="input-container">
-                    <input
-                        type="number"
-                        name="year"
-                        value={carData.year}
-                        onChange={handleInputChange}
-                        placeholder="Year"
-                        required
-                    />
-                    {formErrors.year && <p className="error-message">{formErrors.year}</p>}
-                </div>
+                    <div className="input-container">
+                        <input
+                            type="number"
+                            name="year"
+                            value={carData.year}
+                            onChange={handleInputChange}
+                            placeholder="Year"
+                            required
+                        />
+                        {formErrors.year && <p className="error-message">{formErrors.year}</p>}
+                    </div>
 
-                <div className="input-container">
-                    <input
-                        type="text"
-                        name="color"
-                        value={carData.color}
-                        onChange={handleInputChange}
-                        placeholder="Color"
-                    />
-                </div>
+                    <div className="input-container">
+                        <input
+                            type="text"
+                            name="color"
+                            value={carData.color}
+                            onChange={handleInputChange}
+                            placeholder="Color"
+                        />
+                    </div>
 
-                <div className="input-container">
-                    <input
-                        type="text"
-                        name="vin"
-                        value={carData.vin}
-                        onChange={handleInputChange}
-                        placeholder="VIN"
-                        required
-                    />
-                    {formErrors.vin && <p className="error-message">{formErrors.vin}</p>}
-                </div>
+                    <div className="input-container">
+                        <input
+                            type="text"
+                            name="vin"
+                            value={carData.vin}
+                            onChange={handleInputChange}
+                            placeholder="VIN"
+                            required
+                        />
+                        {formErrors.vin && <p className="error-message">{formErrors.vin}</p>}
+                    </div>
 
-                <div className="input-container">
-                    <input
-                        type="number"
-                        name="engine"
-                        value={carData.engine}
-                        onChange={handleInputChange}
-                        placeholder="Engine"
-                        required
-                    />
-                    {formErrors.engine && <p className="error-message">{formErrors.engine}</p>}
-                </div>
+                    <div className="input-container">
+                        <input
+                            type="number"
+                            name="engine"
+                            value={carData.engine}
+                            onChange={handleInputChange}
+                            placeholder="Engine"
+                            required
+                        />
+                        {formErrors.engine && <p className="error-message">{formErrors.engine}</p>}
+                    </div>
 
-                <div className="input-container">
-                    <input
-                        type="number"
-                        name="horsepower"
-                        value={carData.horsepower}
-                        onChange={handleInputChange}
-                        placeholder="Horsepower"
-                        required
-                    />
-                    {formErrors.horsepower && <p className="error-message">{formErrors.horsepower}</p>}
-                </div>
+                    <div className="input-container">
+                        <input
+                            type="number"
+                            name="horsepower"
+                            value={carData.horsepower}
+                            onChange={handleInputChange}
+                            placeholder="Horsepower"
+                            required
+                        />
+                        {formErrors.horsepower && <p className="error-message">{formErrors.horsepower}</p>}
+                    </div>
 
-                <div className="input-container">
-                    <input
-                        type="number"
-                        name="odometer"
-                        value={carData.odometer}
-                        onChange={handleInputChange}
-                        placeholder="Odometer"
-                        required
-                    />
-                    {formErrors.odometer && <p className="error-message">{formErrors.odometer}</p>}
-                </div>
+                    <div className="input-container">
+                        <input
+                            type="number"
+                            name="odometer"
+                            value={carData.odometer}
+                            onChange={handleInputChange}
+                            placeholder="Odometer"
+                            required
+                        />
+                        {formErrors.odometer && <p className="error-message">{formErrors.odometer}</p>}
+                    </div>
 
-                <button className="buttons" type="submit" disabled={loading}>
-                    {loading ? (
-                        <span className="spinner"></span>
-                    ) : (
-                        'Add Car'
-                    )}
-                </button>
-                {error && <p className="error-message">{error}</p>}
-            </form>
+                    <button className="buttons" type="submit" disabled={loading}>
+                        {loading ? (
+                            <span className="spinner"></span>
+                        ) : (
+                            'Add Car'
+                        )}
+                    </button>
+                    {error && <p className="error-message">{error}</p>}
+                </form>
+            </div>
             <button className="buttons" onClick={goToHome} disabled={loading}>Back</button>
-        </div>
+        </div >
     );
 };
 

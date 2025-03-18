@@ -86,7 +86,7 @@ const CarDetails = () => {
     if (error) return <p className="error">{error}</p>;
 
     return (
-        <div className="car-details-container">
+        <div className="container">
             <h2>Car Details</h2>
             <div className="car-info">
                 <p><strong>Brand:</strong> {car.brand}</p>
@@ -107,9 +107,9 @@ const CarDetails = () => {
             </div>
 
             <h2>Service History</h2>
-            <button className="buttons add-service-btn" onClick={() => goToAddService(carId)}>Add Service</button>
+            <button className="buttons" onClick={() => goToAddService(carId)}>Add Service</button>
 
-            <div className="service-history">
+            <div className="car-info">
                 {loadingServices ? (
                     <p>Loading service history...</p>
                 ) : (
@@ -118,11 +118,11 @@ const CarDetails = () => {
                     ) : (
                         <ul>
                             {services.map(service => (
-                                <li key={service.id} className="service-item">
+                                <li key={service.id}>
                                     <p><strong>Service Date:</strong> {new Date(service.serviceDate).toLocaleDateString()}</p>
                                     <p><strong>Odometer at Service:</strong> {service.odometerAtService} km</p>
-                                    <p><strong>Notes:</strong> {service.notes}</p>
                                     <p><strong>Services:</strong> {service.selectedServices?.map(serviceType => carService.formatServiceType(serviceType)).join(", ")}</p>
+                                    <p><strong>Notes:</strong> {service.notes}</p>
                                     <div className="button-group">
                                         <button className="buttons" onClick={() => onRemoveServiceHistory(service.id)}>Delete</button>
                                         <button className="buttons" onClick={() => onEditService(service.id)}>Edit</button>
