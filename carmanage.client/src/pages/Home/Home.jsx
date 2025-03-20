@@ -34,7 +34,7 @@ const Home = () => {
     }, [user]);
 
     return (
-        <div className="container">
+        <div>
             <h2>Cars dashboard</h2>
             {user ? (
                 <div>
@@ -48,9 +48,9 @@ const Home = () => {
                     ) : cars.length === 0 ? (
                         <p>No cars added yet.</p>
                     ) : (
-                        <ul>
-                            {cars.map((car) => (
-                                <div className="car-info">
+                        <div className="car-info">
+                            <ul>
+                                {cars.map((car) => (
                                     <li key={car.id}>
                                         <a href="#" onClick={() => goToCarDetails(car.id)}>
                                             {car.brand} {car.model} - {car.year} ({car.color})
@@ -61,9 +61,9 @@ const Home = () => {
                                             <button className="buttons" onClick={() => onRemoveCar(car.id)}>Remove</button>
                                         </div>
                                     </li>
-                                </div>
-                            ))}
-                        </ul>
+                                ))}
+                            </ul>
+                        </div>
                     )}
                 </div>
             ) : (

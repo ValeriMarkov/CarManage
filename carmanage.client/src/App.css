@@ -43,24 +43,34 @@ body, html {
     background-color: #9a9a9a;
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+.navbarContainer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
 }
 
-.mavbarButtons {
-    position: relative;
-    left: 43.2%;
-    margin-top: 1.4%;
-    display: inline-block;
-    vertical-align: top;
-    flex: 1;
+.navbarButtons {
+    display: flex;
+    gap: 15px;
+    align-items: center;
 }
 
-@media (max-width: 600px) {
-    .logoutButton {
-        padding-top: 18px;
-        left: calc(20% + 55px);
-    }
+.navbarButtons li {
+    list-style: none;
+}
+
+.navbarButtons button {
+    min-width: 120px;
+    padding: 8px 12px;
+    text-align: center;
+}
+
+.content {
+    margin-top: 60px;
+}
+
+.homepage-adjustment {
+    left: 40.2% !important;
 }

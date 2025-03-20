@@ -86,7 +86,7 @@ const CarDetails = () => {
     if (error) return <p className="error">{error}</p>;
 
     return (
-        <div className="container">
+        <div>
             <h2>Car Details</h2>
             <div className="car-info">
                 <p><strong>Brand:</strong> {car.brand}</p>

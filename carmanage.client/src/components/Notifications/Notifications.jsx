@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { getAuth } from 'firebase/auth';
 import { useNavigation } from '../../utils';
@@ -7,7 +7,6 @@ import './Notifications.css';
 
 const Notifications = () => {
     const { carId } = useParams();
-    const navigate = useNavigate();
     const [notifications, setNotifications] = useState([]);
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);

@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login";
@@ -19,53 +19,71 @@ import Export from "./components/Exports/Export";
 import { Provider } from 'react-redux';
 import '/src/styles/global.css';
 
-const App = () => {
+const AppContent = () => {
     const { user, logout } = useAuth();
+    const location = useLocation();
+    const isHomePage = location.pathname === "/";
 
     return (
-        <Provider store={store}>
-            <Router>
+        <>
+            <div className="container">
                 <nav>
-                    <ul>
+                    <ul className="navbarContainer">
                         {!user ? (
-                            <>
-                                <li className="mavbarButtons" role="button">
-                                    <Link to="/register">
-                                        <button className="buttons" role="button">Register</button>
-                                    </Link>
-                                </li>
-                                <li className="mavbarButtons" role="button">
-                                    <Link to="/login">
-                                        <button className="buttons" role="button">Login</button>
-                                    </Link>
-                                </li>
-                            </>
+                            <div className={`navbarButtons ${isHomePage ? "homepage-adjustment" : ""}`}>
+                                {location.pathname !== "/register" && (
+                                    <li role="button">
+                                        <Link to="/register">
+                                            <button className="buttons" role="button">Register</button>
+                                        </Link>
+                                    </li>
+                                )}
+                                {location.pathname !== "/login" && (
+                                    <li role="button">
+                                        <Link to="/login">
+                                            <button className="buttons" role="button">Login</button>
+                                        </Link>
+                                    </li>
+                                )}
+                            </div>
                         ) : (
-                            <>
-                                    <li className="mavbarButtons" role="button">
+                            <div className="navbarButtons">
+                                <li role="button">
                                     <button className="buttons" onClick={logout}>Logout</button>
                                 </li>
-                            </>
+                            </div>
                         )}
                     </ul>
                 </nav>
 
                 <div className="App">
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/add-car" element={<ProtectedRoute> <CarForm /> </ProtectedRoute>} />
-                        <Route path="/cars/:carId" element={<ProtectedRoute> {<CarDetails />} </ProtectedRoute>} />
-                        <Route path="/edit-car/:carId" element={<ProtectedRoute> <EditCar /> </ProtectedRoute>} />
-                        <Route path="/cars/:carId/add-service" element={<ProtectedRoute> {<AddService />} </ProtectedRoute>} />
-                        <Route path="/cars/:carId/services/:serviceId/edit" element={<ProtectedRoute> {<EditService />} </ProtectedRoute>} />
-                        <Route path="/cars/:carId/notifications" element={<ProtectedRoute> {<Notifications />} </ProtectedRoute>} />
-                        <Route path="/cars/:carId/notifications/notification-settings" element={<ProtectedRoute> {<NotificationSettings />} </ProtectedRoute>} />
-                        <Route path="/cars/:carId/notifications/notification-settings/edit/:notificationId" element={<ProtectedRoute> {<EditNotificationSettings />} </ProtectedRoute>} />
-                        <Route path="/cars/:carId/export" element={<ProtectedRoute> {<Export />} </ProtectedRoute>} />
-                    </Routes>
+                    <div className="content">
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/register" element={<Register />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/add-car" element={<ProtectedRoute> <CarForm /> </ProtectedRoute>} />
+                            <Route path="/cars/:carId" element={<ProtectedRoute> <CarDetails /> </ProtectedRoute>} />
+                            <Route path="/edit-car/:carId" element={<ProtectedRoute> <EditCar /> </ProtectedRoute>} />
+                            <Route path="/cars/:carId/add-service" element={<ProtectedRoute> <AddService /> </ProtectedRoute>} />
+                            <Route path="/cars/:carId/services/:serviceId/edit" element={<ProtectedRoute> <EditService /> </ProtectedRoute>} />
+                            <Route path="/cars/:carId/notifications" element={<ProtectedRoute> <Notifications /> </ProtectedRoute>} />
+                            <Route path="/cars/:carId/notifications/notification-settings" element={<ProtectedRoute> <NotificationSettings /> </ProtectedRoute>} />
+                            <Route path="/cars/:carId/notifications/notification-settings/edit/:notificationId" element={<ProtectedRoute> <EditNotificationSettings /> </ProtectedRoute>} />
+                            <Route path="/cars/:carId/export" element={<ProtectedRoute> <Export /> </ProtectedRoute>} />
+                        </Routes>
+                    </div>
                 </div>
+            </div>
+        </>
+    );
+};
+
+const App = () => {
+    return (
+        <Provider store={store}>
+            <Router>
+                <AppContent />
             </Router>
         </Provider>
     );

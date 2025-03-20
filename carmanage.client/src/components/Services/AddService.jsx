@@ -128,73 +128,77 @@ const AddService = () => {
     };
 
     return (
-        <div className="add-service-container">
-            <h2>Add Service History</h2>
-            <div className="add-service-form-container">
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label htmlFor="serviceDate">Service Date:</label>
-                        <input
-                            type="date"
-                            id="serviceDate"
-                            value={serviceData.serviceDate}
-                            onChange={handleInputChange}
-                            required
-                        />
-                    </div>
+        <div>
+            <div className="add-service-container">
+                <h2>Add Service</h2>
+                <div className="add-service-form-container">
+                    <form onSubmit={handleSubmit}>
+                        <div>
+                            <label htmlFor="serviceDate">Service Date:</label>
+                            <input
+                                type="date"
+                                id="serviceDate"
+                                value={serviceData.serviceDate}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
 
-                    <div>
-                        <label htmlFor="odometerAtService">Odometer at Service:</label>
-                        <input
-                            type="number"
-                            id="odometerAtService"
-                            value={serviceData.odometerAtService}
-                            onChange={handleInputChange}
-                            required
-                        />
-                    </div>
+                        <div>
+                            <label htmlFor="odometerAtService">Odometer at Service:</label>
+                            <input
+                                type="number"
+                                id="odometerAtService"
+                                value={serviceData.odometerAtService}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
 
-                    <div>
-                        <label htmlFor="notes">Notes:</label>
-                        <textarea
-                            id="notes"
-                            value={serviceData.notes}
-                            onChange={handleInputChange}
-                        />
-                    </div>
+                        <div>
+                            <label htmlFor="notes">Notes:</label>
+                            <textarea
+                                id="notes"
+                                value={serviceData.notes}
+                                onChange={handleInputChange}
+                            />
+                        </div>
 
-                    <div>
-                        <h3>Selected Services:</h3>
-                    </div>
+                        <div>
+                            <h3>Services done:</h3>
+                        </div>
 
-                    <div className="checkboxes">
-                        {services.map((service) => (
-                            <div key={service.id} className="checkbox-item">
-                                <input
-                                    type="checkbox"
-                                    checked={serviceData.selectedServices.includes(service.id)}
-                                    onChange={() => handleServiceSelection(service.id)}
-                                    value={service.id}
-                                    id={`service-${service.id}`}
-                                />
-                                <label htmlFor={`service-${service.id}`}>{service.label}</label>
-                            </div>
-                        ))}
-                    </div>
+                        <div className="checkboxes">
+                            {services.map((service) => (
+                                <div key={service.id} className="checkbox-item">
+                                    <input
+                                        type="checkbox"
+                                        checked={serviceData.selectedServices.includes(service.id)}
+                                        onChange={() => handleServiceSelection(service.id)}
+                                        value={service.id}
+                                        id={`service-${service.id}`}
+                                    />
+                                    <label htmlFor={`service-${service.id}`}>{service.label}</label>
+                                </div>
+                            ))}
+                        </div>
 
-                    {error && <p className="error">{error}</p>}
+                        {error && <p className="error">{error}</p>}
 
-                    <button className="buttons" type="submit" disabled={loading}>
-                        {loading ? 'Submitting...' : 'Submit'}
-                    </button>
-                </form>
-                <button className="buttons" onClick={() => goToCarDetails(carId)}>Back</button>
+                        <div className="buttons-container">
+                            <button className="buttons" type="submit" disabled={loading}>
+                                {loading ? 'Submitting...' : 'Submit'}
+                            </button>
+                            <button className="buttons" onClick={() => goToCarDetails(carId)}>Back</button>
+                        </div>
+                    </form>
 
-                {loading && (
-                    <div className="spinner-container">
-                        <div className="spinner"></div>
-                    </div>
-                )}
+                    {loading && (
+                        <div className="spinner-container">
+                            <div className="spinner"></div>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import axios from 'axios';
+import { useNavigation } from '../../utils';
 import './EditService.css';
 
 const EditService = () => {
@@ -15,7 +16,7 @@ const EditService = () => {
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
+    const { goToCarDetails } = useNavigation();
 
     const getIdToken = async () => {
         const auth = getAuth();
@@ -91,7 +92,7 @@ const EditService = () => {
             );
             if (response.status === 200 || response.status === 204) {
                 alert('Service details updated successfully');
-                navigate("/");
+                goToCarDetails(carId);
             } else {
                 console.error('Error updating service details:', response);
             }
@@ -100,10 +101,6 @@ const EditService = () => {
         } finally {
             setSubmitting(false);
         }
-    };
-
-    const handleBack = () => {
-        navigate(-1);
     };
 
     const formatServiceType = (serviceType) => {
@@ -137,70 +134,74 @@ const EditService = () => {
     }
 
     return (
-        <div className="edit-service-container">
-            <h2>Edit Service</h2>
-            {error && <p className="error">{error}</p>}
-            <div className="edit-service-form-container">
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label htmlFor="serviceDateField">Service Date:</label>
-                        <input
-                            type="date"
-                            name="serviceDate"
-                            id="serviceDateField"
-                            defaultValue={serviceData.serviceDate ? serviceData.serviceDate.split('T')[0] : ''}
-                            onChange={handleInputChange}
-                            placeholder="Service Date"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="odometerAtServiceField">Odometer at Service:</label>
-                        <input
-                            type="number"
-                            name="odometerAtService"
-                            id="odometerAtServiceField"
-                            value={serviceData.odometerAtService || ''}
-                            onChange={handleInputChange}
-                            placeholder="Odometer at Service"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="notesField">Notes:</label>
-                        <input
-                            type="text"
-                            name="notes"
-                            id="notesField"
-                            value={serviceData.notes || ''}
-                            onChange={handleInputChange}
-                            placeholder="Notes"
-                        />
-                    </div>
-                    <div>
-                        <h3>Selected Services:</h3>
-                    </div>
-                    <div className="checkboxes">
-                        {serviceTypes.map((serviceType, index) => (
-                            <div key={index} className="checkbox-item">
-                                <label htmlFor={serviceType.Name}>{serviceType.Name}</label>
-                                <input
-                                    type="checkbox"
-                                    id={serviceType.Name}
-                                    checked={serviceData.selectedServices && serviceData.selectedServices.includes(serviceType)}
-                                    onChange={(e) => handleServiceChange(e, serviceType)}
-                                />
-                                <label htmlFor={serviceType}>
-                                    {formatServiceType(serviceType)}
-                                </label>
-                            </div>
-                        ))}
-                    </div>
-                    <button className="buttons" type="submit" disabled={submitting}>
-                        {submitting ? <div className="spinner"></div> : 'Update Service'}
-                    </button>
-                </form>
-                <button className="buttons back-button" onClick={handleBack}>Back</button>
+        <div>
+            <div className="edit-service-container">
+                <h2>Edit Service</h2>
+                {error && <p className="error">{error}</p>}
+                <div className="edit-service-form-container">
+                    <form onSubmit={handleSubmit}>
+                        <div>
+                            <label htmlFor="serviceDateField">Service Date:</label>
+                            <input
+                                type="date"
+                                name="serviceDate"
+                                id="serviceDateField"
+                                defaultValue={serviceData.serviceDate ? serviceData.serviceDate.split('T')[0] : ''}
+                                onChange={handleInputChange}
+                                placeholder="Service Date"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="odometerAtServiceField">Odometer at Service:</label>
+                            <input
+                                type="number"
+                                name="odometerAtService"
+                                id="odometerAtServiceField"
+                                value={serviceData.odometerAtService || ''}
+                                onChange={handleInputChange}
+                                placeholder="Odometer at Service"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="notesField">Notes:</label>
+                            <input
+                                type="text"
+                                name="notes"
+                                id="notesField"
+                                value={serviceData.notes || ''}
+                                onChange={handleInputChange}
+                                placeholder="Notes"
+                            />
+                        </div>
+                        <div>
+                            <h3>Selected Services:</h3>
+                        </div>
+                        <div className="checkboxes">
+                            {serviceTypes.map((serviceType, index) => (
+                                <div key={index} className="checkbox-item">
+                                    <label htmlFor={serviceType.Name}>{serviceType.Name}</label>
+                                    <input
+                                        type="checkbox"
+                                        id={serviceType.Name}
+                                        checked={serviceData.selectedServices && serviceData.selectedServices.includes(serviceType)}
+                                        onChange={(e) => handleServiceChange(e, serviceType)}
+                                    />
+                                    <label htmlFor={serviceType}>
+                                        {formatServiceType(serviceType)}
+                                    </label>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="buttons-container">
+                            <button className="buttons" type="submit" disabled={submitting}>
+                                {submitting ? <div className="spinner"></div> : 'Update Service'}
+                            </button>
+                            <button className="buttons" type="button" onClick={() => goToCarDetails(carId)}>Back</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );
