@@ -310,7 +310,7 @@ const NotificationSettings = () => {
 
                 <div className="button-container">
                     <button type="submit" className="buttons">Save</button>
-                    <button className="buttons" onClick={() => goToNotifications(carId)}>Back</button>
+                    <button type="button" className="buttons" onClick={() => goToNotifications(carId)}>Back</button>
                 </div>
             </form>
         </div>

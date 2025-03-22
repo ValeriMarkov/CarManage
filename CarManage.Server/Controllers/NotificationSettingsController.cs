@@ -49,7 +49,6 @@ public class NotificationSettingsController : ControllerBase
                 car.NotificationSettings = new List<NotificationSettings>();
             }
 
-
             var existingSettings = car.NotificationSettings.FirstOrDefault(ns => ns.CarId == carId);
             if (existingSettings != null)
             {
@@ -81,6 +80,9 @@ public class NotificationSettingsController : ControllerBase
                 existingSettings.TimingChainChangeNotification = notificationSettings.TimingChainChangeNotification;
                 existingSettings.LastTimingChainChangeMileage = notificationSettings.LastTimingChainChangeMileage;
                 existingSettings.TimingChainChangeInterval = notificationSettings.TimingChainChangeInterval;
+                existingSettings.WaterPumpReplacementNotification = notificationSettings.WaterPumpReplacementNotification;
+                existingSettings.LastWaterPumpReplacementMileage = notificationSettings.LastWaterPumpReplacementMileage;
+                existingSettings.WaterPumpReplacementInterval = notificationSettings.WaterPumpReplacementInterval;
             }
             else
             {
@@ -121,7 +123,71 @@ public class NotificationSettingsController : ControllerBase
             return NotFound(new { Message = "No notification settings found for this car." });
         }
 
-        return Ok(car.NotificationSettings);
+
+        var enrichedNotifications = car.NotificationSettings.Select(ns =>
+        {
+            var serviceNotifications = new List<object>();
+
+            if (ns.OilChangeNotification)
+            {
+                int remaining = ns.OilChangeInterval - (ns.CurrentOdometer - ns.LastOilChangeMileage);
+                serviceNotifications.Add(new { Name = "Engine Oil", RemainingKm = remaining < 0 ? 0 : remaining });
+            }
+            if (ns.FilterChangeNotification)
+            {
+                int remaining = (ns.OilChangeInterval) - (ns.CurrentOdometer - ns.LastOilChangeMileage);
+                serviceNotifications.Add(new { Name = "Filters", RemainingKm = remaining < 0 ? 0 : remaining });
+            }
+            if (ns.BrakePadsNotification)
+            {
+                int remaining = ns.BrakePadsChangeInterval - (ns.CurrentOdometer - ns.LastBrakePadsChangeMileage);
+                serviceNotifications.Add(new { Name = "Brake Pads", RemainingKm = remaining < 0 ? 0 : remaining });
+            }
+            if (ns.TireRotationNotification)
+            {
+                int remaining = ns.TireRotationInterval - (ns.CurrentOdometer - ns.LastTireRotationMileage);
+                serviceNotifications.Add(new { Name = "Tire Rotation", RemainingKm = remaining < 0 ? 0 : remaining });
+            }
+            if (ns.TransmissionFluidChangeNotification)
+            {
+                int remaining = ns.TransmissionFluidChangeInterval - (ns.CurrentOdometer - ns.LastTransmissionFluidChangeMileage);
+                serviceNotifications.Add(new { Name = "Transmission Fluid", RemainingKm = remaining < 0 ? 0 : remaining });
+            }
+            if (ns.SparkPlugChangeNotification)
+            {
+                int remaining = ns.SparkPlugChangeInterval - (ns.CurrentOdometer - ns.LastSparkPlugChangeMileage);
+                serviceNotifications.Add(new { Name = "Spark Plug", RemainingKm = remaining < 0 ? 0 : remaining });
+            }
+            if (ns.TimingBeltNotification)
+            {
+                int remaining = ns.TimingBeltChangeInterval - (ns.CurrentOdometer - ns.LastTimingBeltChangeMileage);
+                serviceNotifications.Add(new { Name = "Timing Belt", RemainingKm = remaining < 0 ? 0 : remaining });
+            }
+            if (ns.TimingChainChangeNotification)
+            {
+                int remaining = ns.TimingChainChangeInterval - (ns.CurrentOdometer - ns.LastTimingChainChangeMileage);
+                serviceNotifications.Add(new { Name = "Timing Chain", RemainingKm = remaining < 0 ? 0 : remaining });
+            }
+            if (ns.WaterPumpReplacementNotification)
+            {
+                int remaining = ns.WaterPumpReplacementInterval - (ns.CurrentOdometer - ns.LastWaterPumpReplacementMileage);
+                serviceNotifications.Add(new { Name = "Water Pump", RemainingKm = remaining < 0 ? 0 : remaining });
+            }
+
+            if (serviceNotifications.Count == 0)
+            {
+                serviceNotifications.Add(new { Name = "Unknown Service", RemainingKm = 0 });
+            }
+
+            return new
+            {
+                ns.Id,
+                ns.CurrentOdometer,
+                ServiceNotifications = serviceNotifications
+            };
+        }).ToList();
+
+        return Ok(enrichedNotifications);
     }
 
     [HttpGet("{carId}/{notificationId}")]
@@ -146,7 +212,6 @@ public class NotificationSettingsController : ControllerBase
 
         return Ok(notification);
     }
-
 
     [HttpDelete("{carId}/{notificationId}")]
     public async Task<IActionResult> DeleteNotification(int carId, int notificationId)

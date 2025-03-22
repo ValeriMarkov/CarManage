@@ -67,12 +67,18 @@ namespace CarManage.Server
                 // Apply the CORS policy globally
                 app.UseCors("AllowFrontendOrigin");
 
-                // Configure the HTTP request pipeline
+                // Enable Swagger UI in development environment
                 if (app.Environment.IsDevelopment())
                 {
                     app.UseSwagger();
                     app.UseSwaggerUI();
                 }
+
+                // Mddleware for Authentication & Authorization
+                app.UseAuthentication();
+                app.UseAuthorization();
+
+                app.UseMiddleware<ErrorHandlingMiddleware>();
 
                 app.Use(async (context, next) =>
                 {
@@ -91,10 +97,6 @@ namespace CarManage.Server
                 // Serve static files
                 app.UseDefaultFiles();
                 app.UseStaticFiles();
-
-                // Middleware for handling Authentication & Authorization
-                app.UseAuthentication();
-                app.UseAuthorization();
 
                 // Map API controllers
                 app.MapControllers();

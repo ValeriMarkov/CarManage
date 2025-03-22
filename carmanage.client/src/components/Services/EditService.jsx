@@ -56,17 +56,15 @@ const EditService = () => {
 
     const handleServiceChange = (e, serviceType) => {
         const { checked } = e.target;
-        if (checked) {
-            setServiceData((prevState) => ({
+        setServiceData((prevState) => {
+            const updatedServices = checked
+                ? [...prevState.selectedServices, serviceType]
+                : prevState.selectedServices.filter((s) => s !== serviceType);
+            return {
                 ...prevState,
-                selectedServices: [...prevState.selectedServices, serviceType],
-            }));
-        } else {
-            setServiceData((prevState) => ({
-                ...prevState,
-                selectedServices: prevState.selectedServices.filter((service) => service.Id !== serviceType.Id),
-            }));
-        }
+                selectedServices: updatedServices,
+            };
+        });
     };
 
     const handleSubmit = async (e) => {
@@ -103,8 +101,9 @@ const EditService = () => {
         }
     };
 
-    const formatServiceType = (serviceType) => {
-        return serviceType.replace(/([a-z])([A-Z])/g, '$1 $2');
+    const formatServiceType = (type) => {
+        if (!type) return '';
+        return type.replace(/([a-z])([A-Z])/g, '$1 $2');
     };
 
     const [serviceTypes, setServiceTypes] = useState([]);
@@ -181,14 +180,13 @@ const EditService = () => {
                         <div className="checkboxes">
                             {serviceTypes.map((serviceType, index) => (
                                 <div key={index} className="checkbox-item">
-                                    <label htmlFor={serviceType.Name}>{serviceType.Name}</label>
                                     <input
                                         type="checkbox"
-                                        id={serviceType.Name}
-                                        checked={serviceData.selectedServices && serviceData.selectedServices.includes(serviceType)}
+                                        id={`service-${serviceType}`}
+                                        checked={serviceData.selectedServices.includes(serviceType)}
                                         onChange={(e) => handleServiceChange(e, serviceType)}
                                     />
-                                    <label htmlFor={serviceType}>
+                                    <label htmlFor={`service-${serviceType}`}>
                                         {formatServiceType(serviceType)}
                                     </label>
                                 </div>

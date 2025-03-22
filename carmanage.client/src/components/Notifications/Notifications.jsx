@@ -104,36 +104,33 @@ const Notifications = () => {
                     <div>
                         <h3>Active Notifications:</h3>
                         {notifications.length === 0 ? (
-                            <p>No notifications are currently active for this car.</p> 
+                            <p>No notifications are currently active for this car.</p>
                         ) : (
                             <ul>
-                                {notifications.map((notification) => {
-                                    let services = [];
-                                    if (notification.oilChangeNotification) services.push("Engine oil");
-                                    if (notification.filterChangeNotification) services.push("Filters");
-
-                                    const serviceType = services.length > 0 ? services.join(", ") : "Unknown Service";
-
-                                    let changeInKm = 0;
-                                    if (notification.isAutomaticMileageTracking) {
-                                        const remainingKm = notification.oilChangeInterval - (notification.currentOdometer - notification.lastOilChangeMileage);
-                                        changeInKm = remainingKm < 0 ? 0 : remainingKm;
-                                    } else {
-                                        changeInKm = (notification.lastOilChangeMileage - notification.currentOdometer) + notification.oilChangeInterval;
-                                    }
-
-                                    return (
-                                        <li key={notification.id}>
-                                            <div>
-                                                <span>{serviceType}</span> - Change in: {changeInKm} km
-                                                <div className="button-container">
-                                                    <button className="buttons" onClick={() => goToEditNotificationSettings(carId, notification.id)}>Edit</button>
-                                                    <button className="buttons" onClick={() => handleRemoveNotification(notification.id)}>Remove</button>
-                                                </div>
+                                {notifications.map((notification) => (
+                                    <li key={notification.id}>
+                                        <div>
+                                            <strong>Services:</strong>
+                                            <ul>
+                                                {notification.serviceNotifications && notification.serviceNotifications.length > 0 ? (
+                                                    notification.serviceNotifications.map((service, idx) => (
+                                                        <li key={idx}>
+                                                            <span>{service.name}</span> - Change in: {service.remainingKm} km
+                                                        </li>
+                                                    ))
+                                                ) : (
+                                                    <li>
+                                                        <span>Unknown Service</span> - Change in: 0 km
+                                                    </li>
+                                                )}
+                                            </ul>
+                                            <div className="button-container">
+                                                <button className="buttons" onClick={() => goToEditNotificationSettings(carId, notification.id)}>Edit</button>
+                                                <button className="buttons" onClick={() => handleRemoveNotification(notification.id)}>Remove</button>
                                             </div>
-                                        </li>
-                                    );
-                                })}
+                                        </div>
+                                    </li>
+                                ))}
                             </ul>
                         )}
                     </div>
