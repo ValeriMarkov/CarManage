@@ -124,7 +124,7 @@ const Notifications = () => {
                                                     </li>
                                                 )}
                                             </ul>
-                                            <div className="button-container">
+                                            <div className="buttons-container">
                                                 <button className="buttons" onClick={() => goToEditNotificationSettings(carId, notification.id)}>Edit</button>
                                                 <button className="buttons" onClick={() => handleRemoveNotification(notification.id)}>Remove</button>
                                             </div>

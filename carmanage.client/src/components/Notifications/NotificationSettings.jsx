@@ -125,7 +125,8 @@ const NotificationSettings = () => {
 
         try {
             await dispatch(updateNotificationSettings(carId, payload));
-            await sendNotification(email, 'Notification Settings Updated', `Notification settings for car ${carId} have been updated.`);
+            await sendNotification(email, 'New Notification Settings Added', `You have set up new notification settings for car ${carId}.`);
+
             goToNotifications(carId);
         } catch (error) {
             console.error('Error updating notification settings:', error);

@@ -145,7 +145,7 @@ const Export = () => {
     return (
         <div className="export-container">
             <h2>Export Car Details and Service History</h2>
-            <button className="buttons" onClick={() => goToCarDetails(carId)} disabled={loading}>Back</button><br></br>
+            <button className="buttons" onClick={() => goToCarDetails(carId)} disabled={loading}>Back</button>
             <div className="export-options">
                 <div className="all-time-container">
                     <label htmlFor="all-time-checkbox" className="all-time-label">All Time</label>

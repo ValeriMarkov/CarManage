@@ -118,6 +118,10 @@ nav {
     list-style: none;
 }
 
+.car-info a, li{
+    padding-bottom: 10px;
+}
+
 /* ===================
    Page-Specific Styles
 =================== */

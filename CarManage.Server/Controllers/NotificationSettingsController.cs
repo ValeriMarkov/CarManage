@@ -94,12 +94,6 @@ public class NotificationSettingsController : ControllerBase
             await _context.SaveChangesAsync();
             _logger.LogInformation("Successfully saved notification settings.");
 
-            await _notificationService.SendNotificationAsync(
-                notificationSettings.Email,
-                "Notification Settings Updated",
-                $"Notification settings for car {carId} have been updated."
-            );
-
             return Ok(notificationSettings);
         }
         catch (Exception ex)

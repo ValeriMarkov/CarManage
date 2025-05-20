@@ -147,6 +147,8 @@ const EditNotificationSettings = () => {
             [name]: newValue,
             ...(name === 'isAutomaticMileageTracking' && newValue ? { averageWeeklyMileage: '' } : {}),
         }));
+
+        setIsChanged(true);
     };
 
     const handleSubmit = async (event) => {
@@ -194,11 +196,6 @@ const EditNotificationSettings = () => {
 
         try {
             await dispatch(updateNotificationSettings(carId, payload));
-            await sendNotification(
-                payload.email,
-                'Notification Settings Updated',
-                `Notification settings for car ${carId} have been updated.`
-            );
             goToNotifications(carId);
         } catch (error) {
             console.error('Error updating notification settings:', error);
