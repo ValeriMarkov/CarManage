@@ -3,7 +3,7 @@ CarManage is a full-stack web application built with ASP.NET Core (backend) and 
 
 🔧 Features
 
-    User authentication via Firebase (Google login)
+    User authentication via Firebase
 
     Add, edit, and delete cars and related service records (CRUD)
 
