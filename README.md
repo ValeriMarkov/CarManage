@@ -33,7 +33,7 @@ CarManage is a full-stack web application built with ASP.NET Core (backend) and 
 
     Polish the front-end UI and design for consistency
 
-    Expand the existing global error handling for better coverage and user feedback
+    Expand the existing global error handling for better coverage
 
     Improve the wording of system messages and email notifications
 
