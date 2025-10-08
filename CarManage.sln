@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarManage.Server", "CarMana
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "carmanage.client", "carmanage.client\carmanage.client.esproj", "{45A9A229-FE42-45B1-869A-A8A7CA8DED8E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarManage.Tests", "CarManage.Tests\CarManage.Tests.csproj", "{5497C5E7-F516-F8F5-685A-CBE4CD46DBD0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{45A9A229-FE42-45B1-869A-A8A7CA8DED8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45A9A229-FE42-45B1-869A-A8A7CA8DED8E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{45A9A229-FE42-45B1-869A-A8A7CA8DED8E}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{5497C5E7-F516-F8F5-685A-CBE4CD46DBD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5497C5E7-F516-F8F5-685A-CBE4CD46DBD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5497C5E7-F516-F8F5-685A-CBE4CD46DBD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5497C5E7-F516-F8F5-685A-CBE4CD46DBD0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
